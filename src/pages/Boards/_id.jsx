@@ -8,10 +8,11 @@ import AppBar from "~/components/AppBar/AppBar";
 import BoardBar from "./BoardBar/BoardBar";
 import BoardContent from "./BoardContent/BoardContent";
 // --------------------- APIS ---------------------
-// import { mockData } from "~/apis/mock-data";
+import { mockData } from "~/apis/mock-data";
 import { fetchBoardDetailsAPI } from "~/apis";
 // --------------------- MAIN COMPONENT ---------------------
 const Board = () => {
+    // eslint-disable-next-line no-unused-vars
     const [board, setBoard] = useState(null);
 
     useEffect(() => {
@@ -25,8 +26,8 @@ const Board = () => {
         <>
             <Container disableGutters maxWidth={false} sx={{ height: "100vh" }}>
                 <AppBar />
-                <BoardBar board={board} />
-                <BoardContent board={board} />
+                <BoardBar board={mockData.board} />
+                <BoardContent board={mockData.board} />
             </Container>
         </>
     );
