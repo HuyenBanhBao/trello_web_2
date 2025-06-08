@@ -54,6 +54,9 @@ const CardMain = ({ card }) => {
                     // minHeight: "48px",
                     overflow: "unset",
                     // display: card?.FE_PlaceholderCard ? "none" : "block",
+                    // "&:hover": {
+                    //     borderColor: (theme) => theme.palette.primary.main,
+                    // },
                     // overflow: card?.FE_PlaceholderCard ? "hidden" : "unset",
                     // height: card?.FE_PlaceholderCard ? "0px" : "unset",
                 }}

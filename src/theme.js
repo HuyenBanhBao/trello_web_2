@@ -27,6 +27,8 @@ const theme = extendTheme({
         cardsHeight: `calc(${BOARD_CONTENT_HEIGHT} - ${COLUMN_HEADER_HEIGHT} - ${COLUMN_FOOTER_HEIGHT})`,
         // COLORS
         primaryColorTextBar: "white",
+        primarySuccessColor: "#097109",
+
         // GRADIENT BG
         gradientBlueToViolet: GRADIENT_BLUE_TO_VIOLET,
         gradientBg: GRADIENT_BG,
