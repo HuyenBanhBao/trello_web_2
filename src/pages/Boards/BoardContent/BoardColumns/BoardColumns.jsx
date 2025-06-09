@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { toast } from "react-toastify";
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
@@ -20,7 +21,7 @@ const BoardColumns = ({ columns }) => {
     const addNewColumn = () => {
         // setOpenFormAddColumn(false);
         if (!newNameColumn) {
-            console.log("Please enter column name");
+            toast.error("Please enter column name");
             return;
         }
         // Call API
