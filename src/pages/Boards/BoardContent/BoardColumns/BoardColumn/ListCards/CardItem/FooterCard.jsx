@@ -1,5 +1,6 @@
 // --------------------- IMPORT LIB -------------------------
 import { useState } from "react";
+import { toast } from "react-toastify";
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
@@ -23,7 +24,7 @@ const FooterCard = () => {
     const addNewCard = () => {
         // setOpenFormAddCard(false);
         if (!newNameCard) {
-            console.log("Please enter Card name");
+            toast.error("Card name is required!"); // Hiển thị thông báo lỗi nếu tên card trống
             return;
         }
         // Call API
