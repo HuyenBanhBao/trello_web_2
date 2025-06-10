@@ -32,7 +32,7 @@ const ACTIVE_DRAG_ITEM_TYPE = {
     CARD: "ACTIVE_DRAG_ITEM_TYPE_CARD",
 };
 // ------------------------------------------ MAIN COMPONENT ------------------------------------------
-const BoardContent = ({ board }) => {
+const BoardContent = ({ board, createNewColumn, createNewCard }) => {
     // =========================================== STATE ===========================================
     const [orderedColumns, setOrderedColumns] = useState([]);
     const [activeDragItemId, setActiveDragItemId] = useState(null); // Cùng một lúc chỉ có 1 column hoặc card được kéo thả
@@ -489,7 +489,11 @@ const BoardContent = ({ board }) => {
                 >
                     {/* --------------------- BOX COLUMNS ---------------------- */}
                     {/* <BoardColumns columns={board?.columns} /> */}
-                    <BoardColumns columns={orderedColumns} />
+                    <BoardColumns
+                        columns={orderedColumns}
+                        createNewColumn={createNewColumn}
+                        createNewCard={createNewCard}
+                    />
                     <DragOverlay dropAnimation={dropAnimation}>
                         {!activeDragItemType && null}
                         {activeDragItemType === ACTIVE_DRAG_ITEM_TYPE.COLUMN && (
