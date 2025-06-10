@@ -26,6 +26,11 @@ export const createNewColumnAPI = async (newColumnData) => {
     const response = await axios.post(`${API_ROOT}/v1/columns`, newColumnData); //
     return response.data;
 };
+export const updateColumnDetailsAPI = async (columnId, updateData) => {
+    const response = await axios.put(`${API_ROOT}/v1/columns/${columnId}`, updateData); // axios.get trả về một promise nên chúng ta có thể dùng await để chờ response trả về
+    // console.log("response :", response);
+    return response.data;
+};
 // API Cards
 export const createNewCardAPI = async (newCardData) => {
     const response = await axios.post(`${API_ROOT}/v1/cards`, newCardData);

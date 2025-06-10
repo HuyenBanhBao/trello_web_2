@@ -1,19 +1,23 @@
-import React from "react";
+import { useState, useEffect } from "react";
 import Box from "@mui/material/Box";
 // --------------------- IMPORT COMPONENTS ---------------------
 import HeaderCard from "./ListCards/CardItem/HeaderCard";
 import ListCards from "./ListCards/ListCards";
 import FooterCard from "./ListCards/CardItem/FooterCard";
 // -------------------- IMPORT UTILS ---------------------
-import { mapOrder } from "~/utils/sorts";
+// import { mapOrder } from "~/utils/sorts";
 // --------------------- DND KIT ---------------------
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 // ----------------------------------------------------------
 // --------------------- MAIN COMPONENT ---------------------
 const BoardColumn = ({ column, createNewCard }) => {
+    const [orderedCards, setOrderedCards] = useState([]);
     // --------------------- FUNCTION ---------------------
-    const orderedCards = mapOrder(column?.cards, column?.cardOrderIds, "_id");
+    // useEffect
+    useEffect(() => {
+        setOrderedCards(column.cards);
+    }, [column]);
 
     const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
         id: column._id,

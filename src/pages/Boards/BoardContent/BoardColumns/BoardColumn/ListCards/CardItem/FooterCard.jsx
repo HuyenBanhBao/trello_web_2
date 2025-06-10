@@ -38,7 +38,7 @@ const FooterCard = ({ column, createNewCard }) => {
          * và lúc này chúng ta có thể gọi luôn API ở đây là xong thay vì phải lần lượt gọi ngược lên những Component cha phía bên trên. (Đối với component con nắm càng sâu thì càng khổ :D)
          *-- Với việc sử dụng Redux như vậy thì code sẽ Clean chuẩn chỉnh hơn rất nhiều.
          */
-        await createNewCard(newCardData);
+        createNewCard(newCardData);
 
         // Reset form
         toggleFormAddCard();
