@@ -11,7 +11,7 @@ import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 // ----------------------------------------------------------
 // --------------------- MAIN COMPONENT ---------------------
-const BoardColumn = ({ column }) => {
+const BoardColumn = ({ column, createNewCard }) => {
     // --------------------- FUNCTION ---------------------
     const orderedCards = mapOrder(column?.cards, column?.cardOrderIds, "_id");
 
@@ -54,7 +54,7 @@ const BoardColumn = ({ column }) => {
                 {/* --------------- BODY --------------- */}
                 <ListCards cards={orderedCards} />
                 {/* --------------- FOOTER --------------- */}
-                <FooterCard />
+                <FooterCard column={column} createNewCard={createNewCard} />
             </Box>
         </div>
     );

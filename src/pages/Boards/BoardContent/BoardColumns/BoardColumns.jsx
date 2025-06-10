@@ -8,7 +8,7 @@ import LibraryAddIcon from "@mui/icons-material/LibraryAdd";
 // --------------------- DND KIT ---------------------
 import { SortableContext, horizontalListSortingStrategy } from "@dnd-kit/sortable";
 // ---------------------------------- MAIN COMPONENT ---------------------
-const BoardColumns = ({ columns }) => {
+const BoardColumns = ({ columns, createNewColumn, createNewCard }) => {
     // ===================================== STATE & FUNCTIONS =====================================
     // ===================================== OPEN - CLOSE FORM ADD NEW COLUMN =====================================
     const [openFormAddColumn, setOpenFormAddColumn] = useState(false);
@@ -18,14 +18,26 @@ const BoardColumns = ({ columns }) => {
 
     // ===================================== FORM ADD NEW COLUMN =====================================
     const [newNameColumn, setNewNameColumn] = useState("");
-    const addNewColumn = () => {
+    const addNewColumn = async () => {
         // setOpenFormAddColumn(false);
         if (!newNameColumn) {
             toast.error("Please enter column name");
             return;
         }
-        // Call API
 
+        // Tạo dữ liệu Column để gọi API
+        const newColumnData = {
+            title: newNameColumn,
+        };
+
+        /**
+         * * Goi lên props function createNewColumn nằm ở component cha cao nhất (boards/jd.jsx)
+         * Lưu ý: Về sau ở học phần MERN Stack Advance nâng cao học trực tiếp với mình thì chúng ta sẽ đưa dữ liệu Board ra ngoài Redux Global Store,
+         * và lúc này chúng ta có thể gọi luôn API ở đây là xong thay vì phải lần lượt gọi ngược lên những Component cha phía bên trên. (Đối với component con nắm càng sâu thì càng khổ :D)
+         *-- Với việc sử dụng Redux như vậy thì code sẽ Clean chuẩn chỉnh hơn rất nhiều.
+         */
+
+        await createNewColumn(newColumnData);
         // Reset form
         toggleFormAddColumn();
         setNewNameColumn(""); // Reset giá trị input sau khi thêm cột thành c
@@ -46,7 +58,7 @@ const BoardColumns = ({ columns }) => {
                     }}
                 >
                     {columns?.map((column) => (
-                        <BoardColumn key={column._id} column={column} />
+                        <BoardColumn key={column._id} column={column} createNewCard={createNewCard} />
                     ))}
 
                     {/* -------------------- ADD NEW COLUMN -------------------- */}

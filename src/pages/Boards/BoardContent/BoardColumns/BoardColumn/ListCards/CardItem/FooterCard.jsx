@@ -11,7 +11,7 @@ import DragHandleIcon from "@mui/icons-material/DragHandle";
 import CloseIcon from "@mui/icons-material/Close";
 // --------------------- MAIN COMPONENTS ---------------------
 
-const FooterCard = () => {
+const FooterCard = ({ column, createNewCard }) => {
     // ===================================== STATE & FUNCTIONS =====================================
     // ===================================== OPEN - CLOSE FORM ADD NEW COLUMN =====================================
     const [openFormAddCard, setOpenFormAddCard] = useState(false);
@@ -21,13 +21,24 @@ const FooterCard = () => {
 
     // ===================================== FORM ADD NEW CARD =====================================
     const [newNameCard, setNewNameCard] = useState("");
-    const addNewCard = () => {
+    const addNewCard = async () => {
         // setOpenFormAddCard(false);
         if (!newNameCard) {
             toast.error("Card name is required!"); // Hiển thị thông báo lỗi nếu tên card trống
             return;
         }
         // Call API
+        const newCardData = {
+            title: newNameCard,
+            columnId: column._id,
+        };
+        /**
+         * * Goi lên props function createNewColumn nằm ở component cha cao nhất (boards/jd.jsx)
+         * Lưu ý: Về sau ở học phần MERN Stack Advance nâng cao học trực tiếp với mình thì chúng ta sẽ đưa dữ liệu Board ra ngoài Redux Global Store,
+         * và lúc này chúng ta có thể gọi luôn API ở đây là xong thay vì phải lần lượt gọi ngược lên những Component cha phía bên trên. (Đối với component con nắm càng sâu thì càng khổ :D)
+         *-- Với việc sử dụng Redux như vậy thì code sẽ Clean chuẩn chỉnh hơn rất nhiều.
+         */
+        await createNewCard(newCardData);
 
         // Reset form
         toggleFormAddCard();
