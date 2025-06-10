@@ -32,7 +32,7 @@ const ACTIVE_DRAG_ITEM_TYPE = {
     CARD: "ACTIVE_DRAG_ITEM_TYPE_CARD",
 };
 // ------------------------------------------ MAIN COMPONENT ------------------------------------------
-const BoardContent = ({ board, createNewColumn, createNewCard }) => {
+const BoardContent = ({ board, createNewColumn, createNewCard, moveColumns }) => {
     // =========================================== STATE ===========================================
     const [orderedColumns, setOrderedColumns] = useState([]);
     const [activeDragItemId, setActiveDragItemId] = useState(null); // Cùng một lúc chỉ có 1 column hoặc card được kéo thả
@@ -327,9 +327,16 @@ const BoardContent = ({ board, createNewColumn, createNewCard }) => {
                 const oldColumnIndex = orderedColumns.findIndex((c) => c._id === active.id); // index of the column to be moved (Vị trí của phần tử cần di chuyển)
                 const newColumnIndex = orderedColumns.findIndex((c) => c._id === over.id); // index of the column to be moved to (Vị trí đích nơi phần tử sẽ được chuyển đến)
                 const dndOrderedColumns = arrayMove(orderedColumns, oldColumnIndex, newColumnIndex);
-                // const dndOrderedColumnsIds = dndOrderedColumns.map((c) => c._id);
-                // console.log("dndOrderedColumnsIds: ", dndOrderedColumnsIds);
-                // console.log("dndOrderedColumns: ", dndOrderedColumns);
+
+                /**
+                 * Gọi lên props function moveColumns nằm ở component cha cao nhất (boards/_id.jsx)
+                 * Lưu ý: sau đó học phần MERN Stack Advance nâng cao học trừu tượng mình sẽ với dữ liệu Board ra ngoài Redux Global Store,
+                 * và lúc này chúng ta có thể gọi luôn API ở đây là xong thay vì phải lần lượt gọi ngược lên những component cha phía bên trên. (Đối với component con nằm càng sâu thì càng khổ :D)
+                 * - Với việc sử dụng Redux như vậy thì code sẽ Clean chuẩn chỉnh hơn rất nhiều.
+                 */
+                moveColumns(dndOrderedColumns);
+
+                // Vẫn gọi update state ở đây để tránh delay hoặc Flickering giao diện lúc kéo thả cần phải chờ gọi API (small trick)
                 setOrderedColumns(dndOrderedColumns);
             }
         }

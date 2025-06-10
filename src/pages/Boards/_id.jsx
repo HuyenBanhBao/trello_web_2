@@ -11,7 +11,7 @@ import BoardContent from "./BoardContent/BoardContent";
 import { generatePlaceholder } from "~/utils/formatters";
 // --------------------- APIS ---------------------
 // import { mockData } from "~/apis/mock-data";
-import { fetchBoardDetailsAPI, createNewCardAPI, createNewColumnAPI } from "~/apis";
+import { fetchBoardDetailsAPI, createNewCardAPI, createNewColumnAPI, updateBoardDetailsAPI } from "~/apis";
 // --------------------- MAIN COMPONENT ---------------------
 const Board = () => {
     // eslint-disable-next-line no-unused-vars
@@ -27,14 +27,11 @@ const Board = () => {
                     column.cardOrderIds = [generatePlaceholder(column)._id];
                 }
             });
-            console.log(board);
-
             setBoard(board);
         });
     }, []);
 
-    // Func này có nhiệm vụ gọi API tạo mới 1 column và làm lại dữ liệu State Board
-    // Sau đó sẽ gọi lại BoardContent để render lại dữ liệu
+    // Func này có nhiệm vụ gọi API tạo mới 1 column và làm lại dữ liệu State Board ===========================================
     const createNewColumn = async (newColumnData) => {
         const createdColumn = await createNewColumnAPI({
             ...newColumnData,
@@ -51,8 +48,7 @@ const Board = () => {
         setBoard(newBoard);
     };
 
-    // Func này có nhiệm vụ gọi API tạo mới 1 card và làm lại dữ liệu State Board
-    // Sau đó sẽ gọi lại BoardContent để render lại dữ liệu
+    // Func này có nhiệm vụ gọi API tạo mới 1 card và làm lại dữ liệu State Board ===========================================
     const createNewCard = async (newCardData) => {
         const createdCard = await createNewCardAPI({
             ...newCardData,
@@ -67,12 +63,34 @@ const Board = () => {
         }
         setBoard(newBoard);
     };
+
+    // Func này có nhiệm vụ gọi API move columns và làm lại dữ liệu State Board ===========================================
+    const moveColumns = async (dndOrderedColumns) => {
+        // Update lại dữ liệu State Board
+        const dndOrderedColumnsIds = dndOrderedColumns.map((c) => c._id);
+        const newBoard = { ...board };
+        newBoard.columns = dndOrderedColumns;
+        newBoard.columnOrderIds = dndOrderedColumnsIds;
+        setBoard(newBoard);
+
+        // Gọi API move columns
+        await updateBoardDetailsAPI(newBoard._id, {
+            columnOrderIds: dndOrderedColumnsIds,
+        });
+    };
+
+    // =========================================== RENDER ===========================================
     return (
         <>
             <Container disableGutters maxWidth={false} sx={{ height: "100vh" }}>
                 <AppBar />
                 <BoardBar board={board} />
-                <BoardContent board={board} createNewColumn={createNewColumn} createNewCard={createNewCard} />
+                <BoardContent
+                    board={board}
+                    createNewColumn={createNewColumn}
+                    createNewCard={createNewCard}
+                    moveColumns={moveColumns}
+                />
             </Container>
         </>
     );

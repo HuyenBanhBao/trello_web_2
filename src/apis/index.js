@@ -15,6 +15,11 @@ export const fetchBoardDetailsAPI = async (boardId) => {
     // console.log(response);
     return response.data;
 };
+export const updateBoardDetailsAPI = async (boardId, updateData) => {
+    const response = await axios.put(`${API_ROOT}/v1/boards/${boardId}`, updateData); // axios.get trả về một promise nên chúng ta có thể dùng await để chờ response trả về
+    // console.log(response);
+    return response.data;
+};
 
 // API Columns
 export const createNewColumnAPI = async (newColumnData) => {
