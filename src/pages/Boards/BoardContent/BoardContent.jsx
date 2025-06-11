@@ -7,7 +7,6 @@ import BoardColumns from "./BoardColumns/BoardColumns";
 import BoardColumn from "./BoardColumns/BoardColumn/BoardColumn";
 import CardMain from "./BoardColumns/BoardColumn/ListCards/CardItem/CardMain";
 // -------------------- IMPORT UTILS ---------------------
-import { mapOrder } from "~/utils/sorts";
 import { generatePlaceholder } from "~/utils/formatters";
 // --------------------- DND KIT ---------------------
 import {
@@ -32,7 +31,7 @@ const ACTIVE_DRAG_ITEM_TYPE = {
     CARD: "ACTIVE_DRAG_ITEM_TYPE_CARD",
 };
 // ------------------------------------------ MAIN COMPONENT ------------------------------------------
-const BoardContent = ({ board, createNewColumn, createNewCard, moveColumns }) => {
+const BoardContent = ({ board, createNewColumn, createNewCard, moveColumns, moveCardInTheSameColumn }) => {
     // =========================================== STATE ===========================================
     const [orderedColumns, setOrderedColumns] = useState([]);
     const [activeDragItemId, setActiveDragItemId] = useState(null); // Cùng một lúc chỉ có 1 column hoặc card được kéo thả
@@ -44,7 +43,8 @@ const BoardContent = ({ board, createNewColumn, createNewCard, moveColumns }) =>
     // console.log(activeDragItemId, activeDragItemType, activeDragItemData);
 
     useEffect(() => {
-        setOrderedColumns(mapOrder(board?.columns, board?.columnOrderIds, "_id")); // SẮP XẾP CÁC COLUMN TRONG "columns" THEO MẢNG "ColumnsIds" và trả về mảng mới
+        // Columns đã được sắp xếp ở column cha (video 71)
+        setOrderedColumns(board.columns); // SẮP XẾP CÁC COLUMN TRONG "columns" THEO MẢNG "ColumnsIds" và trả về mảng mới
     }, [board]);
 
     // =========================================== XỬ LÝ KÉO THẢ BẰNG CHUỘT HOẶC BẰNG TAY ===========================================
@@ -327,7 +327,8 @@ const BoardContent = ({ board, createNewColumn, createNewCard, moveColumns }) =>
                 const oldColumnIndex = orderedColumns.findIndex((c) => c._id === active.id); // index of the column to be moved (Vị trí của phần tử cần di chuyển)
                 const newColumnIndex = orderedColumns.findIndex((c) => c._id === over.id); // index of the column to be moved to (Vị trí đích nơi phần tử sẽ được chuyển đến)
                 const dndOrderedColumns = arrayMove(orderedColumns, oldColumnIndex, newColumnIndex);
-
+                // Vẫn gọi update state ở đây để tránh delay hoặc Flickering giao diện lúc kéo thả cần phải chờ gọi API (small trick)
+                setOrderedColumns(dndOrderedColumns);
                 /**
                  * Gọi lên props function moveColumns nằm ở component cha cao nhất (boards/_id.jsx)
                  * Lưu ý: sau đó học phần MERN Stack Advance nâng cao học trừu tượng mình sẽ với dữ liệu Board ra ngoài Redux Global Store,
@@ -335,9 +336,6 @@ const BoardContent = ({ board, createNewColumn, createNewCard, moveColumns }) =>
                  * - Với việc sử dụng Redux như vậy thì code sẽ Clean chuẩn chỉnh hơn rất nhiều.
                  */
                 moveColumns(dndOrderedColumns);
-
-                // Vẫn gọi update state ở đây để tránh delay hoặc Flickering giao diện lúc kéo thả cần phải chờ gọi API (small trick)
-                setOrderedColumns(dndOrderedColumns);
             }
         }
 
@@ -411,14 +409,16 @@ const BoardContent = ({ board, createNewColumn, createNewCard, moveColumns }) =>
                 const oldCardIndex = oldColumnWhenDraggingCard?.cards?.findIndex((c) => c._id === activeDragItemId); // index of the column to be moved (Vị trí của phần tử cần di chuyển)
                 const newCardIndex = overColumn?.cards?.findIndex((c) => c._id === overCardId); // index of the column to be moved to (Vị trí đích nơi phần tử sẽ được chuyển đến)
                 const dndOrderedCard = arrayMove(oldColumnWhenDraggingCard?.cards, oldCardIndex, newCardIndex);
+                const dndOrderedCardIds = dndOrderedCard.map((c) => c._id); // update the cardOrderIds
                 setOrderedColumns((prevColumns) => {
                     const nextColumns = cloneDeep(prevColumns);
                     // const nextActiveColumn = nextColumns.find((c) => c._id === activeColumn._id);
                     const targetColumn = nextColumns.find((c) => c._id === overColumn._id); // column to be moved to
                     targetColumn.cards = dndOrderedCard;
-                    targetColumn.cardOrderIds = dndOrderedCard.map((c) => c._id); // update the cardOrderIds
+                    targetColumn.cardOrderIds = dndOrderedCardIds; // update the cardOrderIds;
                     return nextColumns; // return the nextColumns
                 });
+                moveCardInTheSameColumn(dndOrderedCard, dndOrderedCardIds, oldColumnWhenDraggingCard._id);
             }
         }
 
