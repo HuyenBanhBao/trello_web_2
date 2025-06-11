@@ -18,7 +18,7 @@ const BoardColumns = ({ columns, createNewColumn, createNewCard }) => {
 
     // ===================================== FORM ADD NEW COLUMN =====================================
     const [newNameColumn, setNewNameColumn] = useState("");
-    const addNewColumn = async () => {
+    const addNewColumn = () => {
         // setOpenFormAddColumn(false);
         if (!newNameColumn) {
             toast.error("Please enter column name");
@@ -37,7 +37,7 @@ const BoardColumns = ({ columns, createNewColumn, createNewCard }) => {
          *-- Với việc sử dụng Redux như vậy thì code sẽ Clean chuẩn chỉnh hơn rất nhiều.
          */
 
-        await createNewColumn(newColumnData);
+        createNewColumn(newColumnData);
         // Reset form
         toggleFormAddColumn();
         setNewNameColumn(""); // Reset giá trị input sau khi thêm cột thành c
