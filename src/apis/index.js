@@ -20,7 +20,11 @@ export const updateBoardDetailsAPI = async (boardId, updateData) => {
     // console.log(response);
     return response.data;
 };
-
+export const moveCardToDifferentColumnsAPI = async (updateData) => {
+    const response = await axios.put(`${API_ROOT}/v1/boards/supports/moving_card`, updateData); // axios.get trả về một promise nên chúng ta có thể dùng await để chờ response trả về
+    // console.log(response);
+    return response.data;
+};
 // API Columns
 export const createNewColumnAPI = async (newColumnData) => {
     const response = await axios.post(`${API_ROOT}/v1/columns`, newColumnData); //

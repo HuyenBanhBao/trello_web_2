@@ -66,17 +66,15 @@ const CardMain = ({ card }) => {
                     sx={{
                         display: "flex",
                         justifyContent: "space-between",
-                        p: 1.5,
-                        "&:last-child": { p: 1.5 },
-                        minHeight: "48px",
+                        p: card?.FE_PlaceholderCard ? "none" : 1.5,
+                        "&:last-child": { p: card?.FE_PlaceholderCard ? "1px" : 1.5 },
+                        minHeight: card?.FE_PlaceholderCard ? "5px" : "48px",
                         borderRadius: "4px",
-                        border: card?.FE_PlaceholderCard ? "1px solid #429248" : "none",
-                        backgroundColor: card?.FE_PlaceholderCard ? "rgb(225, 225, 225)" : "inherit",
+                        border: card?.FE_PlaceholderCard ? "3px solid #429248" : "none",
+                        backgroundColor: card?.FE_PlaceholderCard ? "#429248" : "inherit",
                     }}
                 >
-                    {card?.FE_PlaceholderCard && (
-                        <Typography sx={{ width: "100%", textAlign: "center" }}>New card here</Typography>
-                    )}
+                    {card?.FE_PlaceholderCard && <Typography sx={{ width: "100%" }}></Typography>}
                     {!card?.FE_PlaceholderCard && (
                         <>
                             <Typography sx={{ flex: 1 }}>{card?.title}</Typography>

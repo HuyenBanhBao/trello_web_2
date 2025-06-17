@@ -20,6 +20,7 @@ import {
     createNewColumnAPI,
     updateBoardDetailsAPI,
     updateColumnDetailsAPI,
+    moveCardToDifferentColumnsAPI,
 } from "~/apis";
 // --------------------- MAIN COMPONENT ---------------------
 const Board = () => {
@@ -38,7 +39,6 @@ const Board = () => {
                     column.cards = mapOrder(column.cards, column.cardOrderIds, "_id"); // Sắp xếp lại mảng cards
                 }
             });
-            console.log("board: ", board);
             setBoard(board);
         });
     }, []);
@@ -70,9 +70,17 @@ const Board = () => {
         const newBoard = { ...board };
         const newColumn = newBoard.columns.find((column) => column._id === createdCard.columnId);
         if (newColumn) {
-            newColumn.cards.push(createdCard); // Thêm card mới vào mảng columns
-            newColumn.cardOrderIds.push(createdCard._id); // Thêm id của card mới vào mảng columnOrderIds
+            // Nếu column rỗng (bản chất đang chứa placeholder) thì phải giải quyết (Nhớ lại video 37.2)
+            if (newColumn.cards.some((card) => card.FE_PlaceholderCard)) {
+                newColumn.cards = [createdCard];
+                newColumn.cardOrderIds = [createdCard._id];
+            } else {
+                // Nếu Column đã có DATA thì update card mới và cuối mảng
+                newColumn.cards.push(createdCard); // Thêm card mới vào mảng columns
+                newColumn.cardOrderIds.push(createdCard._id); // Thêm id của card mới vào mảng columnOrderIds
+            }
         }
+        // console.log("🚀 ~ createNewCard ~ newColumn:", newColumn);
         setBoard(newBoard);
     };
 
@@ -118,6 +126,37 @@ const Board = () => {
         });
     };
 
+    /**
+     * Khi di chuyển Card sang Column khác
+     * B1: Update mảng cardOrderIds của Column cũ.
+     * B2: Update mảng cardOrderIds của Column mới.
+     * B3: Update lại trường columnId của Card đã kéo.
+     * => Làm một API support riêng.
+     */
+
+    const moveCardToDifferentColumns = (currentCardId, prevColumnId, nextColumnId, dndOrderedColumns) => {
+        // console.log("currentCardId", currentCardId);
+        // console.log("prevColumnId", prevColumnId);
+        // console.log("nextColumnId", nextColumnId);
+        // console.log("dndOrderedColumns", dndOrderedColumns);
+        const dndOrderedColumnsIds = dndOrderedColumns.map((c) => c._id); // Lấy ra mảng id của các columns
+        const newBoard = { ...board };
+        newBoard.columns = dndOrderedColumns;
+        newBoard.columnOrderIds = dndOrderedColumnsIds;
+        setBoard(newBoard);
+        // Gọi API move columns
+        let prevCardOrderIds = newBoard.columns.find((column) => column._id === prevColumnId).cardOrderIds;
+        // Xử lý khi kéo thẻ cuối cùng ra khỏi column (Nhớ lại video)
+        if (prevCardOrderIds[0].includes("placeholder-card")) prevCardOrderIds = [];
+        moveCardToDifferentColumnsAPI({
+            currentCardId,
+            prevColumnId,
+            prevCardOrderIds,
+            nextColumnId,
+            nextCardOrderIds: newBoard.columns.find((column) => column._id === nextColumnId).cardOrderIds,
+        });
+    };
+
     // =========================================== RENDER ===========================================
     if (!board) {
         return (
@@ -137,6 +176,7 @@ const Board = () => {
                     createNewCard={createNewCard}
                     moveColumns={moveColumns}
                     moveCardInTheSameColumn={moveCardInTheSameColumn}
+                    moveCardToDifferentColumns={moveCardToDifferentColumns}
                 />
             </Container>
         </>
