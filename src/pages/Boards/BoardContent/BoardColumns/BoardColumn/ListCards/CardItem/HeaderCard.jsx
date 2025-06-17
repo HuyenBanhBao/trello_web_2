@@ -8,6 +8,7 @@ import Divider from "@mui/material/Divider";
 import MenuItem from "@mui/material/MenuItem";
 import ListItemText from "@mui/material/ListItemText";
 import ListItemIcon from "@mui/material/ListItemIcon";
+import { useConfirm } from "material-ui-confirm";
 // --------------------- IMPORT ICONS -------------------------
 import ContentCut from "@mui/icons-material/ContentCut";
 import Cloud from "@mui/icons-material/Cloud";
@@ -16,8 +17,9 @@ import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import ContentPasteIcon from "@mui/icons-material/ContentPaste";
 import DragIndicatorOutlinedIcon from "@mui/icons-material/DragIndicatorOutlined";
+
 // --------------------- MAIN COMPONENT ---------------------
-const HeaderCard = ({ column, attributes, listeners }) => {
+const HeaderCard = ({ column, attributes, listeners, deleteColumnDetails }) => {
     const [anchorEl, setAnchorEl] = useState(null);
     const open = Boolean(anchorEl);
     const handleClick = (event) => {
@@ -25,6 +27,23 @@ const HeaderCard = ({ column, attributes, listeners }) => {
     };
     const handleClose = () => {
         setAnchorEl(null);
+    };
+
+    // Xử lý xóa cột
+    const confirmDeleteCol = useConfirm();
+    const handleDeleteCol = async () => {
+        const { confirmed, reason } = await confirmDeleteCol({
+            title: "Delete column?",
+            description: "Are you sure you want to delete this column and it's Cards?",
+            confirmationText: "Confirm",
+            cancellationText: "Cancel",
+            buttonOrder: ["confirm", "cancel"],
+        });
+
+        if (confirmed) {
+            deleteColumnDetails(column._id);
+        }
+        console.log(reason);
     };
     return (
         <>
@@ -71,16 +90,11 @@ const HeaderCard = ({ column, attributes, listeners }) => {
                         anchorEl={anchorEl}
                         open={open}
                         onClose={handleClose}
+                        onClick={handleClose}
                         MenuListProps={{
                             "aria-labelledby": "basic-column-dropdown",
                         }}
                     >
-                        <MenuItem>
-                            <ListItemIcon>
-                                <AddCardIcon fontSize="small" />
-                            </ListItemIcon>
-                            <ListItemText>Add New Card</ListItemText>
-                        </MenuItem>
                         <MenuItem>
                             <ListItemIcon>
                                 <ContentCut fontSize="small" />
@@ -100,11 +114,21 @@ const HeaderCard = ({ column, attributes, listeners }) => {
                             <ListItemText>Paste</ListItemText>
                         </MenuItem>
                         <Divider />
-                        <MenuItem>
+                        <MenuItem
+                            onClick={handleDeleteCol}
+                            sx={{
+                                "&:hover": {
+                                    color: "warning.dark",
+                                    "& .delete-forever-icon": {
+                                        color: "warning.dark",
+                                    },
+                                },
+                            }}
+                        >
                             <ListItemIcon>
-                                <DeleteForeverIcon fontSize="small" />
+                                <DeleteForeverIcon className="delete-forever-icon" fontSize="small" />
                             </ListItemIcon>
-                            <ListItemText>Remove this Column</ListItemText>
+                            <ListItemText>Delete this Column</ListItemText>
                         </MenuItem>
                         <MenuItem>
                             <ListItemIcon>
