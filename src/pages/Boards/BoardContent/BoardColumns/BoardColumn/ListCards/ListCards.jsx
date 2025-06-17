@@ -1,4 +1,4 @@
-import React from "react";
+// import { useState, useEffect } from "react";
 import Box from "@mui/material/Box";
 // --------------------- IMPORT COMPONENTS ---------------------
 import CardsMain from "./CardItem/CardMain";
