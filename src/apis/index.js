@@ -9,7 +9,7 @@ import { API_ROOT } from "~/utils/constants";
  * Và học phần MERN Stack Advance nâng cao học trực tiếp mình sẽ dạy cú kỳ đầy đủ cách xử lý, áp dụng phần này chuẩn chỉnh cho các bạn.)"
  */
 
-// API Boards
+// ==================================================== API Boards ====================================================
 export const fetchBoardDetailsAPI = async (boardId) => {
     const response = await axios.get(`${API_ROOT}/v1/boards/${boardId}`); // axios.get trả về một promise nên chúng ta có thể dùng await để chờ response trả về
     // console.log(response);
@@ -25,7 +25,7 @@ export const moveCardToDifferentColumnsAPI = async (updateData) => {
     // console.log(response);
     return response.data;
 };
-// API Columns
+// ==================================================== API Columns ====================================================
 export const createNewColumnAPI = async (newColumnData) => {
     const response = await axios.post(`${API_ROOT}/v1/columns`, newColumnData); //
     return response.data;
@@ -35,7 +35,11 @@ export const updateColumnDetailsAPI = async (columnId, updateData) => {
     // console.log(response);
     return response.data;
 };
-// API Cards
+export const deleteColumnDetailsAPI = async (columnId) => {
+    const response = await axios.delete(`${API_ROOT}/v1/columns/${columnId}`);
+    return response.data;
+};
+// ==================================================== API Cards ====================================================
 export const createNewCardAPI = async (newCardData) => {
     const response = await axios.post(`${API_ROOT}/v1/cards`, newCardData);
     return response.data;

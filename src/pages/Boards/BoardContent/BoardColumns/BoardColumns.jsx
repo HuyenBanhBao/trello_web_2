@@ -8,7 +8,7 @@ import LibraryAddIcon from "@mui/icons-material/LibraryAdd";
 // --------------------- DND KIT ---------------------
 import { SortableContext, horizontalListSortingStrategy } from "@dnd-kit/sortable";
 // ---------------------------------- MAIN COMPONENT ---------------------
-const BoardColumns = ({ columns, createNewColumn, createNewCard }) => {
+const BoardColumns = ({ columns, createNewColumn, createNewCard, deleteColumnDetails }) => {
     // ===================================== STATE & FUNCTIONS =====================================
     // ===================================== OPEN - CLOSE FORM ADD NEW COLUMN =====================================
     const [openFormAddColumn, setOpenFormAddColumn] = useState(false);
@@ -58,7 +58,12 @@ const BoardColumns = ({ columns, createNewColumn, createNewCard }) => {
                     }}
                 >
                     {columns?.map((column) => (
-                        <BoardColumn key={column._id} column={column} createNewCard={createNewCard} />
+                        <BoardColumn
+                            key={column._id}
+                            column={column}
+                            createNewCard={createNewCard}
+                            deleteColumnDetails={deleteColumnDetails}
+                        />
                     ))}
 
                     {/* -------------------- ADD NEW COLUMN -------------------- */}

@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import Container from "@mui/material/Container";
 import { isEmpty } from "lodash";
 import { Box } from "@mui/material";
+import { toast } from "react-toastify";
 
 // --------------------- IMPORT COMPONENTS ---------------------
 // import AppBar from "../../components/AppBar";
@@ -21,6 +22,7 @@ import {
     updateBoardDetailsAPI,
     updateColumnDetailsAPI,
     moveCardToDifferentColumnsAPI,
+    deleteColumnDetailsAPI,
 } from "~/apis";
 // --------------------- MAIN COMPONENT ---------------------
 const Board = () => {
@@ -156,7 +158,17 @@ const Board = () => {
             nextCardOrderIds: newBoard.columns.find((column) => column._id === nextColumnId).cardOrderIds,
         });
     };
-
+    // Xử lý xóa 1 column và card bên trong nó
+    const deleteColumnDetails = (columnId) => {
+        const newBoard = { ...board };
+        newBoard.columns = newBoard.columns.filter((column) => column._id !== columnId);
+        newBoard.columnOrderIds = newBoard.columnOrderIds.filter((id) => id !== columnId);
+        setBoard(newBoard);
+        //
+        deleteColumnDetailsAPI(columnId).then((res) => {
+            toast.success(res?.deleteResult);
+        });
+    };
     // =========================================== RENDER ===========================================
     if (!board) {
         return (
@@ -177,6 +189,7 @@ const Board = () => {
                     moveColumns={moveColumns}
                     moveCardInTheSameColumn={moveCardInTheSameColumn}
                     moveCardToDifferentColumns={moveCardToDifferentColumns}
+                    deleteColumnDetails={deleteColumnDetails}
                 />
             </Container>
         </>
