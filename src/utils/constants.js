@@ -1,1 +1,21 @@
-export const API_ROOT = "http://localhost:4000";
+// let apiRoot = "";
+// console.log("import.meta.env: ", import.meta.env);
+
+// if (import.meta.env.DEV) {
+//     apiRoot = "http://localhost:4000";
+//     console.log("apiRoot: ", apiRoot);
+// } else if (!import.meta.env.PROD) {
+//     apiRoot = "https://trello-api-jt1q.onrender.com";
+//     console.log("apiRoot: ", apiRoot);
+// }
+// // export const API_ROOT = "http://localhost:4000";
+// export const API_ROOT = apiRoot;
+let apiRoot = "";
+
+if (import.meta.env.DEV) {
+    apiRoot = "http://localhost:4000";
+} else {
+    apiRoot = "https://trello-api-jt1q.onrender.com";
+}
+console.log("apiRoot: ", apiRoot);
+export const API_ROOT = apiRoot;
