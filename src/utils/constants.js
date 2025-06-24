@@ -17,5 +17,4 @@ if (import.meta.env.DEV) {
 } else {
     apiRoot = "https://trello-api-jt1q.onrender.com";
 }
-console.log("apiRoot: ", apiRoot);
 export const API_ROOT = apiRoot;
