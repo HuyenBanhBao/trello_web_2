@@ -8,26 +8,32 @@ import { ToastContainer } from "react-toastify";
 // ------------------- IMPORT FROM FOLDERS -------------------
 import App from "~/App.jsx";
 import theme from "~/theme.js";
-import { ConfirmProvider } from "material-ui-confirm"; // MUI DIALOG
 
-// ------------------- MAIN -------------------
+// ------------------- MUI DIALOG -------------------
+import { ConfirmProvider } from "material-ui-confirm";
+// ------------------- REDUX TOOLKIT -------------------
+import { Provider } from "react-redux";
+import { store } from "~/redux/store.js";
+
+// =========================================================== MAIN ===========================================================
+
 createRoot(document.getElementById("root")).render(
-    // <StrictMode>
-    <CssVarsProvider theme={theme}>
-        <ConfirmProvider
-            defaultOptions={{
-                allowClose: false,
-                dialogProps: { maxWidth: "xs" },
-                confirmationButtonProps: { color: "success", variant: "outlined" },
-                cancellationButtonProps: { color: "warning", variant: "outlined" },
-            }}
-        >
-            <CssBaseline />
-            <App />
-            <ToastContainer position="bottom-right" autoClose={2000} theme="colored" closeOnClick />
-        </ConfirmProvider>
-    </CssVarsProvider>
-    // </StrictMode>
+    <Provider store={store}>
+        <CssVarsProvider theme={theme}>
+            <ConfirmProvider
+                defaultOptions={{
+                    allowClose: false,
+                    dialogProps: { maxWidth: "xs" },
+                    confirmationButtonProps: { color: "success", variant: "outlined" },
+                    cancellationButtonProps: { color: "warning", variant: "outlined" },
+                }}
+            >
+                <CssBaseline />
+                <App />
+                <ToastContainer position="bottom-right" autoClose={2000} theme="colored" closeOnClick />
+            </ConfirmProvider>
+        </CssVarsProvider>
+    </Provider>
 );
 
 // defaultMode="light" colorSchemeSelector="class" enableColorScheme
