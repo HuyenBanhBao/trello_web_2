@@ -18,14 +18,18 @@
         "@mui/icons-material": "^5.17.1",
         "@mui/material": "^5.17.1",
         "@reduxjs/toolkit": "^2.8.2",
+        "@tsparticles/react": "^3.0.0",
         "axios": "^1.9.0",
         "cross-env": "^7.0.3",
         "lodash": "^4.17.21",
         "material-ui-confirm": "^4.0.0",
         "react": "^19.1.0",
         "react-dom": "^19.1.0",
+        "react-hook-form": "^7.58.1",
         "react-redux": "^9.2.0",
-        "react-toastify": "^11.0.5"
+        "react-router-dom": "^7.6.2",
+        "react-toastify": "^11.0.5",
+        "tsparticles": "^3.8.1"
     },
     "devDependencies": {
         "@eslint/js": "^9.25.0",

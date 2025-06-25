@@ -3,7 +3,7 @@ import { useEffect } from "react";
 import Container from "@mui/material/Container";
 import { cloneDeep } from "lodash";
 import { Box } from "@mui/material";
-
+import { useParams } from "react-router-dom";
 // --------------------- IMPORT COMPONENTS ---------------------
 // import AppBar from "../../components/AppBar";
 import AppBar from "~/components/AppBar/AppBar";
@@ -17,17 +17,19 @@ import {
 } from "~/redux/activeBoard/activeBoardSlice";
 import { useDispatch, useSelector } from "react-redux";
 // --------------------- APIS ---------------------
-// import { mockData } from "~/apis/mock-data";
 import { updateBoardDetailsAPI, updateColumnDetailsAPI, moveCardToDifferentColumnsAPI } from "~/apis";
-// --------------------- MAIN COMPONENT ---------------------
+
+// ============================================================================================================
+// ============================================== MAIN COMPONENT ==============================================
 const Board = () => {
     const dispatch = useDispatch();
     // Không dùng State của component nữa mà chuyển qua dùng state của redux
     // const [board, setBoard] = useState(null); // bai 2 cmt
     const board = useSelector(selectCurrentActiveBoard);
+    const { boardId } = useParams();
 
+    // --------------------------------------------------
     useEffect(() => {
-        const boardId = "68429e6020ed2cf6cc306828";
         //Call API
         dispatch(fetchBoardDetailsAPI(boardId));
 
@@ -44,7 +46,7 @@ const Board = () => {
         //     });
         //     setBoard(board);
         // });
-    }, [dispatch]);
+    }, [dispatch, boardId]);
 
     // Func này có nhiệm vụ gọi API move columns và làm lại dữ liệu State Board ===========================================
     const moveColumns = (dndOrderedColumns) => {
