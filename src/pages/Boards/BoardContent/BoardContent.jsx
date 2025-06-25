@@ -31,15 +31,7 @@ const ACTIVE_DRAG_ITEM_TYPE = {
     CARD: "ACTIVE_DRAG_ITEM_TYPE_CARD",
 };
 // ------------------------------------------ MAIN COMPONENT ------------------------------------------
-const BoardContent = ({
-    board,
-    createNewColumn,
-    createNewCard,
-    moveColumns,
-    moveCardInTheSameColumn,
-    moveCardToDifferentColumns,
-    deleteColumnDetails,
-}) => {
+const BoardContent = ({ board, moveColumns, moveCardInTheSameColumn, moveCardToDifferentColumns }) => {
     // =========================================== STATE ===========================================
     const [orderedColumns, setOrderedColumns] = useState([]);
     const [activeDragItemId, setActiveDragItemId] = useState(null); // Cùng một lúc chỉ có 1 column hoặc card được kéo thả
@@ -402,7 +394,6 @@ const BoardContent = ({
                 });
             } else {
                 // check: if activeColumn and overColumn are equal
-                console.log("dang xu ly keo tha trong column");
                 const oldCardIndex = oldColumnWhenDraggingCard?.cards?.findIndex((c) => c._id === activeDragItemId); // index of the column to be moved (Vị trí của phần tử cần di chuyển)
                 const newCardIndex = overColumn?.cards?.findIndex((c) => c._id === overCardId); // index of the column to be moved to (Vị trí đích nơi phần tử sẽ được chuyển đến)
                 const dndOrderedCard = arrayMove(oldColumnWhenDraggingCard?.cards, oldCardIndex, newCardIndex);
@@ -491,12 +482,7 @@ const BoardContent = ({
                 >
                     {/* --------------------- BOX COLUMNS ---------------------- */}
                     {/* <BoardColumns columns={board?.columns} /> */}
-                    <BoardColumns
-                        columns={orderedColumns}
-                        createNewColumn={createNewColumn}
-                        createNewCard={createNewCard}
-                        deleteColumnDetails={deleteColumnDetails}
-                    />
+                    <BoardColumns columns={orderedColumns} />
                     <DragOverlay dropAnimation={dropAnimation}>
                         {!activeDragItemType && null}
                         {activeDragItemType === ACTIVE_DRAG_ITEM_TYPE.COLUMN && (

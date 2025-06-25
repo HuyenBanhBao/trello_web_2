@@ -10,11 +10,12 @@ import { API_ROOT } from "~/utils/constants";
  */
 
 // ==================================================== API Boards ====================================================
-export const fetchBoardDetailsAPI = async (boardId) => {
-    const response = await axios.get(`${API_ROOT}/v1/boards/${boardId}`); // axios.get trả về một promise nên chúng ta có thể dùng await để chờ response trả về
-    // console.log(response);
-    return response.data;
-};
+// Đã move vào redux
+// export const fetchBoardDetailsAPI = async (boardId) => {
+//     const response = await axios.get(`${API_ROOT}/v1/boards/${boardId}`); // axios.get trả về một promise nên chúng ta có thể dùng await để chờ response trả về
+//     // console.log(response);
+//     return response.data;
+// };
 export const updateBoardDetailsAPI = async (boardId, updateData) => {
     const response = await axios.put(`${API_ROOT}/v1/boards/${boardId}`, updateData); // axios.get trả về một promise nên chúng ta có thể dùng await để chờ response trả về
     // console.log(response);

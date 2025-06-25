@@ -5,13 +5,22 @@ import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import Tooltip from "@mui/material/Tooltip";
+import { cloneDeep } from "lodash";
+
 // --------------------- IMPORT ICONS -------------------------
 import AddCardIcon from "@mui/icons-material/AddCard";
 import DragHandleIcon from "@mui/icons-material/DragHandle";
 import CloseIcon from "@mui/icons-material/Close";
+
+import { createNewCardAPI } from "~/apis";
+// --------------------- REDUX ---------------------
+import { updateCurrentActiveBoard, selectCurrentActiveBoard } from "~/redux/activeBoard/activeBoardSlice";
+import { useDispatch, useSelector } from "react-redux";
 // --------------------- MAIN COMPONENTS ---------------------
 
-const FooterCard = ({ column, createNewCard }) => {
+const FooterCard = ({ column }) => {
+    const dispatch = useDispatch();
+    const board = useSelector(selectCurrentActiveBoard);
     // ===================================== STATE & FUNCTIONS =====================================
     // ===================================== OPEN - CLOSE FORM ADD NEW COLUMN =====================================
     const [openFormAddCard, setOpenFormAddCard] = useState(false);
@@ -21,7 +30,7 @@ const FooterCard = ({ column, createNewCard }) => {
 
     // ===================================== FORM ADD NEW CARD =====================================
     const [newNameCard, setNewNameCard] = useState("");
-    const addNewCard = () => {
+    const addNewCard = async () => {
         // setOpenFormAddCard(false);
         if (!newNameCard) {
             toast.error("Card name is required!"); // Hiển thị thông báo lỗi nếu tên card trống
@@ -32,13 +41,30 @@ const FooterCard = ({ column, createNewCard }) => {
             title: newNameCard,
             columnId: column._id,
         };
-        /**
-         * * Goi lên props function createNewColumn nằm ở component cha cao nhất (boards/jd.jsx)
-         * Lưu ý: Về sau ở học phần MERN Stack Advance nâng cao học trực tiếp với mình thì chúng ta sẽ đưa dữ liệu Board ra ngoài Redux Global Store,
-         * và lúc này chúng ta có thể gọi luôn API ở đây là xong thay vì phải lần lượt gọi ngược lên những Component cha phía bên trên. (Đối với component con nắm càng sâu thì càng khổ :D)
-         *-- Với việc sử dụng Redux như vậy thì code sẽ Clean chuẩn chỉnh hơn rất nhiều.
-         */
-        createNewCard(newCardData);
+        //===================== gọi API tạo mới 1 card và làm lại dữ liệu State Board =====================
+        const createdCard = await createNewCardAPI({
+            ...newCardData,
+            boardId: board._id, // Thêm boardId vào dữ liệu cột mới
+        });
+        // Gọi API thành công thì sẽ làm lại dữ liệu State Board
+        // const newBoard = { ...board };
+        const newBoard = cloneDeep(board); // Tương tự hàm createNewColumn
+        const newColumn = newBoard.columns.find((column) => column._id === createdCard.columnId);
+        if (newColumn) {
+            // Nếu column rỗng (bản chất đang chứa placeholder) thì phải giải quyết (Nhớ lại video 37.2)
+            if (newColumn.cards.some((card) => card.FE_PlaceholderCard)) {
+                newColumn.cards = [createdCard];
+                newColumn.cardOrderIds = [createdCard._id];
+            } else {
+                // Nếu Column đã có DATA thì update card mới và cuối mảng
+                newColumn.cards.push(createdCard); // Thêm card mới vào mảng columns
+                newColumn.cardOrderIds.push(createdCard._id); // Thêm id của card mới vào mảng columnOrderIds
+            }
+        }
+        // console.log("🚀 ~ createNewCard ~ newColumn:", newColumn);
+        // setBoard(newBoard);
+        dispatch(updateCurrentActiveBoard(newBoard));
+        //===================== kết thúc gọi API tạo mới 1 card và làm lại dữ liệu State Board =====================
 
         // Reset form
         toggleFormAddCard();
