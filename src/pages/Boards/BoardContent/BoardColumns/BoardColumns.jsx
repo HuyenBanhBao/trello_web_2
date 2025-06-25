@@ -5,12 +5,21 @@ import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import BoardColumn from "./BoardColumn/BoardColumn";
 import LibraryAddIcon from "@mui/icons-material/LibraryAdd";
+
+import { createNewColumnAPI } from "~/apis";
+import { generatePlaceholder } from "~/utils/formatters";
+import { cloneDeep } from "lodash";
+import { useDispatch, useSelector } from "react-redux";
+import { updateCurrentActiveBoard, selectCurrentActiveBoard } from "~/redux/activeBoard/activeBoardSlice";
 // --------------------- DND KIT ---------------------
 import { SortableContext, horizontalListSortingStrategy } from "@dnd-kit/sortable";
 // ---------------------------------- MAIN COMPONENT ---------------------
-const BoardColumns = ({ columns, createNewColumn, createNewCard, deleteColumnDetails }) => {
+const BoardColumns = ({ columns }) => {
     // ===================================== STATE & FUNCTIONS =====================================
     // ===================================== OPEN - CLOSE FORM ADD NEW COLUMN =====================================
+    const dispatch = useDispatch(); // Khai báo dispatch
+    const board = useSelector(selectCurrentActiveBoard); // Khai báo board
+
     const [openFormAddColumn, setOpenFormAddColumn] = useState(false);
     const toggleFormAddColumn = () => {
         setOpenFormAddColumn(!openFormAddColumn);
@@ -18,7 +27,7 @@ const BoardColumns = ({ columns, createNewColumn, createNewCard, deleteColumnDet
 
     // ===================================== FORM ADD NEW COLUMN =====================================
     const [newNameColumn, setNewNameColumn] = useState("");
-    const addNewColumn = () => {
+    const addNewColumn = async () => {
         // setOpenFormAddColumn(false);
         if (!newNameColumn) {
             toast.error("Please enter column name");
@@ -30,17 +39,44 @@ const BoardColumns = ({ columns, createNewColumn, createNewCard, deleteColumnDet
             title: newNameColumn,
         };
 
+        // ============================ gọi API tạo mới 1 column và làm lại dữ liệu State Board ============================
+        const createdColumn = await createNewColumnAPI({
+            ...newColumnData,
+            boardId: board._id, // Thêm boardId vào dữ liệu cột mới
+        });
+        createdColumn.cards = [generatePlaceholder(createdColumn)];
+        createdColumn.cardOrderIds = [generatePlaceholder(createdColumn)._id];
+        // Gọi API thành công thì sẽ làm lại dữ liệu State Board
+        // Phía FE chúng ta phải tự làm đúng lại state board để render lại dữ liệu (thay vì phải gọi lại API fetchBoardDetailAPI)
+        // CÁCH 1: +++++++++++++++++++
+        /** Đoạn này sẽ dính lỗi object is not extensible bởi dù đã copy/clone ra giá trị newBoard nhưng bản chất của spread operator là Shallow Copy/Clone, nên dính phải rules Immutable trong Redux Toolkit không dùng được hàm PUSH (sửa giá trị mảng trực tiếp), cách đơn giản nhanh gọn nhất ở trường hợp này của chúng ta là dùng Deep Copy/Clone toàn bộ cái Board cho dễ hiểu và code ngắn gọn.
+         *
+         *
+         * */
+        const newBoard = cloneDeep(board);
+        newBoard.columns.push(createdColumn); // Thêm cột mới vào mảng columns
+        newBoard.columnOrderIds.push(createdColumn._id); // Thêm id của cột mới vào mảng columnOrder
+        // CÁCH 2: +++++++++++++++++++
         /**
-         * * Goi lên props function createNewColumn nằm ở component cha cao nhất (boards/jd.jsx)
-         * Lưu ý: Về sau ở học phần MERN Stack Advance nâng cao học trực tiếp với mình thì chúng ta sẽ đưa dữ liệu Board ra ngoài Redux Global Store,
-         * và lúc này chúng ta có thể gọi luôn API ở đây là xong thay vì phải lần lượt gọi ngược lên những Component cha phía bên trên. (Đối với component con nắm càng sâu thì càng khổ :D)
-         *-- Với việc sử dụng Redux như vậy thì code sẽ Clean chuẩn chỉnh hơn rất nhiều.
+         * Ngoài ra cách nữa là vẫn có thể dùng array.concat thay cho push như docs của Redux Toolkit ở trên vì push đã nói nó sẽ thay đổi giá trị trực tiếp, còn tránh concat thì nó merge – ghép mảng lại và tạo ra một mảng mới để chúng ta gán lại giá trị nên không vấn đề gì
          */
-
-        createNewColumn(newColumnData);
+        // const newBoard = { ...board };
+        // newBoard.columns = newBoard.columns.concat([createdColumn]);
+        // newBoard.columnOrderIds = newBoard.columnOrderIds.concat([createdColumn._id]); // Thêm id của cột mới vào mảng columnOrder
+        // CÁCH 3: +++++++++++++++++++
+        /**
+         * Cách 3 là dùng Immer, Redux Toolkit đã hỗ trợ sẵn Immer nên ta có thể dùng luôn mà không cần import Immer
+         */
+        // const newBoard = produce(board, (draft) => {
+        //     draft.columns.push(createdColumn);
+        //     draft.columnOrderIds.push(createdColumn._id);
+        // });
+        // Gán giá trị newBoard vào thì chính là "action" trong redux
+        dispatch(updateCurrentActiveBoard(newBoard)); // Cập nhật lại board trong redux
+        // ============================ ket thuc gọi API tạo mới 1 column và làm lại dữ liệu State Board ============================
         // Reset form
         toggleFormAddColumn();
-        setNewNameColumn(""); // Reset giá trị input sau khi thêm cột thành c
+        setNewNameColumn(""); // Reset giá trị input sau khi thêm column thành c
     };
     // ====================================================================================================================================================
     return (
@@ -58,12 +94,7 @@ const BoardColumns = ({ columns, createNewColumn, createNewCard, deleteColumnDet
                     }}
                 >
                     {columns?.map((column) => (
-                        <BoardColumn
-                            key={column._id}
-                            column={column}
-                            createNewCard={createNewCard}
-                            deleteColumnDetails={deleteColumnDetails}
-                        />
+                        <BoardColumn key={column._id} column={column} />
                     ))}
 
                     {/* -------------------- ADD NEW COLUMN -------------------- */}

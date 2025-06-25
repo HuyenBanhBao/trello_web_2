@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { toast } from "react-toastify";
 import Box from "@mui/material/Box";
 import Tooltip from "@mui/material/Tooltip";
 import AddCardIcon from "@mui/icons-material/AddCard";
@@ -17,9 +18,15 @@ import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import ContentPasteIcon from "@mui/icons-material/ContentPaste";
 import DragIndicatorOutlinedIcon from "@mui/icons-material/DragIndicatorOutlined";
-
+// --------------------- REDUX ---------------------
+import { updateCurrentActiveBoard, selectCurrentActiveBoard } from "~/redux/activeBoard/activeBoardSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { deleteColumnDetailsAPI } from "~/apis";
 // --------------------- MAIN COMPONENT ---------------------
-const HeaderCard = ({ column, attributes, listeners, deleteColumnDetails }) => {
+const HeaderCard = ({ column, attributes, listeners }) => {
+    const dispatch = useDispatch();
+    const board = useSelector(selectCurrentActiveBoard);
+
     const [anchorEl, setAnchorEl] = useState(null);
     const open = Boolean(anchorEl);
     const handleClick = (event) => {
@@ -32,6 +39,7 @@ const HeaderCard = ({ column, attributes, listeners, deleteColumnDetails }) => {
     // Xử lý xóa cột
     const confirmDeleteCol = useConfirm();
     const handleDeleteCol = async () => {
+        // eslint-disable-next-line no-unused-vars
         const { confirmed, reason } = await confirmDeleteCol({
             title: "Delete column?",
             description: "Are you sure you want to delete this column and it's Cards?",
@@ -41,9 +49,20 @@ const HeaderCard = ({ column, attributes, listeners, deleteColumnDetails }) => {
         });
 
         if (confirmed) {
-            deleteColumnDetails(column._id);
+            /**
+             *  Trường hợp dùng Spread Operator này thì lại không sao bởi vì ở đây chúng ta không dùng push như ở trên làm thay đổi trực tiếp kiểu mở rộng mảng, mà chỉ đang gán lại toàn bộ giá trị columns và columnOrderIds bằng 2 mảng mới. Tương tự như cách làm concat ở trường hợp createNewColumn thôi
+             */
+            const newBoard = { ...board };
+            newBoard.columns = newBoard.columns.filter((c) => c._id !== column._id);
+            newBoard.columnOrderIds = newBoard.columnOrderIds.filter((id) => id !== column._id);
+            // setBoard(newBoard);
+            dispatch(updateCurrentActiveBoard(newBoard));
+            //
+            deleteColumnDetailsAPI(column._id).then((res) => {
+                toast.success(res?.deleteResult);
+            });
         }
-        console.log(reason);
+        // console.log(reason);
     };
     return (
         <>

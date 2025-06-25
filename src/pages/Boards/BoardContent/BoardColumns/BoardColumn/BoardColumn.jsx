@@ -9,7 +9,7 @@ import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 // ----------------------------------------------------------
 // --------------------- MAIN COMPONENT ---------------------
-const BoardColumn = ({ column, createNewCard, deleteColumnDetails }) => {
+const BoardColumn = ({ column }) => {
     // --------------------- FUNCTION ---------------------
     // Cards đã được sắp xếp ở column cha (video 71)
     const orderedCards = column.cards;
@@ -49,16 +49,11 @@ const BoardColumn = ({ column, createNewCard, deleteColumnDetails }) => {
                 }}
             >
                 {/* --------------- HEADER --------------- */}
-                <HeaderCard
-                    column={column}
-                    attributes={attributes}
-                    listeners={listeners}
-                    deleteColumnDetails={deleteColumnDetails}
-                />
+                <HeaderCard column={column} attributes={attributes} listeners={listeners} />
                 {/* --------------- BODY --------------- */}
                 <ListCards cards={orderedCards} />
                 {/* --------------- FOOTER --------------- */}
-                <FooterCard column={column} createNewCard={createNewCard} />
+                <FooterCard column={column} />
             </Box>
         </div>
     );
