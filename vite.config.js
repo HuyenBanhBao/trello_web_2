@@ -7,7 +7,15 @@ export default defineConfig({
     define: {
         "process.env": {},
     },
-    plugins: [react(), svgr()],
+    plugins: [
+        react(),
+        svgr({
+            exportAsDefault: false, // ✅ Cần dòng này để hỗ trợ `ReactComponent`
+            svgrOptions: {
+                icon: true,
+            },
+        }),
+    ],
     resolve: {
         alias: [{ find: "~", replacement: "/src" }],
     },

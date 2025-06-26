@@ -99,7 +99,7 @@ function LoginForm() {
                                 fullWidth
                                 label="Enter Email..."
                                 type="text"
-                                variant="filled"
+                                variant="outlined"
                                 error={!!errors["email"]}
                                 {...register("email", {
                                     required: FIELD_REQUIRED_MESSAGE, // Trường bắt buộc
@@ -116,7 +116,7 @@ function LoginForm() {
                                 fullWidth
                                 label="Enter Password..."
                                 type="password"
-                                variant="filled"
+                                variant="outlined"
                                 error={!!errors["password"]}
                                 {...register("password", {
                                     required: FIELD_REQUIRED_MESSAGE, // Trường bắt buộc
@@ -130,7 +130,14 @@ function LoginForm() {
                         </Box>
                     </Box>
                     <CardActions sx={{ padding: "0 1em 1em 1em" }}>
-                        <Button type="submit" variant="contained" color="primary" size="large" fullWidth>
+                        <Button
+                            className="interceptor-loading"
+                            type="submit"
+                            variant="contained"
+                            color="primary"
+                            size="large"
+                            fullWidth
+                        >
                             Login
                         </Button>
                     </CardActions>
