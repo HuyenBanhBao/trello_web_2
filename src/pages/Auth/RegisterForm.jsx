@@ -72,8 +72,11 @@ function RegisterForm() {
                                 fullWidth
                                 label="Enter Email..."
                                 type="text"
-                                variant="filled"
+                                variant="outlined"
                                 error={!!errors["email"]}
+                                sx={{
+                                    outline: "none",
+                                }}
                                 {...register("email", {
                                     required: FIELD_REQUIRED_MESSAGE,
                                     pattern: {
@@ -89,7 +92,7 @@ function RegisterForm() {
                                 fullWidth
                                 label="Enter Password..."
                                 type="password"
-                                variant="filled"
+                                variant="outlined"
                                 error={!!errors["password"]}
                                 {...register("password", {
                                     required: FIELD_REQUIRED_MESSAGE,
@@ -106,7 +109,7 @@ function RegisterForm() {
                                 fullWidth
                                 label="Enter Password Confirmation..."
                                 type="password"
-                                variant="filled"
+                                variant="outlined"
                                 error={!!errors["passwordConfirmation"]}
                                 {...register("passwordConfirmation", {
                                     validate: (value) => {
@@ -120,7 +123,14 @@ function RegisterForm() {
                         </Box>
                     </Box>
                     <CardActions sx={{ padding: "0 1em 1em 1em" }}>
-                        <Button type="submit" variant="contained" color="primary" size="large" fullWidth>
+                        <Button
+                            className="interceptor-loading"
+                            type="submit"
+                            variant="contained"
+                            color="primary"
+                            size="large"
+                            fullWidth
+                        >
                             Register
                         </Button>
                     </CardActions>
