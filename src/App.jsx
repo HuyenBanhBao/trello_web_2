@@ -2,6 +2,7 @@ import { Routes, Route, Navigate } from "react-router-dom";
 // --------------------- IMPORT COMPONENTS -------------------------
 import Board from "~/pages/Boards/_id";
 import NotFoundPage from "~/pages/404/NotFoundPage";
+import Auth from "~/pages/Auth/Auth";
 // --------------------- FUNCTIONAL COMPONENTS ---------------------
 // --------------------- MAIN COMPONENT ---------------------
 function App() {
@@ -19,6 +20,10 @@ function App() {
             />
             {/* Board route */}
             <Route path="/boards/:boardId" element={<Board />} />
+
+            {/* Authentication */}
+            <Route path="/login" element={<Auth />} />
+            <Route path="/register" element={<Auth />} />
 
             {/* Route 404 not found page */}
             <Route path="*" element={<NotFoundPage />} />
