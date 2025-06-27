@@ -2,13 +2,13 @@
 import { useEffect } from "react";
 import Container from "@mui/material/Container";
 import { cloneDeep } from "lodash";
-import { Box } from "@mui/material";
 import { useParams } from "react-router-dom";
 // --------------------- IMPORT COMPONENTS ---------------------
 // import AppBar from "../../components/AppBar";
 import AppBar from "~/components/AppBar/AppBar";
 import BoardBar from "./BoardBar/BoardBar";
 import BoardContent from "./BoardContent/BoardContent";
+import PageLoadingSpinner from "~/components/Loading/PageLoadingSpinner";
 // --------------------- REDUX ---------------------
 import {
     fetchBoardDetailsAPI,
@@ -136,11 +136,7 @@ const Board = () => {
     };
     // =========================================== RENDER ===========================================
     if (!board) {
-        return (
-            <Box sx={{ height: "100vh", display: "flex", justifyContent: "center", alignItems: "center" }}>
-                <h1>Loading...</h1>
-            </Box>
-        );
+        return <PageLoadingSpinner caption="Loading board..." />;
     }
     return (
         <>
