@@ -21,6 +21,7 @@ import {
     PASSWORD_RULE_MESSAGE,
 } from "~/utils/validators";
 import FieldErrorAlert from "~/components/Form/FieldErrorAlert";
+import { useSearchParams } from "react-router-dom";
 
 // ==================================================================================================================
 function LoginForm() {
@@ -29,6 +30,10 @@ function LoginForm() {
         handleSubmit,
         formState: { errors },
     } = useForm();
+
+    let [searchParams] = useSearchParams();
+    const registeredEmail = searchParams.get("registeredEmail");
+    const verifiedEmail = searchParams.get("verifiedEmail");
 
     const submitLogIn = (data) => {
         console.log("submit data: ", data);
@@ -64,7 +69,7 @@ function LoginForm() {
                     >
                         Author: TrungQuanDev
                     </Box>
-                    {/* <Box
+                    <Box
                         sx={{
                             marginTop: "1em",
                             display: "flex",
@@ -73,75 +78,84 @@ function LoginForm() {
                             padding: "0 1em",
                         }}
                     >
-                        <Alert severity="success" sx={{ ".MuiAlert-message": { overflow: "hidden" } }}>
-                            Your email&nbsp;
-                            <Typography variant="span" sx={{ fontWeight: "bold", "&:hover": { color: "#fdba26" } }}>
-                                trungquandev@gmail.com
-                            </Typography>
-                            &nbsp;has been verified.
-                            <br />
-                            Now you can login to enjoy our services! Have a good day!
-                        </Alert>
-                        <Alert severity="info" sx={{ ".MuiAlert-message": { overflow: "hidden" } }}>
-                            An email has been sent to&nbsp;
-                            <Typography variant="span" sx={{ fontWeight: "bold", "&:hover": { color: "#fdba26" } }}>
-                                trungquandev@gmail.com
-                            </Typography>
-                            <br />
-                            Please check and verify your account before logging in!
-                        </Alert>
-                    </Box> */}
+                        {verifiedEmail && (
+                            <Alert severity="success" sx={{ ".MuiAlert-message": { overflow: "hidden" } }}>
+                                Your email&nbsp;
+                                <Typography variant="span" sx={{ fontWeight: "bold", "&:hover": { color: "#fdba26" } }}>
+                                    {verifiedEmail}
+                                </Typography>
+                                &nbsp;has been verified.
+                                <br />
+                                Now you can login to enjoy our services! Have a good day!
+                            </Alert>
+                        )}
 
-                    <Box sx={{ padding: "0 1em 1em 1em" }}>
-                        <Box sx={{ marginTop: "1em" }}>
-                            <TextField
-                                autoFocus
-                                fullWidth
-                                label="Enter Email..."
-                                type="text"
-                                variant="outlined"
-                                error={!!errors["email"]}
-                                {...register("email", {
-                                    required: FIELD_REQUIRED_MESSAGE, // Trường bắt buộc
-                                    pattern: {
-                                        value: EMAIL_RULE, // Biểu thức chính quy
-                                        message: EMAIL_RULE_MESSAGE, // Vi phạm thì thông báo
-                                    },
-                                })}
-                            />
-                            <FieldErrorAlert errors={errors} fieldName="email" />
-                        </Box>
-                        <Box sx={{ marginTop: "1em" }}>
-                            <TextField
-                                fullWidth
-                                label="Enter Password..."
-                                type="password"
-                                variant="outlined"
-                                error={!!errors["password"]}
-                                {...register("password", {
-                                    required: FIELD_REQUIRED_MESSAGE, // Trường bắt buộc
-                                    pattern: {
-                                        value: PASSWORD_RULE, // Biểu thức chính quy
-                                        message: PASSWORD_RULE_MESSAGE, // Vi phạm thì thông báo
-                                    },
-                                })}
-                            />
-                            <FieldErrorAlert errors={errors} fieldName="password" />
-                        </Box>
+                        {registeredEmail && (
+                            <Alert severity="info" sx={{ ".MuiAlert-message": { overflow: "hidden" } }}>
+                                An email has been sent to&nbsp;
+                                <Typography variant="span" sx={{ fontWeight: "bold", "&:hover": { color: "#fdba26" } }}>
+                                    {registeredEmail}
+                                </Typography>
+                                <br />
+                                Please check and verify your account before logging in!
+                            </Alert>
+                        )}
                     </Box>
-                    <CardActions sx={{ padding: "0 1em 1em 1em" }}>
-                        <Button
-                            className="interceptor-loading"
-                            type="submit"
-                            variant="contained"
-                            color="primary"
-                            size="large"
-                            fullWidth
-                        >
-                            Login
-                        </Button>
-                    </CardActions>
-                    <Box sx={{ padding: "0 1em 1em 1em", textAlign: "center" }}>
+
+                    {verifiedEmail && (
+                        <Box>
+                            <Box sx={{ padding: "0 1em 1em 1em" }}>
+                                <Box sx={{ marginTop: "1em" }}>
+                                    <TextField
+                                        autoFocus
+                                        fullWidth
+                                        label="Enter Email..."
+                                        type="text"
+                                        variant="outlined"
+                                        error={!!errors["email"]}
+                                        {...register("email", {
+                                            required: FIELD_REQUIRED_MESSAGE, // Trường bắt buộc
+                                            pattern: {
+                                                value: EMAIL_RULE, // Biểu thức chính quy
+                                                message: EMAIL_RULE_MESSAGE, // Vi phạm thì thông báo
+                                            },
+                                        })}
+                                    />
+                                    <FieldErrorAlert errors={errors} fieldName="email" />
+                                </Box>
+                                <Box sx={{ marginTop: "1em" }}>
+                                    <TextField
+                                        fullWidth
+                                        label="Enter Password..."
+                                        type="password"
+                                        variant="outlined"
+                                        error={!!errors["password"]}
+                                        {...register("password", {
+                                            required: FIELD_REQUIRED_MESSAGE, // Trường bắt buộc
+                                            pattern: {
+                                                value: PASSWORD_RULE, // Biểu thức chính quy
+                                                message: PASSWORD_RULE_MESSAGE, // Vi phạm thì thông báo
+                                            },
+                                        })}
+                                    />
+                                    <FieldErrorAlert errors={errors} fieldName="password" />
+                                </Box>
+                            </Box>
+                            <CardActions sx={{ padding: "0 1em 1em 1em" }}>
+                                <Button
+                                    className="interceptor-loading"
+                                    type="submit"
+                                    variant="contained"
+                                    color="primary"
+                                    size="large"
+                                    fullWidth
+                                >
+                                    Login
+                                </Button>
+                            </CardActions>
+                        </Box>
+                    )}
+                    <Box sx={{ marginTop: "1em", padding: "0 1em 1em 1em", textAlign: "center" }}>
                         <Typography>New to Trello MERN Stack Advanced?</Typography>
                         <Link to="/register" style={{ textDecoration: "none" }}>
                             <Typography sx={{ color: "primary.main", "&:hover": { color: "#ffbb39" } }}>

@@ -1,5 +1,5 @@
 // TrungQuanDev: https://youtube.com/@trungquandev
-import { Link } from "react-router-dom";
+// MUI -------------------------------------------
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Avatar from "@mui/material/Avatar";
@@ -10,7 +10,11 @@ import Trello from "@mui/icons-material/ViewKanban";
 import CardActions from "@mui/material/CardActions";
 import TextField from "@mui/material/TextField";
 import Zoom from "@mui/material/Zoom";
+// lib -------------------------------------------
+import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
+import { toast } from "react-toastify";
+// -------------------------------------------
 import {
     EMAIL_RULE,
     EMAIL_RULE_MESSAGE,
@@ -20,7 +24,7 @@ import {
     PASSWORD_CONFIRMATION_MESSAGE,
 } from "~/utils/validators";
 import FieldErrorAlert from "~/components/Form/FieldErrorAlert";
-
+import { registerUserAPI } from "~/apis";
 // ==================================================================================================================
 function RegisterForm() {
     const {
@@ -29,9 +33,21 @@ function RegisterForm() {
         formState: { errors },
         watch,
     } = useForm();
+    const navigate = useNavigate();
 
-    const submitRegister = (data) => {
-        console.log("submit data: ", data);
+    const submitRegister = async (data) => {
+        const { email, password } = data;
+        toast
+            .promise(registerUserAPI({ email, password }), {
+                pending: "Registering...",
+                success: "Register successfully! Please check your email to verify your account.",
+                error: "Register failed! Please try again.",
+            })
+            .then((user) => {
+                if (user) {
+                    navigate(`/login?registeredEmail=${user.email}`);
+                }
+            });
     };
 
     // ==================================================================================================================
