@@ -8,7 +8,6 @@ import { ToastContainer } from "react-toastify";
 // ------------------- IMPORT FROM FOLDERS -------------------
 import App from "~/App.jsx";
 import theme from "~/theme.js";
-
 // ------------------- MUI DIALOG -------------------
 import { ConfirmProvider } from "material-ui-confirm";
 // ------------------- REDUX TOOLKIT -------------------
@@ -18,25 +17,31 @@ import { store } from "~/redux/store.js";
 // ------------------- Cấu hình React-router-dom với BrowserRouter -------------------
 import { BrowserRouter } from "react-router-dom";
 
+// ------------------- Redux persist -------------------
+import { PersistGate } from "redux-persist/integration/react";
+import { persistStore } from "redux-persist";
+const persistor = persistStore(store);
 // =========================================================== MAIN ===========================================================
 
 createRoot(document.getElementById("root")).render(
     <BrowserRouter basename="/">
         <Provider store={store}>
-            <CssVarsProvider theme={theme}>
-                <ConfirmProvider
-                    defaultOptions={{
-                        allowClose: false,
-                        dialogProps: { maxWidth: "xs" },
-                        confirmationButtonProps: { color: "success", variant: "outlined" },
-                        cancellationButtonProps: { color: "warning", variant: "outlined" },
-                    }}
-                >
-                    <CssBaseline />
-                    <App />
-                    <ToastContainer position="bottom-right" autoClose={2000} theme="colored" closeOnClick />
-                </ConfirmProvider>
-            </CssVarsProvider>
+            <PersistGate persistor={persistor}>
+                <CssVarsProvider theme={theme}>
+                    <ConfirmProvider
+                        defaultOptions={{
+                            allowClose: false,
+                            dialogProps: { maxWidth: "xs" },
+                            confirmationButtonProps: { color: "success", variant: "outlined" },
+                            cancellationButtonProps: { color: "warning", variant: "outlined" },
+                        }}
+                    >
+                        <CssBaseline />
+                        <App />
+                        <ToastContainer position="bottom-right" autoClose={2000} theme="colored" closeOnClick />
+                    </ConfirmProvider>
+                </CssVarsProvider>
+            </PersistGate>
         </Provider>
     </BrowserRouter>
 );
