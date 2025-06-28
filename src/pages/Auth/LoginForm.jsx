@@ -1,18 +1,23 @@
-// TrungQuanDev: https://youtube.com/@trungquandev
-import * as React from "react";
-import { Link } from "react-router-dom";
+// MUI --------------------------------
 import Box from "@mui/material/Box";
-import Button from "@mui/material/Button";
-import Avatar from "@mui/material/Avatar";
-import LockIcon from "@mui/icons-material/Lock";
-import Typography from "@mui/material/Typography";
-import { Card as MuiCard } from "@mui/material";
-import Trello from "@mui/icons-material/ViewKanban";
-import CardActions from "@mui/material/CardActions";
-import TextField from "@mui/material/TextField";
 import Zoom from "@mui/material/Zoom";
 import Alert from "@mui/material/Alert";
+import Button from "@mui/material/Button";
+import Avatar from "@mui/material/Avatar";
+import TextField from "@mui/material/TextField";
+import { Card as MuiCard } from "@mui/material";
+import LockIcon from "@mui/icons-material/Lock";
+import Typography from "@mui/material/Typography";
+import Trello from "@mui/icons-material/ViewKanban";
+import CardActions from "@mui/material/CardActions";
+// react --------------------------------
+import * as React from "react";
+import { toast } from "react-toastify";
+import { Link } from "react-router-dom";
+import { useDispatch } from "react-redux";
 import { useForm } from "react-hook-form";
+import { useSearchParams, useNavigate } from "react-router-dom";
+// from component
 import {
     EMAIL_RULE,
     EMAIL_RULE_MESSAGE,
@@ -20,11 +25,13 @@ import {
     PASSWORD_RULE,
     PASSWORD_RULE_MESSAGE,
 } from "~/utils/validators";
+import { loginUserAPI } from "~/redux/user/userSlice";
 import FieldErrorAlert from "~/components/Form/FieldErrorAlert";
-import { useSearchParams } from "react-router-dom";
-
 // ==================================================================================================================
 function LoginForm() {
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+
     const {
         register,
         handleSubmit,
@@ -36,7 +43,16 @@ function LoginForm() {
     const verifiedEmail = searchParams.get("verifiedEmail");
 
     const submitLogIn = (data) => {
-        console.log("submit data: ", data);
+        const { email, password } = data;
+        toast
+            .promise(dispatch(loginUserAPI({ email, password })), {
+                pending: "Logging in...",
+            })
+            .then((res) => {
+                // console.log(res);
+                // Đoạn này phải kiểm tra không có lỗi (login thanh cong) thì mới redirect về route
+                if (!res.error) navigate("/");
+            });
     };
 
     // ================================================================================================
@@ -102,59 +118,55 @@ function LoginForm() {
                         )}
                     </Box>
 
-                    {verifiedEmail && (
-                        <Box>
-                            <Box sx={{ padding: "0 1em 1em 1em" }}>
-                                <Box sx={{ marginTop: "1em" }}>
-                                    <TextField
-                                        autoFocus
-                                        fullWidth
-                                        label="Enter Email..."
-                                        type="text"
-                                        variant="outlined"
-                                        error={!!errors["email"]}
-                                        {...register("email", {
-                                            required: FIELD_REQUIRED_MESSAGE, // Trường bắt buộc
-                                            pattern: {
-                                                value: EMAIL_RULE, // Biểu thức chính quy
-                                                message: EMAIL_RULE_MESSAGE, // Vi phạm thì thông báo
-                                            },
-                                        })}
-                                    />
-                                    <FieldErrorAlert errors={errors} fieldName="email" />
-                                </Box>
-                                <Box sx={{ marginTop: "1em" }}>
-                                    <TextField
-                                        fullWidth
-                                        label="Enter Password..."
-                                        type="password"
-                                        variant="outlined"
-                                        error={!!errors["password"]}
-                                        {...register("password", {
-                                            required: FIELD_REQUIRED_MESSAGE, // Trường bắt buộc
-                                            pattern: {
-                                                value: PASSWORD_RULE, // Biểu thức chính quy
-                                                message: PASSWORD_RULE_MESSAGE, // Vi phạm thì thông báo
-                                            },
-                                        })}
-                                    />
-                                    <FieldErrorAlert errors={errors} fieldName="password" />
-                                </Box>
-                            </Box>
-                            <CardActions sx={{ padding: "0 1em 1em 1em" }}>
-                                <Button
-                                    className="interceptor-loading"
-                                    type="submit"
-                                    variant="contained"
-                                    color="primary"
-                                    size="large"
-                                    fullWidth
-                                >
-                                    Login
-                                </Button>
-                            </CardActions>
+                    <Box sx={{ padding: "0 1em 1em 1em" }}>
+                        <Box sx={{ marginTop: "1em" }}>
+                            <TextField
+                                autoFocus
+                                fullWidth
+                                label="Enter Email..."
+                                type="text"
+                                variant="outlined"
+                                error={!!errors["email"]}
+                                {...register("email", {
+                                    required: FIELD_REQUIRED_MESSAGE, // Trường bắt buộc
+                                    pattern: {
+                                        value: EMAIL_RULE, // Biểu thức chính quy
+                                        message: EMAIL_RULE_MESSAGE, // Vi phạm thì thông báo
+                                    },
+                                })}
+                            />
+                            <FieldErrorAlert errors={errors} fieldName="email" />
                         </Box>
-                    )}
+                        <Box sx={{ marginTop: "1em" }}>
+                            <TextField
+                                fullWidth
+                                label="Enter Password..."
+                                type="password"
+                                variant="outlined"
+                                error={!!errors["password"]}
+                                {...register("password", {
+                                    required: FIELD_REQUIRED_MESSAGE, // Trường bắt buộc
+                                    pattern: {
+                                        value: PASSWORD_RULE, // Biểu thức chính quy
+                                        message: PASSWORD_RULE_MESSAGE, // Vi phạm thì thông báo
+                                    },
+                                })}
+                            />
+                            <FieldErrorAlert errors={errors} fieldName="password" />
+                        </Box>
+                    </Box>
+                    <CardActions sx={{ padding: "0 1em 1em 1em" }}>
+                        <Button
+                            className="interceptor-loading"
+                            type="submit"
+                            variant="contained"
+                            color="primary"
+                            size="large"
+                            fullWidth
+                        >
+                            Login
+                        </Button>
+                    </CardActions>
                     <Box sx={{ marginTop: "1em", padding: "0 1em 1em 1em", textAlign: "center" }}>
                         <Typography>New to Trello MERN Stack Advanced?</Typography>
                         <Link to="/register" style={{ textDecoration: "none" }}>
