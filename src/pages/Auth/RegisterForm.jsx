@@ -40,8 +40,6 @@ function RegisterForm() {
         toast
             .promise(registerUserAPI({ email, password }), {
                 pending: "Registering...",
-                success: "Register successfully! Please check your email to verify your account.",
-                error: "Register failed! Please try again.",
             })
             .then((user) => {
                 if (user) {
