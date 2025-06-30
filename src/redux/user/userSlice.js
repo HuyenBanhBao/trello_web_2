@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import authorizedAxiosInstance from "~/utils/authorizeAxios";
 import { API_ROOT } from "~/utils/constants";
+import { toast } from "react-toastify";
 
 // ========================================================================================================
 
@@ -17,6 +18,14 @@ export const loginUserAPI = createAsyncThunk("user/loginUserAPI", async (data) =
 });
 
 // --------------------------------------------------------------------------------------------------------
+export const logoutUserAPI = createAsyncThunk("user/logoutUserAPI", async (showSuccessMessage = true) => {
+    const response = await authorizedAxiosInstance.delete(`${API_ROOT}/v1/users/logout`);
+    if (showSuccessMessage) {
+        toast.success("Logged out successfully!");
+    }
+    return response.data;
+});
+// --------------------------------------------------------------------------------------------------------
 // khởi tạo một cái Slice trong kho lưu trữ Redux Store
 export const userSlice = createSlice({
     name: "user",
@@ -32,13 +41,19 @@ export const userSlice = createSlice({
             .addCase(loginUserAPI.fulfilled, (state, action) => {
                 // action.payload chính là cái  response.data trả về ở trên.
                 const user = action.payload;
-
                 // Cập nhật lại dữ liệu của currentActiveBoard
                 state.currentUser = user;
             });
         // .addCase(loginUserAPI.rejected, (state, action) => {
         //     // Xử lý logic khi rejected
         // });
+        builder.addCase(logoutUserAPI.fulfilled, (state) => {
+            /**
+             * API logout sau khi gói thành công thì sẽ clear thông tin currentUser về null ở đây
+             * Kết hợp ProtectedRoute đã làm ở App.js => code sẽ hướng chuẩn về trang Login
+             */
+            state.currentUser = null;
+        });
     },
 });
 // --------------------------------------------------------------------------------------------------------
