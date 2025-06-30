@@ -14,7 +14,7 @@ import SecurityTab from "./SecurityTab";
 import AppBar from "~/components/AppBar/AppBar";
 
 // ======================================================================================================
-// Khai báo đống tabs ra biến const để dùng lại cho gọn
+// Khai báo đống tabs ra biến const để dùng lại cho gọn.
 const TABS = {
     ACCOUNT: "account",
     SECURITY: "security",
