@@ -1,4 +1,5 @@
 // ---------------------- IMPORT LIB -------------------------
+import { Link } from "react-router-dom";
 import React, { useState } from "react";
 import { useConfirm } from "material-ui-confirm";
 import { useSelector, useDispatch } from "react-redux";
@@ -81,24 +82,27 @@ const Profile = () => {
                     }}
                 >
                     {/* -------------------------------- Profile -------------------------------- */}
-                    <MenuItem
-                        sx={{
-                            "&:hover": {
-                                color: "success.dark",
-                                "& .profile-icon": {
+                    <Link to="/settings/account" style={{ color: "inherit" }}>
+                        <MenuItem
+                            sx={{
+                                "&:hover": {
                                     color: "success.dark",
+                                    "& .profile-icon": {
+                                        color: "success.dark",
+                                    },
                                 },
-                            },
-                        }}
-                    >
-                        {/* onClick={handleClose} */}
-                        <Avatar
-                            className="profile-icon"
-                            src={currentUser?.avatar}
-                            sx={{ width: 28, height: 28, mr: 1.5 }}
-                        />{" "}
-                        Profile
-                    </MenuItem>
+                            }}
+                        >
+                            {/* onClick={handleClose} */}
+                            <Avatar
+                                className="profile-icon"
+                                src={currentUser?.avatar}
+                                sx={{ width: 28, height: 28, mr: 1.5 }}
+                            />{" "}
+                            Profile
+                        </MenuItem>
+                    </Link>
+                    {/* ------------------------------------------------------------------------- */}
                     <Divider />
                     {/* -------------------------------- account -------------------------------- */}
                     <MenuItem>
