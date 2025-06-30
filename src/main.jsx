@@ -1,25 +1,26 @@
 // ------------------- IMPORT FROM LIBRARIES -------------------
-import { StrictMode } from "react";
-import { createRoot } from "react-dom/client";
+// ------------------- MUI DIALOG -------------------
 import CssBaseline from "@mui/material/CssBaseline";
+import { ConfirmProvider } from "material-ui-confirm";
+import GlobalStyles from "@mui/material/GlobalStyles";
 import { Experimental_CssVarsProvider as CssVarsProvider } from "@mui/material/styles";
 // import { ThemeProvider } from "@mui/material/styles";
-import { ToastContainer } from "react-toastify";
 // ------------------- IMPORT FROM FOLDERS -------------------
 import App from "~/App.jsx";
 import theme from "~/theme.js";
-// ------------------- MUI DIALOG -------------------
-import { ConfirmProvider } from "material-ui-confirm";
-// ------------------- REDUX TOOLKIT -------------------
-import { Provider } from "react-redux";
 import { store } from "~/redux/store.js";
+// ------------------- REDUX TOOLKIT -------------------
+import { StrictMode } from "react";
+import { Provider } from "react-redux";
+import { createRoot } from "react-dom/client";
+import { ToastContainer } from "react-toastify";
 
 // ------------------- Cấu hình React-router-dom với BrowserRouter -------------------
 import { BrowserRouter } from "react-router-dom";
 
 // ------------------- Redux persist -------------------
-import { PersistGate } from "redux-persist/integration/react";
 import { persistStore } from "redux-persist";
+import { PersistGate } from "redux-persist/integration/react";
 const persistor = persistStore(store);
 
 // Kỹ thuật Inject store: Là kỹ thuật khi cần sử dụng để biến redux store ở các file ngoài phạm vi component
@@ -37,12 +38,13 @@ createRoot(document.getElementById("root")).render(
                             allowClose: false,
                             dialogProps: { maxWidth: "xs" },
                             confirmationButtonProps: { color: "success", variant: "outlined" },
-                            cancellationButtonProps: { color: "warning", variant: "outlined" },
+                            cancellationButtonProps: { color: "warning", variant: "" },
                         }}
                     >
+                        <GlobalStyles styles={{ a: { textDecoration: "none" } }} />
                         <CssBaseline />
                         <App />
-                        <ToastContainer position="bottom-right" autoClose={2000} theme="colored" closeOnClick />
+                        <ToastContainer position="bottom-right" autoClose={4000} theme="colored" closeOnClick />
                     </ConfirmProvider>
                 </CssVarsProvider>
             </PersistGate>
