@@ -2,6 +2,7 @@
 import { useSelector } from "react-redux";
 import { Routes, Route, Navigate, Outlet } from "react-router-dom";
 // --------------------- COMPONENTS ---------------------
+import Boards from "~/pages/Boards";
 import Auth from "~/pages/Auth/Auth";
 import Board from "~/pages/Boards/_id";
 import NotFound from "~/pages/404/NotFound";
@@ -45,6 +46,7 @@ function App() {
                 {/* <Outlet /> của react-router-dom sẽ chạy vào các child route trong này */}
                 {/* Board route */}
                 <Route path="/boards/:boardId" element={<Board />} />
+                <Route path="/boards/" element={<Boards />} />
                 {/* User setting */}
                 <Route path="/settings/account" element={<Settings />} />
                 <Route path="/settings/security" element={<Settings />} /> //settings/security

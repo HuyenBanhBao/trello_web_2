@@ -71,6 +71,7 @@ function AccountTab() {
 
     const uploadAvatar = (e) => {
         // Lấy file thông qua e.target?.files[0] và validate nó trước khi xử lý
+
         console.log("e.target?.files[0]: ", e.target?.files[0]);
         const error = singleFileValidator(e.target?.files[0]);
         if (error) {
@@ -88,6 +89,20 @@ function AccountTab() {
         }
 
         // Gọi API...
+        toast
+            .promise(dispatch(updateUserAPI(reqData)), {
+                pending: "Updating...",
+            })
+            .then((res) => {
+                // Đoạn này phải kiểm tra không có lỗi (login thanh cong) thì mới thực hiện các hành động cần thiết
+                if (!res.error) {
+                    toast.success("User updated sucessfuly!", {
+                        theme: "light",
+                    });
+                }
+                // "Lưu ý, dù có lỗi hoặc thành công thì cũng phải clear giá trị của file input, nếu không thì sẽ không thể chọn cùng một file liên tiếp được"
+                e.target.value = "";
+            });
     };
 
     return (
