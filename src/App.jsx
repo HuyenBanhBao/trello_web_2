@@ -37,7 +37,7 @@ function App() {
                 element={
                     // Ở đây cần replace giá trị true để nó thay thế route /, có thể hiểu là route / sẽ không còn nằm trong history của Browser
                     // Thực hành để hiểu hơn bằng cách nhấn Go Home từ trang 404 xong thử quay lại bằng nút back của trình duyệt giữa 2 trường hợp có replace hoặc không có.
-                    <Navigate to="/boards/68429e6020ed2cf6cc306828" replace={true} />
+                    <Navigate to="/boards" replace={true} />
                 }
             />
 
@@ -46,7 +46,7 @@ function App() {
                 {/* <Outlet /> của react-router-dom sẽ chạy vào các child route trong này */}
                 {/* Board route */}
                 <Route path="/boards/:boardId" element={<Board />} />
-                <Route path="/boards/" element={<Boards />} />
+                <Route path="/boards" element={<Boards />} />
                 {/* User setting */}
                 <Route path="/settings/account" element={<Settings />} />
                 <Route path="/settings/security" element={<Settings />} /> //settings/security
