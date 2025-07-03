@@ -1,10 +1,11 @@
-import { userReducer } from "./user/userSlice";
 import { configureStore } from "@reduxjs/toolkit";
 import { activeBoardReducer } from "./activeBoard/activeBoardSlice";
+import { userReducer } from "./user/userSlice";
 
 import { combineReducers } from "redux"; // lưu ý chúng ta có sẵn redux trong node_modules bởi vì khi cài reduxjs/toolkit là đã có luôn
 import { persistReducer } from "redux-persist";
 import storage from "redux-persist/lib/storage"; // default là localstorage
+import { activeCardReducer } from "./activeCard/activeCardSlice";
 
 //  ===================================================================================
 /**
@@ -26,6 +27,7 @@ const rootPersistConfig = {
 const reducers = combineReducers({
     activeBoard: activeBoardReducer,
     user: userReducer,
+    activeCard: activeCardReducer,
 });
 
 // Thực hiện persist Reducer

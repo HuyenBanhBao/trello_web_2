@@ -17,6 +17,7 @@ import Tooltip from "@mui/material/Tooltip";
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
 // --------------------- IMPORT FUNCTIONS -------------------------
 import { capitalizeFirstLetter } from "~/utils/formatters";
+import BoardUserGroup from "./BoardUserGroup";
 // --------------------- STYLES -------------------------
 const MENU_STYLES = {
     color: (theme) => theme.trello.primaryColorTextBar,
@@ -83,84 +84,9 @@ const BoardBar = ({ board }) => {
                     >
                         Invite
                     </Button>
-                    <AvatarGroup
-                        max={4}
-                        sx={{
-                            gap: "10px",
-                            "& .MuiAvatar-root": {
-                                width: 32,
-                                height: 32,
-                                fontSize: 16,
-                                border: "none",
-                                color: (theme) => theme.trello.primaryColorTextBar,
-                                cursor: "pointer",
-                                "&:first-of-type": {
-                                    bgcolor: "#a4b0b3",
-                                },
-                            },
-                        }}
-                    >
-                        <Tooltip title="TunDev">
-                            <Avatar
-                                alt="Remy Sharp"
-                                src="https://plus.unsplash.com/premium_photo-1671656349218-5218444643d8?w=300&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8QVZBVEFSfGVufDB8fDB8fHww"
-                            />
-                        </Tooltip>
-                        <Tooltip title="TunDev">
-                            <Avatar
-                                alt="Travis Howard"
-                                src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=300&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8QVZBVEFSfGVufDB8fDB8fHww"
-                            />
-                        </Tooltip>
-                        <Tooltip title="TunDev">
-                            <Avatar
-                                alt="Cindy Baker"
-                                src="https://images.unsplash.com/photo-1628157588553-5eeea00af15c?w=300&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTJ8fEFWQVRBUnxlbnwwfHwwfHx8MA%3D%3D"
-                            />
-                        </Tooltip>
-                        <Tooltip title="TunDev">
-                            <Avatar
-                                alt="Agnes Walker"
-                                src="https://images.unsplash.com/photo-1586297135537-94bc9ba060aa?w=300&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTh8fEFWQVRBUnxlbnwwfHwwfHx8MA%3D%3D"
-                            />
-                        </Tooltip>
-                        <Tooltip title="TunDev">
-                            <Avatar
-                                alt="Trevor Henderson"
-                                src="https://images.unsplash.com/photo-1701615004837-40d8573b6652?w=300&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MjR8fEFWQVRBUnxlbnwwfHwwfHx8MA%3D%3D"
-                            />
-                        </Tooltip>
-                        <Tooltip title="TunDev">
-                            <Avatar
-                                alt="Remy Sharp"
-                                src="https://plus.unsplash.com/premium_photo-1671656349218-5218444643d8?w=300&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8QVZBVEFSfGVufDB8fDB8fHww"
-                            />
-                        </Tooltip>
-                        <Tooltip title="TunDev">
-                            <Avatar
-                                alt="Travis Howard"
-                                src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=300&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8QVZBVEFSfGVufDB8fDB8fHww"
-                            />
-                        </Tooltip>
-                        <Tooltip title="TunDev">
-                            <Avatar
-                                alt="Cindy Baker"
-                                src="https://images.unsplash.com/photo-1628157588553-5eeea00af15c?w=300&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTJ8fEFWQVRBUnxlbnwwfHwwfHx8MA%3D%3D"
-                            />
-                        </Tooltip>
-                        <Tooltip title="TunDev">
-                            <Avatar
-                                alt="Agnes Walker"
-                                src="https://images.unsplash.com/photo-1586297135537-94bc9ba060aa?w=300&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTh8fEFWQVRBUnxlbnwwfHwwfHx8MA%3D%3D"
-                            />
-                        </Tooltip>
-                        <Tooltip title="TunDev">
-                            <Avatar
-                                alt="Trevor Henderson"
-                                src="https://images.unsplash.com/photo-1701615004837-40d8573b6652?w=300&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MjR8fEFWQVRBUnxlbnwwfHwwfHx8MA%3D%3D"
-                            />
-                        </Tooltip>
-                    </AvatarGroup>
+
+                    {/* ---------------------------- Board User Group ---------------------------- */}
+                    <BoardUserGroup />
                 </Box>
             </Box>
         </>
