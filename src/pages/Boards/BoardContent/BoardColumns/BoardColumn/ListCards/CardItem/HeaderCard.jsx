@@ -2,8 +2,6 @@ import { useState } from "react";
 import { toast } from "react-toastify";
 import Box from "@mui/material/Box";
 import Tooltip from "@mui/material/Tooltip";
-import AddCardIcon from "@mui/icons-material/AddCard";
-import Typography from "@mui/material/Typography";
 import Menu from "@mui/material/Menu";
 import Divider from "@mui/material/Divider";
 import MenuItem from "@mui/material/MenuItem";
@@ -21,8 +19,10 @@ import DragIndicatorOutlinedIcon from "@mui/icons-material/DragIndicatorOutlined
 // --------------------- REDUX ---------------------
 import { updateCurrentActiveBoard, selectCurrentActiveBoard } from "~/redux/activeBoard/activeBoardSlice";
 import { useDispatch, useSelector } from "react-redux";
-import { deleteColumnDetailsAPI } from "~/apis";
-// --------------------- MAIN COMPONENT ---------------------
+import { deleteColumnDetailsAPI, updateColumnDetailsAPI } from "~/apis";
+import ToggleFocusInput from "~/components/Form/ToggleFocusInput";
+
+// ===================================================== MAIN COMPONENT =====================================================
 const HeaderCard = ({ column, attributes, listeners }) => {
     const dispatch = useDispatch();
     const board = useSelector(selectCurrentActiveBoard);
@@ -64,6 +64,20 @@ const HeaderCard = ({ column, attributes, listeners }) => {
         }
         // console.log(reason);
     };
+
+    const onUpdateColumnTitle = (newTitle) => {
+        // Gọi API update column và xử lý dữ liệu Board trong redux
+        updateColumnDetailsAPI(column._id, { title: newTitle }).then(() => {
+            dispatch(
+                updateCurrentActiveBoard({
+                    ...board,
+                    columns: board.columns.map((c) => (c._id === column._id ? { ...c, title: newTitle } : c)),
+                })
+            );
+        });
+    };
+
+    // ========================================================================================
     return (
         <>
             <Box
@@ -75,7 +89,7 @@ const HeaderCard = ({ column, attributes, listeners }) => {
                     justifyContent: "space-between",
                 }}
             >
-                <Box sx={{ display: "flex", gap: "8px" }}>
+                <Box sx={{ display: "flex", gap: "8px", alignItems: "center" }}>
                     <DragIndicatorOutlinedIcon
                         {...attributes}
                         {...listeners}
@@ -91,7 +105,9 @@ const HeaderCard = ({ column, attributes, listeners }) => {
                             },
                         }}
                     />
-                    <Typography sx={{ fontWeight: "bold", cursor: "pointer" }}>{column?.title}</Typography>
+
+                    {/* ---------------------------------- COLUMN TITLE ---------------------------------- */}
+                    <ToggleFocusInput value={column?.title} onChangedValue={onUpdateColumnTitle}></ToggleFocusInput>
                 </Box>
                 <Box>
                     <Tooltip title="More options">
