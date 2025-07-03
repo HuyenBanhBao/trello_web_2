@@ -16,8 +16,13 @@ import DriveFileRenameOutlineOutlinedIcon from "@mui/icons-material/DriveFileRen
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 // --------------------------------------------------------------------
-// -------------------------- MAIN COMPONENT --------------------------
+import { useDispatch } from "react-redux";
+import { updateCurrentActiveCard } from "~/redux/activeCard/activeCardSlice";
+
+// =================================================== MAIN COMPONENT ===================================================
 const CardMain = ({ card }) => {
+    const dispatch = useDispatch();
+
     const [mouseIsOver, setMouseIsOver] = useState(false);
     // -------------------------- FUNCTION --------------------------
     const showCardAction = () => {
@@ -38,10 +43,15 @@ const CardMain = ({ card }) => {
         border: isDragging ? "1px solid #2ecc71" : undefined,
     };
 
+    const setActiveCard = () => {
+        // Cập nhật data cho activeCard trong redux
+        dispatch(updateCurrentActiveCard(card));
+    };
     // -------------------------- RETURN --------------------------
     return (
         <>
             <Card
+                onClick={setActiveCard}
                 ref={setNodeRef}
                 style={dndKitCardStyles}
                 {...attributes}

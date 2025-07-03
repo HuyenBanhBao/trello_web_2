@@ -2,7 +2,6 @@ import Box from "@mui/material/Box";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import Tooltip from "@mui/material/Tooltip";
-import { styled } from "@mui/material/styles";
 import MailIcon from "@mui/icons-material/Mail";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
@@ -18,21 +17,7 @@ import { useSelector, useDispatch } from "react-redux";
 import FieldErrorAlert from "~/components/Form/FieldErrorAlert";
 import { selectCurrentUser, updateUserAPI } from "~/redux/user/userSlice";
 import { FIELD_REQUIRED_MESSAGE, singleFileValidator } from "~/utils/validators";
-
-// =================================================================================================================
-// Xử lý custom đẹp cái input file ở đây: https://mui.com/material-ui/react-button/#file-upload
-// Ngoài ra note thêm lib này từ docs của MUI nó recommend nếu cần dùng: https://github.com/viclafouch/mui-file-input
-const VisuallyHiddenInput = styled("input")({
-    clip: "rect(0 0 0 0)",
-    clipPath: "inset(50%)",
-    width: 1,
-    height: 1,
-    overflow: "hidden",
-    position: "absolute",
-    left: 0,
-    bottom: 0,
-    whiteSpace: "nowrap",
-});
+import VisuallyHiddenInput from "~/components/Form/VisuallyHiddenInput";
 
 function AccountTab() {
     const currentUser = useSelector(selectCurrentUser);
