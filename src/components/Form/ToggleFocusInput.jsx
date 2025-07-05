@@ -41,6 +41,10 @@ function ToggleFocusInput({ value, onChangedValue, inputFontSize = "16px", ...pr
             sx={{
                 "& label": {},
                 "& input": { fontSize: inputFontSize, fontWeight: "bold" },
+                "&.card-title-modal .MuiOutlinedInput-input": {
+                    color: "#FEF6C7",
+                },
+
                 "& .MuiOutlinedInput-root": {
                     backgroundColor: "transparent",
                     "& fieldset": { borderColor: "transparent" },
@@ -50,8 +54,8 @@ function ToggleFocusInput({ value, onChangedValue, inputFontSize = "16px", ...pr
                     "& fieldset": { borderColor: "transparent" },
                 },
                 "& .MuiOutlinedInput-root.Mui-focused": {
-                    backgroundColor: (theme) => (theme.palette.mode === "dark" ? "#33485D" : "white"),
-                    "& fieldset": { borderColor: "primary.main" },
+                    backgroundColor: (theme) => (theme.palette.mode === "dark" ? "#33485D" : "395F18"),
+                    "& fieldset": { borderColor: "transparent" },
                 },
                 "& .MuiOutlinedInput-input": {
                     px: "6px",

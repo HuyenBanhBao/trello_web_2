@@ -37,6 +37,34 @@ function CardActivitySection() {
                     src={currentUser?.avatar}
                 />
                 <TextField
+                    sx={{
+                        mt: "4px",
+                        "& .MuiOutlinedInput-root": {
+                            bgcolor: (theme) => (theme.palette.mode === "dark" ? "#33485D" : "transparent"),
+                            padding: "8px 12px",
+                            borderRadius: "4px",
+                            border: "0.5px solid rgba(254, 246, 199, 0.3)",
+                            boxShadow: "0 0 1px rgba(254, 246, 199, 0.3)",
+                            "& fieldset": {
+                                border: "none", // ẩn border mặc định
+                            },
+                            "&:hover fieldset": {
+                                border: "none",
+                            },
+                            "&.Mui-focused fieldset": {
+                                border: "1px solid rgba(254, 246, 199, 0.8)",
+                            },
+                        },
+                        "& .MuiOutlinedInput-input": {
+                            padding: 0, // padding đã có ở `.MuiOutlinedInput-root` rồi
+                            wordBreak: "break-word",
+                            color: "#FEF6C7",
+                            "&::placeholder": {
+                                color: "#FEF6C7",
+                                opacity: 0.5,
+                            },
+                        },
+                    }}
                     fullWidth
                     placeholder="Write a comment..."
                     type="text"
@@ -74,13 +102,13 @@ function CardActivitySection() {
                         <Box
                             sx={{
                                 display: "block",
-                                bgcolor: (theme) => (theme.palette.mode === "dark" ? "#33485D" : "white"),
+                                bgcolor: (theme) => (theme.palette.mode === "dark" ? "#33485D" : "transparent"),
                                 p: "8px 12px",
                                 mt: "4px",
-                                border: "0.5px solid rgba(0, 0, 0, 0.2)",
+                                border: "0.5px solid rgba(254, 246, 199, 0.3)",
                                 borderRadius: "4px",
                                 wordBreak: "break-word",
-                                boxShadow: "0 0 1px rgba(0, 0, 0, 0.2)",
+                                boxShadow: "0 0 1px rgba(254, 246, 199, 0.3)",
                             }}
                         >
                             This is a comment!

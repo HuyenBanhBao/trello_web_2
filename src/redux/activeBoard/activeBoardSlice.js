@@ -37,6 +37,25 @@ export const activeBoardSlice = createSlice({
             // Update dữ liệu của currentActiveBoard
             state.currentActiveBoard = fullBoard;
         },
+        updateCardInBoard: (state, action) => {
+            // Update nested data . https://redux-toolkit.js.org/usage/immer-reducers#updating-nested-data
+            const incomingCard = action.payload;
+            // find : Board > Column > Card
+            const column = state.currentActiveBoard.columns.find((column) => column._id === incomingCard.columnId);
+            if (column) {
+                const card = column.cards.find((card) => card._id === incomingCard._id);
+                if (card) {
+                    // card.title = incomingCard.title;
+                    // DDùng object.keys để lấy toàn bộ các properties (keys) của incomingCard về một Array rồi forEach nó ra.
+                    // Sau đó tùy vào trường hợp cần thì kiểm tra thêm còn không thì cập nhật ngược lại giá trị vào card luôn như bên dưới.
+                    Object.keys(incomingCard).forEach((key) => {
+                        if (key !== "_id") {
+                            card[key] = incomingCard[key];
+                        }
+                    });
+                }
+            }
+        },
     },
     // extraReducers dùng để xử lý các hành động gọi api (bất đồng bộ) và cập nhật dữ liệu vào Redux, dùng Middleware createAsyncThunk đi kèm với extraReducers
     extraReducers: (builder) => {
@@ -47,6 +66,19 @@ export const activeBoardSlice = createSlice({
             .addCase(fetchBoardDetailsAPI.fulfilled, (state, action) => {
                 // action.payload chính là cái  response.data trả về ở trên.
                 let board = action.payload;
+
+                // Thành viên trong cái board sẽ là góp lại của 2 mảnh: owners và members
+                // Cach 1:
+                // board.FE_allUsers = [...board.owners, ...board.members];
+                // Cach 2:
+                // board.FE_allUsers = board.owners.concat(board.members);
+                // Cach 3: Loai bo undefined
+                const allUsers = [
+                    ...(Array.isArray(board.owners) ? board.owners : []),
+                    ...(Array.isArray(board.members) ? board.members : []),
+                ];
+                // Loại bỏ user trùng `_id`
+                board.FE_allUsers = Array.from(new Map(allUsers.map((user) => [user._id, user])).values());
 
                 // Xử lý dữ liệu board nếu cần thiết
                 board.columns = mapOrder(board.columns, board.columnOrderIds, "_id"); // Sắp xếp lại mảng columns
@@ -70,7 +102,7 @@ export const activeBoardSlice = createSlice({
 // --------------------------------------------------------------------------------------------------------
 // Action là nơi dành cho các components bên dưới gọi bằng dispatch() tới nó để cập nhật lại dữ liệu thông qua reducer (chạy đồng bộ)
 // Để ý ở trên thì k thấy properties.actions đâu cả, bởi vì những cái actions này đơn giản là được thằng redux tạo tự dộng theo tên của reducer
-export const { updateCurrentActiveBoard } = activeBoardSlice.actions;
+export const { updateCurrentActiveBoard, updateCardInBoard } = activeBoardSlice.actions;
 // Selectors là những hàm giúp lấy ra dữ liệu từ trong Redux Store, dành cho các components bên dưới gọi bằng hook useSelector()
 export const selectCurrentActiveBoard = (state) => {
     return state.activeBoard.currentActiveBoard;
