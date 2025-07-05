@@ -1,4 +1,4 @@
-import { useState } from "react";
+// import { useState } from "react";
 import Card from "@mui/material/Card";
 import CardActions from "@mui/material/CardActions";
 import CardContent from "@mui/material/CardContent";
@@ -10,7 +10,7 @@ import Typography from "@mui/material/Typography";
 import GroupIcon from "@mui/icons-material/Group";
 import AttachmentIcon from "@mui/icons-material/Attachment";
 import ForumIcon from "@mui/icons-material/Forum";
-import DriveFileRenameOutlineOutlinedIcon from "@mui/icons-material/DriveFileRenameOutlineOutlined";
+// import DriveFileRenameOutlineOutlinedIcon from "@mui/icons-material/DriveFileRenameOutlineOutlined";
 
 // --------------------- DND KIT ---------------------
 import { useSortable } from "@dnd-kit/sortable";
@@ -23,7 +23,7 @@ import { updateCurrentActiveCard } from "~/redux/activeCard/activeCardSlice";
 const CardMain = ({ card }) => {
     const dispatch = useDispatch();
 
-    const [mouseIsOver, setMouseIsOver] = useState(false);
+    // const [mouseIsOver, setMouseIsOver] = useState(false);
     // -------------------------- FUNCTION --------------------------
     const showCardAction = () => {
         return !!card?.memberIds?.length || !!card?.comments?.length || !!card?.attachments?.length;
@@ -56,8 +56,8 @@ const CardMain = ({ card }) => {
                 style={dndKitCardStyles}
                 {...attributes}
                 {...listeners}
-                onMouseEnter={() => setMouseIsOver(true)}
-                onMouseLeave={() => setMouseIsOver(false)}
+                // onMouseEnter={() => setMouseIsOver(true)}
+                // onMouseLeave={() => setMouseIsOver(false)}
                 sx={{
                     cursor: "grab",
                     boxShadow: "0px 1px 6px rgba(0, 0, 0, 0.1)",
@@ -88,7 +88,7 @@ const CardMain = ({ card }) => {
                     {!card?.FE_PlaceholderCard && (
                         <>
                             <Typography sx={{ flex: 1 }}>{card?.title}</Typography>
-                            {mouseIsOver && (
+                            {/* {mouseIsOver && (
                                 <DriveFileRenameOutlineOutlinedIcon
                                     sx={{
                                         outline: "none",
@@ -98,7 +98,7 @@ const CardMain = ({ card }) => {
                                         color: "rgba(0, 0, 0, 0.5)",
                                     }}
                                 />
-                            )}
+                            )} */}
                         </>
                     )}
                 </CardContent>

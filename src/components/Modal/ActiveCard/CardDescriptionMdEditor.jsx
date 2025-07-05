@@ -6,22 +6,22 @@ import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import EditNoteIcon from "@mui/icons-material/EditNote";
 
-const markdownValueExample = `
-  *\`Markdown Content Example:\`*
+// const markdownValueExample = `
+//     *\`Markdown Content Example:\`*
 
-  **Hello world | TrungQuanDev - Một Lập Trình Viên | Trello MERN Stack Advanced**
-  [![](https://avatars.githubusercontent.com/u/14128099?v=4&s=80)](https://avatars.githubusercontent.com/u/14128099?v=4)
-  \`\`\`javascript
-  import React from "react"
-  import ReactDOM from "react-dom"
-  import MDEditor from '@uiw/react-md-editor'
-  \`\`\`
-`;
+//     **Hello world | TrungQuanDev - Một Lập Trình Viên | Trello MERN Stack Advanced**
+//     [![](https://avatars.githubusercontent.com/u/14128099?v=4&s=80)](https://avatars.githubusercontent.com/u/14128099?v=4)
+//     \`\`\`javascript
+//     import React from "react"
+//     import ReactDOM from "react-dom"
+//     import MDEditor from '@uiw/react-md-editor'
+//     \`\`\`
+// `;
 /**
  * Vài ví dụ Markdown từ lib
  * https://codesandbox.io/embed/markdown-editor-for-react-izdd6?fontsize=14&hidenavigation=1&theme=dark
  */
-function CardDescriptionMdEditor() {
+function CardDescriptionMdEditor({ cardDescriptionProp, handleUpdateCardDescription }) {
     // Lấy giá trị 'dark', 'light' hoặc 'system' mode từ MUI để support phần Markdown bên dưới: data-color-mode={mode}
     // https://www.npmjs.com/package/@uiw/react-md-editor#support-dark-modenight-mode
     const { mode } = useColorScheme();
@@ -29,11 +29,13 @@ function CardDescriptionMdEditor() {
     // State xử lý chế độ Edit và chế độ View
     const [markdownEditMode, setMarkdownEditMode] = useState(false);
     // State xử lý giá trị markdown khi chỉnh sửa
-    const [cardDescription, setCardDescription] = useState(markdownValueExample);
+    // const [cardDescription, setCardDescription] = useState(markdownValueExample);
+    const [cardDescription, setCardDescription] = useState(cardDescriptionProp);
 
     const updateCardDescription = () => {
         setMarkdownEditMode(false);
-        console.log("cardDescription: ", cardDescription);
+        // console.log("cardDescription: ", cardDescription);
+        handleUpdateCardDescription(cardDescription);
     };
 
     return (
@@ -51,7 +53,15 @@ function CardDescriptionMdEditor() {
                         />
                     </Box>
                     <Button
-                        sx={{ alignSelf: "flex-end" }}
+                        sx={{
+                            alignSelf: "flex-end",
+                            color: "#FEF6C7",
+                            border: "1px solid #FEF6C7",
+                            backgroundColor: "transparent",
+                            "&:hover": {
+                                backgroundColor: "rgba(254, 246, 199, 0.2)",
+                            },
+                        }}
                         onClick={updateCardDescription}
                         className="interceptor-loading"
                         type="button"
@@ -65,7 +75,15 @@ function CardDescriptionMdEditor() {
             ) : (
                 <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
                     <Button
-                        sx={{ alignSelf: "flex-end" }}
+                        sx={{
+                            alignSelf: "flex-end",
+                            color: "#FEF6C7",
+                            border: "1px solid #FEF6C7",
+                            backgroundColor: "transparent",
+                            "&:hover": {
+                                backgroundColor: "rgba(254, 246, 199, 0.1)",
+                            },
+                        }}
                         onClick={() => setMarkdownEditMode(true)}
                         type="button"
                         variant="contained"
@@ -73,7 +91,7 @@ function CardDescriptionMdEditor() {
                         size="small"
                         startIcon={<EditNoteIcon />}
                     >
-                        Edit
+                        {cardDescription ? "Edit" : "Add description"}
                     </Button>
                     <Box data-color-mode={mode}>
                         <MDEditor.Markdown
