@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 import AddOutlinedIcon from "@mui/icons-material/AddOutlined";
 import AddToDriveOutlinedIcon from "@mui/icons-material/AddToDriveOutlined";
 import ArchiveOutlinedIcon from "@mui/icons-material/ArchiveOutlined";
@@ -33,15 +32,15 @@ import ToggleFocusInput from "~/components/Form/ToggleFocusInput";
 import VisuallyHiddenInput from "~/components/Form/VisuallyHiddenInput";
 import { updateCardInBoard } from "~/redux/activeBoard/activeBoardSlice";
 import {
-    clearCurrentActiveCard,
+    clearAndHideCurrentActiveCard,
     selectCurrentActiveCard,
     updateCurrentActiveCard,
+    selectIsShowModalActiveCard,
 } from "~/redux/activeCard/activeCardSlice";
 import { singleFileValidator } from "~/utils/validators";
 import CardActivitySection from "./CardActivitySection";
 import CardDescriptionMdEditor from "./CardDescriptionMdEditor";
 import CardUserGroup from "./CardUserGroup";
-import { colors } from "@mui/material";
 // --------------------------------- Function ---------------------------------------
 const SidebarItem = styled(Box)(({ theme }) => ({
     display: "flex",
@@ -79,11 +78,12 @@ const SidebarItem = styled(Box)(({ theme }) => ({
 function ActiveCard() {
     const dispatch = useDispatch();
     const activeCard = useSelector(selectCurrentActiveCard);
-    // không dùng biến state để check đóng mở Modal nữa vì sẽ check bên Board/_id.jsx
+    const isShowModalActiveCard = useSelector(selectIsShowModalActiveCard);
+    // không dùng biến state để check đóng mở Modal nữa vì sẽ check theo isShowModalActiveCard
     // const [isOpen, setIsOpen] = useState(true);
     // const handleOpenModal = () => setIsOpen(true);
     const handleCloseModal = () => {
-        dispatch(clearCurrentActiveCard()); // Đặt lại currentActiveCard là null
+        dispatch(clearAndHideCurrentActiveCard()); // Đặt lại currentActiveCard là null
         // setIsOpen(false);
     };
 
@@ -108,7 +108,7 @@ function ActiveCard() {
     };
 
     const onUploadCardCover = (event) => {
-        console.log(event.target?.files[0]);
+        // console.log(event.target?.files[0]);
         const error = singleFileValidator(event.target?.files[0]);
         if (error) {
             toast.error(error);
@@ -126,10 +126,16 @@ function ActiveCard() {
         );
     };
 
+    // Dùng async await ở đây để component con CardActivitySection chờ và nếu thành công thì mới clear thẻ input comment
+    const onAddCardComment = async (commentToAdd) => {
+        // Gọi api thêm comment lên component cha
+        await callAPIUpdateCard({ commentToAdd });
+    };
+
     return (
         <Modal
             disableScrollLock
-            open={true}
+            open={isShowModalActiveCard}
             onClose={handleCloseModal} // Sử dụng onClose trong trường hợp muốn đóng Modal bằng nút ESC hoặc click ra ngoài Modal
             sx={{
                 // overflowY: "auto",
@@ -288,7 +294,10 @@ function ActiveCard() {
                                 </Box>
 
                                 {/* Feature 04: Xử lý các hành động, ví dụ comment vào Card */}
-                                <CardActivitySection />
+                                <CardActivitySection
+                                    cardComments={activeCard?.comments}
+                                    onAddCardComment={onAddCardComment}
+                                />
                             </Box>
                         </Grid>
 

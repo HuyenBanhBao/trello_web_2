@@ -8,7 +8,7 @@ import Tooltip from "@mui/material/Tooltip";
 import { useSelector } from "react-redux";
 import { selectCurrentUser } from "~/redux/user/userSlice";
 
-function CardActivitySection() {
+function CardActivitySection({ cardComments = [], onAddCardComment }) {
     const currentUser = useSelector(selectCurrentUser);
 
     const handleAddCardComment = (event) => {
@@ -23,7 +23,18 @@ function CardActivitySection() {
                 userDisplayName: currentUser?.displayName,
                 content: event.target.value.trim(),
             };
-            console.log(commentToAdd);
+            // Gọi api thêm comment lên component cha
+            /**
+             * Người dùng nhập comment và bấm gửi (giả sử trong component con).
+             * Hàm onAddCardComment(commentToAdd) được gọi trong component con.
+             * Vì onAddCardComment là async, nó trả về một Promise.
+             * .then(() => {...}) sẽ chạy sau khi Promise được resolve, tức là khi:
+             * await callAPIUpdateCard({ commentToAdd }); trong component cha đã hoàn tất, nghĩa là API đã xử lý xong việc thêm comment.
+             * Sau đó mới chạy: event.target.value = "", tức là xóa nội dung ô input.
+             */
+            onAddCardComment(commentToAdd).then(() => {
+                event.target.value = "";
+            });
         }
     };
 
@@ -75,28 +86,28 @@ function CardActivitySection() {
             </Box>
 
             {/* Hiển thị danh sách các comments */}
-            {[...Array(0)].length === 0 && (
+            {cardComments.length === 0 && (
                 <Typography sx={{ pl: "45px", fontSize: "14px", fontWeight: "500", color: "#b1b1b1" }}>
                     No activity found!
                 </Typography>
             )}
-            {[...Array(6)].map((_, index) => (
+            {cardComments.map((comment, index) => (
                 <Box sx={{ display: "flex", gap: 1, width: "100%", mb: 1.5 }} key={index}>
-                    <Tooltip title="trungquandev">
+                    <Tooltip>
                         <Avatar
                             sx={{ width: 36, height: 36, cursor: "pointer" }}
-                            alt="trungquandev"
-                            src="https://trungquandev.com/wp-content/uploads/2019/06/trungquandev-cat-avatar.png"
+                            alt={comment.userDisplayName}
+                            src={comment.userAvatar}
                         />
                     </Tooltip>
                     <Box sx={{ width: "inherit" }}>
-                        <Typography variant="span" sx={{ fontWeight: "bold", mr: 1 }}>
-                            Quan Do
+                        <Typography variant="span" sx={{ fontWeight: "bold", mr: 1, userSelect: "none" }}>
+                            {comment.userDisplayName}
                         </Typography>
 
-                        <Typography variant="span" sx={{ fontSize: "12px" }}>
+                        <Typography variant="span" sx={{ fontSize: "12px", userSelect: "none" }}>
                             {/* Format ngày tháng */}
-                            {moment().format("llll")}
+                            {moment(comment.commentedAt).format("llll")}
                         </Typography>
 
                         <Box
@@ -111,7 +122,7 @@ function CardActivitySection() {
                                 boxShadow: "0 0 1px rgba(254, 246, 199, 0.3)",
                             }}
                         >
-                            This is a comment!
+                            {comment.content}
                         </Box>
                     </Box>
                 </Box>
