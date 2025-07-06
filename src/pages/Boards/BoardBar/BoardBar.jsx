@@ -2,7 +2,6 @@
 import React from "react";
 import Box from "@mui/material/Box";
 import Chip from "@mui/material/Chip";
-import Button from "@mui/material/Button";
 // --------------------- IMPORT ICON ------------------------
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import VpnLockIcon from "@mui/icons-material/VpnLock";
@@ -10,10 +9,10 @@ import AddToDriveIcon from "@mui/icons-material/AddToDrive";
 import BoltIcon from "@mui/icons-material/Bolt";
 import FilterListIcon from "@mui/icons-material/FilterList";
 import Tooltip from "@mui/material/Tooltip";
-import PersonAddIcon from "@mui/icons-material/PersonAdd";
 // --------------------- IMPORT FUNCTIONS -------------------------
 import { capitalizeFirstLetter } from "~/utils/formatters";
 import BoardUserGroup from "./BoardUserGroup";
+import InviteBoardUser from "./InviteBoardUser";
 // --------------------- STYLES -------------------------
 const MENU_STYLES = {
     color: (theme) => theme.trello.primaryColorTextBar,
@@ -69,17 +68,8 @@ const BoardBar = ({ board }) => {
                 {/* -------------- BOARD BAR CENTER ------------------ */}
                 {/* -------------- BOARD BAR RIGHT ------------------ */}
                 <Box sx={MENU_ITEMS}>
-                    <Button
-                        variant="outlined"
-                        startIcon={<PersonAddIcon />}
-                        sx={{
-                            color: (theme) => theme.trello.primaryColorTextBar,
-                            borderColor: (theme) => theme.trello.primaryColorTextBar,
-                            "&:hover": { borderColor: (theme) => theme.trello.primaryColorTextBar },
-                        }}
-                    >
-                        Invite
-                    </Button>
+                    {/* Xử lý mời User vào làm thành viên của Board */}
+                    <InviteBoardUser board={board} />
 
                     {/* ---------------------------- Board User Group ---------------------------- */}
                     <BoardUserGroup boardUsers={board?.FE_allUsers} />
