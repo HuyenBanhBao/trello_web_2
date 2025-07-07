@@ -26,12 +26,13 @@ const persistor = persistStore(store);
 // Kỹ thuật Inject store: Là kỹ thuật khi cần sử dụng để biến redux store ở các file ngoài phạm vi component
 import { injectStore } from "./utils/authorizeAxios";
 injectStore(store);
+
 // =========================================================== MAIN ===========================================================
 
 createRoot(document.getElementById("root")).render(
-    <BrowserRouter basename="/">
-        <Provider store={store}>
-            <PersistGate persistor={persistor}>
+    <Provider store={store}>
+        <PersistGate persistor={persistor}>
+            <BrowserRouter basename="/">
                 <CssVarsProvider theme={theme}>
                     <ConfirmProvider
                         defaultOptions={{
@@ -47,9 +48,9 @@ createRoot(document.getElementById("root")).render(
                         <ToastContainer position="bottom-right" autoClose={4000} theme="colored" closeOnClick />
                     </ConfirmProvider>
                 </CssVarsProvider>
-            </PersistGate>
-        </Provider>
-    </BrowserRouter>
+            </BrowserRouter>
+        </PersistGate>
+    </Provider>
 );
 
 // defaultMode="light" colorSchemeSelector="class" enableColorScheme

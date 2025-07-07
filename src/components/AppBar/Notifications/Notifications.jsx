@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import moment from "moment";
 import Badge from "@mui/material/Badge";
+import { useNavigate } from "react-router-dom";
 import NotificationsNoneIcon from "@mui/icons-material/NotificationsNone";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
@@ -13,8 +14,11 @@ import Divider from "@mui/material/Divider";
 import GroupAddIcon from "@mui/icons-material/GroupAdd";
 import DoneIcon from "@mui/icons-material/Done";
 import NotInterestedIcon from "@mui/icons-material/NotInterested";
+import { socketIoInstance } from "~/socketClient";
 import { useDispatch, useSelector } from "react-redux";
+import { selectCurrentUser } from "~/redux/user/userSlice";
 import {
+    addNotification,
     fetchInvitationsAPI,
     selectCurrentNotifications,
     updateBoardInvitationAPI,
@@ -32,20 +36,48 @@ function Notifications() {
     const open = Boolean(anchorEl);
     const handleClickNotificationIcon = (event) => {
         setAnchorEl(event.currentTarget);
+
+        setNewNotification(false);
     };
     const handleClose = () => {
         setAnchorEl(null);
     };
 
+    const [newNotification, setNewNotification] = useState(false); // Ktra có thông báo mới hay khôngkhông
+
+    // lấy dữ liệu user từ trong redux
+    const currentUser = useSelector(selectCurrentUser);
+
     // Lấy dữ liệu notification từ Redux
     const notifications = useSelector(selectCurrentNotifications);
+
+    const navigate = useNavigate();
 
     // Fetch danh sách các lời mời
     const dispatch = useDispatch();
     // Gọi API fetch danh sách các lời mời
     useEffect(() => {
         dispatch(fetchInvitationsAPI());
-    }, [dispatch]);
+        // Tạo 1 Func xử lý khi nhận được sự kiên real-time. https://socket.io/how-to/use-with-react
+        const onReceiveNewInvitation = (invitation) => {
+            // Nếu thằng user đang đăng nhập hiện tại mà lưu trong redux chính là thằng invitee trong bản ghi invitation
+            if (invitation.inviteeId === currentUser._id) {
+                // Bước 1: Thêm bản ghi invitation mới vào trong redux:
+                dispatch(addNotification(invitation));
+                // Bước 2: Cập nhật trạng thái "đang có thông báo đến":
+                setNewNotification(true);
+            }
+        };
+        // Lắng nghe sự kiên real-time có tên là "BE_USER_INVITED_TO_BOARD" từ server gửi về
+        socketIoInstance.on("BE_USER_INVITED_TO_BOARD", onReceiveNewInvitation);
+        // Clean up sự kiện để ngăn chặn việc bị đăng ký lại sự kiện . https://socket.io/how-to/use-with-react#cleanup
+        return () => {
+            // Kiểm tra xem có currentUser thì mới clean-up
+            if (currentUser) {
+                socketIoInstance.off("BE_USER_INVITED_TO_BOARD", onReceiveNewInvitation);
+            }
+        };
+    }, [dispatch, currentUser]);
 
     // ----------------------------------------------------------
     //  Cập nhâtj trạng thái của 1 lời mời join board
@@ -53,7 +85,9 @@ function Notifications() {
         // console.log("status: ", status);
         // console.log("invitationId: ", invitationId);
         dispatch(updateBoardInvitationAPI({ status, invitationId })).then((res) => {
-            console.log(res);
+            if (res.payload.boardInvitation.status === BOARD_INVITATION_STATUS.ACCEPTED) {
+                navigate(`/boards/${res.payload.boardInvitation.boardId}`);
+            }
         });
     };
 
@@ -64,7 +98,8 @@ function Notifications() {
                 <Badge
                     color="warning"
                     // variant="none"
-                    variant="dot"
+                    // variant="dot"
+                    variant={newNotification ? "dot" : "none"}
                     sx={{ cursor: "pointer" }}
                     id="basic-button-open-notification"
                     aria-controls={open ? "basic-notification-drop-down" : undefined}
@@ -75,7 +110,7 @@ function Notifications() {
                     <NotificationsNoneIcon
                         sx={{
                             // color: 'white'
-                            color: "yellow",
+                            color: newNotification ? "yellow" : "white",
                         }}
                     />
                 </Badge>
