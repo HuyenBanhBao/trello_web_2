@@ -37,10 +37,12 @@ import {
     updateCurrentActiveCard,
     selectIsShowModalActiveCard,
 } from "~/redux/activeCard/activeCardSlice";
+import { selectCurrentUser } from "~/redux/user/userSlice";
 import { singleFileValidator } from "~/utils/validators";
 import CardActivitySection from "./CardActivitySection";
 import CardDescriptionMdEditor from "./CardDescriptionMdEditor";
 import CardUserGroup from "./CardUserGroup";
+import { CARD_MEMBER_ACTIONS } from "~/utils/constants";
 // --------------------------------- Function ---------------------------------------
 const SidebarItem = styled(Box)(({ theme }) => ({
     display: "flex",
@@ -78,6 +80,7 @@ const SidebarItem = styled(Box)(({ theme }) => ({
 function ActiveCard() {
     const dispatch = useDispatch();
     const activeCard = useSelector(selectCurrentActiveCard);
+    const currentUser = useSelector(selectCurrentUser);
     const isShowModalActiveCard = useSelector(selectIsShowModalActiveCard);
     // không dùng biến state để check đóng mở Modal nữa vì sẽ check theo isShowModalActiveCard
     // const [isOpen, setIsOpen] = useState(true);
@@ -130,6 +133,11 @@ function ActiveCard() {
     const onAddCardComment = async (commentToAdd) => {
         // Gọi api thêm comment lên component cha
         await callAPIUpdateCard({ commentToAdd });
+    };
+
+    const onUpdateCardMembers = (incomingMemberInfo) => {
+        // Gọi API update cardMembers
+        callAPIUpdateCard({ incomingMemberInfo });
     };
 
     return (
@@ -249,7 +257,11 @@ function ActiveCard() {
                                 <Typography sx={{ fontWeight: "600", mb: 1 }}>Members</Typography>
 
                                 {/* Feature 02: Xử lý các thành viên của Card */}
-                                <CardUserGroup />
+                                <CardUserGroup
+                                    //
+                                    cardMemberIds={activeCard?.memberIds}
+                                    onUpdateCardMembers={onUpdateCardMembers}
+                                />
                             </Box>
 
                             {/* ----------------- Description ------------------ */}
@@ -314,10 +326,22 @@ function ActiveCard() {
                                 <Typography sx={{ fontWeight: "600", mb: 1 }}>Add To Card</Typography>
                                 <Stack direction="column" spacing={1}>
                                     {/* Feature 05: Xử lý hành động bản thân user tự join vào card */}
-                                    <SidebarItem className="active">
-                                        <PersonOutlineOutlinedIcon fontSize="small" />
-                                        Join
-                                    </SidebarItem>
+                                    {/* Nếu user hiện tại đang đăng nhập chưa thuộc mảng memberIds của card thì mới cho hiện nút Join ra */}
+                                    {/* Khi Click vào Join thì nó sẽ luôn là hành động ADD */}
+                                    {!activeCard?.memberIds?.includes(currentUser._id) && (
+                                        <SidebarItem
+                                            onClick={() =>
+                                                onUpdateCardMembers({
+                                                    userId: currentUser._id,
+                                                    action: CARD_MEMBER_ACTIONS.ADD,
+                                                })
+                                            }
+                                            className="active"
+                                        >
+                                            <PersonOutlineOutlinedIcon fontSize="small" />
+                                            Join
+                                        </SidebarItem>
+                                    )}
                                     {/* Feature 06: Xử lý hành động cập nhật ảnh Cover của Card */}
                                     <SidebarItem className="active" component="label">
                                         <ImageOutlinedIcon fontSize="small" />
