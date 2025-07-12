@@ -6,7 +6,16 @@ import { Link } from "react-router-dom";
 // --------------------- MAIN COMPONENTS -------------------------
 const AvatarApp = () => {
     return (
-        <>
+        <Box
+            sx={{
+                //
+                position: { xs: "absolute", sm: "initial" },
+                left: { xs: "100%", sm: "0" },
+                transform: { xs: "translateX(-150%)", sm: "none" },
+                ml: { xs: "auto", sm: 0 },
+                display: "flex",
+            }}
+        >
             <Link to="/">
                 <Box
                     sx={{
@@ -32,7 +41,7 @@ const AvatarApp = () => {
                     </Typography>
                 </Box>
             </Link>
-        </>
+        </Box>
     );
 };
 

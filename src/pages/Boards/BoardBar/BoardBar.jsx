@@ -15,11 +15,14 @@ import BoardUserGroup from "./BoardUserGroup";
 import InviteBoardUser from "./InviteBoardUser";
 // --------------------- STYLES -------------------------
 const MENU_STYLES = {
-    color: (theme) => theme.trello.primaryColorTextBar,
-    bgcolor: "transparent",
+    display: "flex",
+    alignItems: "center",
+    fontSize: "16px",
     border: "none",
     px: { md: 0, lg: 1 },
     borderRadius: "4px",
+    color: (theme) => theme.trello.primaryColorTextBar,
+    bgcolor: "transparent",
     "& .MuiSvgIcon-root": {
         color: (theme) => theme.trello.primaryColorTextBar,
     },
@@ -47,32 +50,48 @@ const BoardBar = ({ board }) => {
                     overflowX: "auto",
                     borderBottom: "1px solid ",
                     borderBottomColor: (theme) => theme.trello.primaryColorTextBar,
-                    bgcolor: (theme) => (theme.palette.mode === "dark" ? "#34495e" : "#7d5fff"),
+                    bgcolor: (theme) => (theme.palette.mode === "dark" ? "#34495e" : theme.trello.colorAshGray),
                 }}
             >
                 {/* -------------- BOARD BAR LEFT ------------------ */}
                 <Box sx={MENU_ITEMS}>
+                    {/* -------------------- BOARD TITLE -------------------- */}
                     <Tooltip title={board?.description}>
                         <Chip sx={MENU_STYLES} icon={<DashboardIcon />} label={board?.title} clickable />
                     </Tooltip>
-                    <Chip
-                        sx={MENU_STYLES}
-                        icon={<VpnLockIcon />}
-                        label={capitalizeFirstLetter(board?.type)}
-                        clickable
-                    />
-                    <Chip sx={MENU_STYLES} icon={<AddToDriveIcon />} label="Add To Google Drive" clickable />
-                    <Chip sx={MENU_STYLES} icon={<BoltIcon />} label="Automation" clickable />
-                    <Chip sx={MENU_STYLES} icon={<FilterListIcon />} label="Filter" clickable />
+
+                    {/* -------------------- BOARD TYPE -------------------- */}
+                    <Box
+                        sx={{
+                            display: { xs: "none", md: "flex" },
+                            alignItems: "center",
+                            gap: { md: 0.5, lg: 2 },
+                        }}
+                    >
+                        <Chip
+                            sx={MENU_STYLES}
+                            icon={<VpnLockIcon />}
+                            label={capitalizeFirstLetter(board?.type)}
+                            clickable
+                        />
+
+                        {/* -------------------- BOARD MEMBERS -------------------- */}
+                        <Chip sx={MENU_STYLES} icon={<AddToDriveIcon />} label="Add To Google Drive" clickable />
+
+                        <Chip sx={MENU_STYLES} icon={<BoltIcon />} label="Automation" clickable />
+                        <Chip sx={MENU_STYLES} icon={<FilterListIcon />} label="Filter" clickable />
+                    </Box>
                 </Box>
                 {/* -------------- BOARD BAR CENTER ------------------ */}
                 {/* -------------- BOARD BAR RIGHT ------------------ */}
                 <Box sx={MENU_ITEMS}>
                     {/* Xử lý mời User vào làm thành viên của Board */}
-                    <InviteBoardUser board={board} />
+                    <Box sx={{ display: { xs: "none", sm: "flex" } }}>
+                        <InviteBoardUser board={board} />
+                    </Box>
 
                     {/* ---------------------------- Board User Group ---------------------------- */}
-                    <BoardUserGroup boardUsers={board?.FE_allUsers} />
+                    <BoardUserGroup boardUsers={board?.FE_allUsers} board={board} />
                 </Box>
             </Box>
         </>

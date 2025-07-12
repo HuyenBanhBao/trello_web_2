@@ -14,7 +14,6 @@ import HomeIcon from "@mui/icons-material/Home";
 import ArrowRightIcon from "@mui/icons-material/ArrowRight";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
-import CardMedia from "@mui/material/CardMedia";
 import Pagination from "@mui/material/Pagination";
 import PaginationItem from "@mui/material/PaginationItem";
 import { Link, useLocation } from "react-router-dom";
@@ -72,7 +71,7 @@ function Boards() {
         // // Fake tạm giả sử trong Database trả về có tổng 100 bản ghi boards
         // setTotalBoards(100);
         // Mỗi khi cái url thay đổi ví dụ như chúng ta chuyển trang, thì cái location.search lấy từ hook useLocation của react-router-dom cũng thay đổi theo, đồng nghĩa hàm useEffect sẽ chạy lại và fetch lại API theo đúng page mới vì cái location.search đã nằm trong dependencies của useEffect
-        console.log("location.search: ", location.search);
+        // console.log("location.search: ", location.search);
         // Gọi API lấy danh sách boards ở đây...
         fetchBoardsAPI(location.search).then(updateStateData);
     }, [location.search]);
@@ -90,10 +89,27 @@ function Boards() {
     return (
         <Container disableGutters maxWidth={false}>
             <AppBar />
-            <Box sx={{ paddingX: 2, my: 4 }}>
-                <Grid container spacing={2}>
-                    <Grid xs={12} sm={3}>
+            <Box sx={{ px: 1, mt: 1, height: (theme) => theme.trello.boardsHeight }}>
+                <Grid container spacing={2} sx={{ height: "100%" }}>
+                    {/* ---------------------- Navbar ---------------------- */}
+                    <Grid
+                        xs={12}
+                        md={3}
+                        sx={{
+                            display: { xs: "none", md: "flex" },
+                            flexDirection: "column",
+                            gap: 1,
+                            px: 2,
+                            pt: 2,
+                            backgroundColor: (theme) => theme.trello.colorAshGray,
+                            height: (theme) => theme.trello.boardsHeight,
+                        }}
+                    >
                         <Stack direction="column" spacing={1}>
+                            <SidebarItem>
+                                <HomeIcon fontSize="small" />
+                                Home
+                            </SidebarItem>
                             <SidebarItem className="active">
                                 <SpaceDashboardIcon fontSize="small" />
                                 Boards
@@ -102,18 +118,28 @@ function Boards() {
                                 <ListAltIcon fontSize="small" />
                                 Templates
                             </SidebarItem>
-                            <SidebarItem>
-                                <HomeIcon fontSize="small" />
-                                Home
-                            </SidebarItem>
                         </Stack>
-                        <Divider sx={{ my: 1 }} />
+                        <Divider
+                            sx={{ my: 1, height: "1px", backgroundColor: (theme) => theme.trello.primaryColorTextBar }}
+                        />
                         <Stack direction="column" spacing={1}>
                             <SidebarCreateBoardModal afterCreateNewBoard={afterCreateNewBoard} />
                         </Stack>
                     </Grid>
 
-                    <Grid xs={12} sm={9}>
+                    {/* ---------------------- List board ---------------------- */}
+                    <Grid
+                        xs={12}
+                        md={9}
+                        sx={{
+                            px: 2,
+                            pt: 2,
+                            backgroundColor: (theme) => theme.trello.colorPaleSky,
+                            display: "flex",
+                            flexDirection: "column",
+                            height: (theme) => theme.trello.boardsHeight,
+                        }}
+                    >
                         <Typography variant="h4" sx={{ fontWeight: "bold", mb: 3 }}>
                             Your boards:
                         </Typography>
@@ -127,16 +153,43 @@ function Boards() {
 
                         {/* Trường hợp gọi API và có boards trong Database trả về thì render danh sách boards */}
                         {boards?.length > 0 && (
-                            <Grid container spacing={2}>
+                            <Box
+                                sx={{
+                                    display: "flex",
+                                    flexWrap: "wrap",
+                                    gap: 2,
+                                    height: "100%",
+                                    overflowY: "auto",
+                                }}
+                            >
                                 {boards.map((b) => (
-                                    <Grid xs={2} sm={3} md={4} key={b._id}>
-                                        <Card sx={{ width: "250px" }}>
-                                            {/* Ý tưởng mở rộng về sau làm ảnh Cover cho board nhé */}
-                                            {/* <CardMedia component="img" height="100" image="https://picsum.photos/100" /> */}
-                                            <Box sx={{ height: "50px", backgroundColor: "primary.main" }}></Box>
-
+                                    <Box
+                                        key={b._id}
+                                        sx={{
+                                            flex: {
+                                                xs: "1 1 100%", // 1 item / hàng ở xs
+                                                sm: "1 1 calc(50% - 16px)", // 2 item / hàng ở sm
+                                                md: "1 1 calc(33.333% - 16px)", // 3 item / hàng ở md
+                                                lg: "1 1 calc(25% - 16px)", // 4 item / hàng ở lg
+                                            },
+                                            maxWidth: {
+                                                xs: "100%",
+                                                sm: "calc(50% - 16px)",
+                                                md: "calc(33.333% - 16px)",
+                                                lg: "calc(25% - 16px)",
+                                            },
+                                            minWidth: "100px", // hoặc thấp hơn nếu muốn
+                                        }}
+                                    >
+                                        <Card sx={{ width: "100%" }}>
+                                            <Box
+                                                sx={{
+                                                    height: "30px",
+                                                    backgroundColor: (theme) => theme.trello.colorDarkNavyGray,
+                                                }}
+                                            />
                                             <CardContent sx={{ p: 1.5, "&:last-child": { p: 1.5 } }}>
-                                                <Typography gutterBottom variant="h6" component="div">
+                                                <Typography gutterBottom variant="h6">
                                                     {b?.title}
                                                 </Typography>
                                                 <Typography
@@ -166,19 +219,40 @@ function Boards() {
                                                 </Box>
                                             </CardContent>
                                         </Card>
-                                    </Grid>
+                                    </Box>
                                 ))}
-                            </Grid>
+                            </Box>
                         )}
 
                         {/* Trường hợp gọi API và có totalBoards trong Database trả về thì render khu vực phân trang  */}
                         {totalBoards > 0 && (
                             <Box
-                                sx={{ my: 3, pr: 5, display: "flex", alignItems: "center", justifyContent: "flex-end" }}
+                                sx={{
+                                    mt: "auto",
+                                    pt: 2,
+                                    pr: 5,
+                                    display: "flex",
+                                    alignItems: "center",
+                                    justifyContent: "flex-end",
+                                    height: "60px",
+                                }}
                             >
                                 <Pagination
                                     size="large"
-                                    color="secondary"
+                                    color="standard"
+                                    sx={{
+                                        "& .MuiPaginationItem-root": {
+                                            color: (theme) => theme.trello.colorDeepNavy,
+                                            borderColor: (theme) => theme.trello.colorDeepNavy,
+                                        },
+                                        "& .Mui-selected": {
+                                            backgroundColor: (theme) => theme.trello.colorDeepNavy,
+                                            color: "white",
+                                            "&:hover": {
+                                                backgroundColor: (theme) => theme.trello.colorSlateBlue,
+                                            },
+                                        },
+                                    }}
                                     showFirstButton
                                     showLastButton
                                     // Giá trị prop count của component Pagination là để hiển thị tổng số lượng page, công thức là lấy Tổng số lượng bản ghi chia cho số lượng bản ghi muốn hiển thị trên 1 page (ví dụ thường để 12, 24, 26, 48...vv). sau cùng là làm tròn số lên bằng hàm Math.ceil

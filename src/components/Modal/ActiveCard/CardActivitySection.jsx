@@ -54,24 +54,25 @@ function CardActivitySection({ cardComments = [], onAddCardComment }) {
                             bgcolor: (theme) => (theme.palette.mode === "dark" ? "#33485D" : "transparent"),
                             padding: "8px 12px",
                             borderRadius: "4px",
-                            border: "0.5px solid rgba(254, 246, 199, 0.3)",
-                            boxShadow: "0 0 1px rgba(254, 246, 199, 0.3)",
+                            border: "0.5px solid rgba(242, 242, 242, 0.3)",
+                            boxShadow: "0 0 1px rgba(242, 242, 242, 0.3)",
                             "& fieldset": {
                                 border: "none", // ẩn border mặc định
                             },
                             "&:hover fieldset": {
-                                border: "none",
+                                border: "1px solid rgba(242, 242, 242, 0.8)",
                             },
                             "&.Mui-focused fieldset": {
-                                border: "1px solid rgba(254, 246, 199, 0.8)",
+                                border: "1px solid rgba(242, 242, 242, 0.8)",
                             },
                         },
                         "& .MuiOutlinedInput-input": {
                             padding: 0, // padding đã có ở `.MuiOutlinedInput-root` rồi
                             wordBreak: "break-word",
-                            color: "#FEF6C7",
+                            color: (theme) => theme.trello.colorSnowGray,
+                            caretColor: (theme) => theme.trello.colorSnowGray,
                             "&::placeholder": {
-                                color: "#FEF6C7",
+                                color: (theme) => theme.trello.colorSnowGray,
                                 opacity: 0.5,
                             },
                         },

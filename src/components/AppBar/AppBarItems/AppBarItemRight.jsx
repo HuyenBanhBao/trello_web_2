@@ -10,9 +10,13 @@ import AutoCompleteSearchBoard from "../SearchBoards/AutoCompleteSearchBoard";
 const AppBarItemRight = () => {
     return (
         <>
-            <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-                <AutoCompleteSearchBoard />
-                <ModeSelect />
+            <Box sx={{ display: "flex", alignItems: "center", justifyContent: "flex-end" }}>
+                <Box sx={{ display: { xs: "none", sm: "flex" } }}>
+                    <AutoCompleteSearchBoard />
+                </Box>
+                <Box sx={{ display: { xs: "none", sm: "flex" } }}>
+                    <ModeSelect />
+                </Box>
                 <Notifications /> {/* Xử lý hiển thị các thông báo */}
                 <Help />
                 <Profile />

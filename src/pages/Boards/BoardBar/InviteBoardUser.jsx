@@ -47,14 +47,36 @@ function InviteBoardUser({ board }) {
     };
 
     return (
-        <Box>
-            <Tooltip title="Invite user to this board!">
+        <Box
+            sx={{
+                width: { xs: "100%", sm: "100px" },
+                mr: { xs: "0", sm: 1 },
+            }}
+        >
+            <Tooltip
+            // title="Invite user to this board!"
+            >
                 <Button
                     aria-describedby={popoverId}
                     onClick={handleTogglePopover}
                     variant="outlined"
                     startIcon={<PersonAddIcon />}
-                    sx={{ color: "white", borderColor: "white", "&:hover": { borderColor: "white" } }}
+                    sx={{
+                        //
+                        width: { xs: "100%", sm: "100px" },
+                        color: "white",
+                        borderColor: "white",
+                        backgroundColor: "transparent", // nếu bạn muốn rõ hơn hiệu ứng nền
+
+                        boxShadow: (theme) => theme.trello.boxShadowBtn,
+                        transition: "all 0.25s ease-in-out", // ✅ mượt khi hover
+
+                        "&:hover": {
+                            borderColor: "white",
+                            boxShadow: (theme) => theme.trello.boxShadowBtnHover, // ✅ bóng đổ đậm hơn 1 chút
+                            backgroundColor: "rgba(255, 255, 255, 0.08)", // ✅ nền nhạt hơn để cảm giác "hover"
+                        },
+                    }}
                 >
                     Invite
                 </Button>
@@ -70,15 +92,26 @@ function InviteBoardUser({ board }) {
                 transformOrigin={{ vertical: "top", horizontal: "right" }}
             >
                 <form onSubmit={handleSubmit(submitInviteUserToBoard)} style={{ width: "320px" }}>
-                    <Box sx={{ p: "15px 20px 20px 20px", display: "flex", flexDirection: "column", gap: 2 }}>
-                        <Typography variant="span" sx={{ fontWeight: "bold", fontSize: "16px" }}>
-                            Invite User To This Board!
+                    <Box
+                        sx={{
+                            p: "15px 20px 20px 20px",
+                            display: "flex",
+                            flexDirection: "column",
+                            gap: 2,
+                            // border: `2px solid ${(theme) => theme.trello.colorDeepNavy}`,
+                        }}
+                    >
+                        <Typography
+                            variant="span"
+                            sx={{ fontWeight: "bold", fontSize: "16px", textTransform: "uppercase" }}
+                        >
+                            Mời khách hàng!
                         </Typography>
                         <Box>
                             <TextField
                                 autoFocus
                                 fullWidth
-                                label="Enter email to invite..."
+                                label="Nhập email người dùng ..."
                                 type="text"
                                 variant="outlined"
                                 {...register("inviteeEmail", {
@@ -91,7 +124,19 @@ function InviteBoardUser({ board }) {
                         </Box>
 
                         <Box sx={{ alignSelf: "flex-end" }}>
-                            <Button className="interceptor-loading" type="submit" variant="contained" color="info">
+                            <Button
+                                //
+                                className="interceptor-loading"
+                                variant="contained"
+                                type="submit"
+                                color="info"
+                                sx={{
+                                    backgroundColor: (theme) => theme.trello.colorSlateBlue,
+                                    "&:hover": {
+                                        backgroundColor: (theme) => theme.trello.colorDeepNavy,
+                                    },
+                                }}
+                            >
                                 Invite
                             </Button>
                         </Box>

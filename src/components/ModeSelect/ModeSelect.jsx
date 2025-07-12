@@ -22,7 +22,16 @@ const ModeSelect = () => {
     // --------------------- RETURN ---------------------
     return (
         <>
-            <FormControl sx={{ ml: 1.5, mr: 1, minWidth: 120 }} size="small">
+            <FormControl
+                //
+                sx={{
+                    //
+                    ml: 1.5,
+                    mr: 1,
+                    minWidth: 120,
+                }}
+                size="small"
+            >
                 <InputLabel
                     id="label-select-dark-light-mode"
                     sx={{
