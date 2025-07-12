@@ -7,11 +7,18 @@ import Workspaces from "~/components/AppBar/Menus/Workspaces";
 import Recent from "~/components/AppBar/Menus/Recent";
 import Starred from "~/components/AppBar/Menus/Starred";
 import Templates from "~/components/AppBar/Menus/Templates";
+import Menus from "~/components/AppBar/Menus/Navbar";
 // --------------------- MAIN COMPONENT -------------------------
 const AppBarNav = () => {
     return (
-        <>
-            <Box sx={{ display: { xs: "none", md: "flex" }, gap: 1 }}>
+        <Box
+            sx={{
+                position: "relative",
+                top: 2,
+            }}
+        >
+            {/*  */}
+            <Box sx={{ display: { xs: "none", lg: "flex" }, gap: 1 }}>
                 <Workspaces />
                 <Recent />
                 <Starred />
@@ -28,7 +35,7 @@ const AppBarNav = () => {
                     Create
                 </Button>
             </Box>
-        </>
+        </Box>
     );
 };
 

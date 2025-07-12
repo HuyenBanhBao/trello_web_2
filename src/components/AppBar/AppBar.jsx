@@ -20,13 +20,17 @@ const AppBar = () => {
                     borderBottom: "1px solid ",
                     borderBottomColor: (theme) => theme.trello.primaryColorTextBar,
                     background: (theme) =>
-                        theme.palette.mode === "dark" ? theme.trello.gradientBgDark : theme.trello.gradientBg,
+                        theme.palette.mode === "dark" ? theme.trello.gradientBgDark : theme.trello.colorSlateBlue,
                 }}
             >
                 {/* ------------------------- APP BAR LEFT ------------------------- */}
-                <AppBarItemLeft />
+                <Box sx={{ flex: 2, minWidth: 0 }}>
+                    <AppBarItemLeft />
+                </Box>
                 {/* ------------------------- MODE SELECT ------------------------- */}
-                <AppBarItemRight />
+                <Box sx={{ flex: 1, minWidth: 0 }}>
+                    <AppBarItemRight />
+                </Box>
             </Box>
         </>
     );

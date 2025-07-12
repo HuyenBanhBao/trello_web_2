@@ -110,8 +110,11 @@ function SidebarCreateBoardModal({ afterCreateNewBoard }) {
                         }}
                     >
                         <CancelIcon
-                            color="error"
-                            sx={{ "&:hover": { color: "error.light" } }}
+                            color="standard"
+                            sx={{
+                                color: (theme) => theme.trello.colorSlateBlue,
+                                "&:hover": { color: (theme) => theme.trello.colorDeepNavy },
+                            }}
                             onClick={handleCloseModal}
                         />
                     </Box>
@@ -190,13 +193,33 @@ function SidebarCreateBoardModal({ afterCreateNewBoard }) {
                                         >
                                             <FormControlLabel
                                                 value={BOARD_TYPES.PUBLIC}
-                                                control={<Radio size="small" />}
+                                                control={
+                                                    <Radio
+                                                        size="small"
+                                                        sx={{
+                                                            color: (theme) => theme.trello.colorSlateBlue, // màu viền khi chưa chọn
+                                                            "&.Mui-checked": {
+                                                                color: (theme) => theme.trello.colorDeepNavy, // màu khi được chọn
+                                                            },
+                                                        }}
+                                                    />
+                                                }
                                                 label="Public"
                                                 labelPlacement="start"
                                             />
                                             <FormControlLabel
                                                 value={BOARD_TYPES.PRIVATE}
-                                                control={<Radio size="small" />}
+                                                control={
+                                                    <Radio
+                                                        size="small"
+                                                        sx={{
+                                                            color: (theme) => theme.trello.colorSlateBlue, // màu viền khi chưa chọn
+                                                            "&.Mui-checked": {
+                                                                color: (theme) => theme.trello.colorDeepNavy, // màu khi được chọn
+                                                            },
+                                                        }}
+                                                    />
+                                                }
                                                 label="Private"
                                                 labelPlacement="start"
                                             />
@@ -206,10 +229,17 @@ function SidebarCreateBoardModal({ afterCreateNewBoard }) {
 
                                 <Box sx={{ alignSelf: "flex-end" }}>
                                     <Button
+                                        //
                                         className="interceptor-loading"
                                         type="submit"
                                         variant="contained"
-                                        color="primary"
+                                        sx={{
+                                            color: (theme) => theme.trello.colorSnowGray,
+                                            backgroundColor: (theme) => theme.trello.colorSlateBlue,
+                                            "&:hover": {
+                                                backgroundColor: (theme) => theme.trello.colorDeepNavy,
+                                            },
+                                        }}
                                     >
                                         Create
                                     </Button>

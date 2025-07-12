@@ -42,7 +42,7 @@ function ToggleFocusInput({ value, onChangedValue, inputFontSize = "16px", ...pr
                 "& label": {},
                 "& input": { fontSize: inputFontSize, fontWeight: "bold" },
                 "&.card-title-modal .MuiOutlinedInput-input": {
-                    color: "#FEF6C7",
+                    color: (theme) => theme.trello.colorSnowGray,
                 },
 
                 "& .MuiOutlinedInput-root": {

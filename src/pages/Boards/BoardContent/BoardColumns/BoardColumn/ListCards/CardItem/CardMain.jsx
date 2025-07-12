@@ -62,15 +62,8 @@ const CardMain = ({ card }) => {
                 // onMouseLeave={() => setMouseIsOver(false)}
                 sx={{
                     cursor: "grab",
-                    boxShadow: "0px 1px 6px rgba(0, 0, 0, 0.1)",
-                    // minHeight: "48px",
                     overflow: "unset",
-                    // display: card?.FE_PlaceholderCard ? "none" : "block",
-                    // "&:hover": {
-                    //     borderColor: (theme) => theme.palette.primary.main,
-                    // },
-                    // overflow: card?.FE_PlaceholderCard ? "hidden" : "unset",
-                    // height: card?.FE_PlaceholderCard ? "0px" : "unset",
+                    boxShadow: (theme) => theme.trello.boxShadowCard,
                 }}
             >
                 {card?.cover && <CardMedia sx={{ height: 140 }} image={card?.cover} />}
@@ -82,8 +75,10 @@ const CardMain = ({ card }) => {
                         "&:last-child": { p: card?.FE_PlaceholderCard ? "1px" : 1.5 },
                         minHeight: card?.FE_PlaceholderCard ? "5px" : "48px",
                         borderRadius: "4px",
-                        border: card?.FE_PlaceholderCard ? "3px solid #429248" : "none",
-                        backgroundColor: card?.FE_PlaceholderCard ? "#429248" : "inherit",
+                        border: (theme) =>
+                            card?.FE_PlaceholderCard ? `3px solid ${theme.trello.colorSlateBlue}` : "none",
+                        backgroundColor: (theme) =>
+                            card?.FE_PlaceholderCard ? theme.trello.colorSlateBlue : "inherit",
                     }}
                 >
                     {card?.FE_PlaceholderCard && <Typography sx={{ width: "100%" }}></Typography>}

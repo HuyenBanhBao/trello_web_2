@@ -5,6 +5,7 @@ import { experimental_extendTheme as extendTheme } from "@mui/material/styles";
 // --------------------------- CONSTANTS ---------------------------
 const APP_BAR_HEIGHT = "58px";
 const BOARD_BAR_HEIGHT = "60px";
+const BOARDS_HEIGHT = `calc(100vh - ${APP_BAR_HEIGHT})`;
 const BOARD_CONTENT_HEIGHT = `calc(100vh - ${APP_BAR_HEIGHT} - ${BOARD_BAR_HEIGHT})`;
 const COLUMN_HEADER_HEIGHT = "50px";
 const COLUMN_FOOTER_HEIGHT = "58px";
@@ -20,6 +21,7 @@ const theme = extendTheme({
     trello: {
         appBarHeight: APP_BAR_HEIGHT,
         boardBarHeight: BOARD_BAR_HEIGHT,
+        boardsHeight: BOARDS_HEIGHT,
         boardContentHeight: BOARD_CONTENT_HEIGHT,
         // CARDS
         columnHeaderHeight: COLUMN_HEADER_HEIGHT,
@@ -28,6 +30,68 @@ const theme = extendTheme({
         // COLORS
         primaryColorTextBar: "white",
         primarySuccessColor: "#097109",
+
+        // 9F8467, EAE2E0, 75805E, 819B80, CD9E72 // Bộ 1 ------------------------------------------------------------------
+        colorSoftMocha: "#9F8467", // Nâu mocha dịu
+        colorBlushPink: "#EAE2E0", // Hồng phấn nhẹ
+        colorOliveMoss: "#75805E", // Rêu ô-liu
+        colorSageGreen: "#819B80", // Xanh xô thơm
+        colorGoldenSand: "#CD9E72", // Cát vàng óng
+
+        // 787878, FFFBFA, EAE7CB, FFFAEA, 00203E // Bộ 2 ------------------------------------------------------------------
+        colorSteelGray: "#787878", // Xám thép
+        colorCottonWhite: "#FFFBFA", // Trắng cotton
+        colorSoftBeige: "#EAE7CB", // Vàng be dịu
+        colorMilkWhite: "#FFFAEA", // Trắng sữa
+        colorDeepNavy: "#00203E", // Xanh navy đậm
+
+        // EFDDB4, F7E6D2, FFBD81, FFB781, FFBE80 // Bộ 3 Nội Thất ---------------------------------------------------------
+        colorVanillaCream: "#EFDDB4", // Kem vanilla
+        colorPeachBlush: "#F7E6D2", // Hồng đào nhạt
+        colorApricot: "#FFBD81", // Cam mơ
+        colorSoftCoral: "#FFB781", // San hô nhạt
+        colorMelonOrange: "#FFBE80", // Cam dưa lưới
+
+        // 485766, 708393, b1c0cd, cbcacd, 000 // Bộ 4 ---------------------------------------------------------------------
+        colorDustLavender: "#CBCACD", // Tím bụi (xám pha tím nhẹ)
+        colorPureBlack: "#000000", // Đen tuyệt đối
+        // dùng làm nền chính, nav bar, overlay
+        colorDarkNavyGray: "#333C4D", // Xanh xám navy đậm
+        colorSlateBlue: "#485766", // Xanh slate tối
+        colorGunmetalBlue: "#2B3544", // Xanh súng đậm
+        colorMidnightBlue: "#1F2633", // Xanh navy siêu tối
+        colorObsidianSlate: "#252E39", // Slate đen-xám
+        // dùng border, text phụ, divider
+        colorAshGray: "#708393", // Xám tro
+        colorIronBlue: "#627487", // Xanh xám thép
+        colorPaleSky: "#B1C0CD", // Xanh trời nhạt
+        colorFrostGray: "#9AA9B9", // Xám xanh mát
+        colorCloudySteel: "#A4B3C4", // Xám mây nhạt
+        // dùng nền phụ, hover, text sáng
+        colorSkyMist: "#D6DEE7", // Xanh sáng
+        colorDustyCloud: "#E6EBF0", // Trắng hơi xanh
+        colorFogWhiteBlue: "#F4F7FA", // Gần trắng lạnh
+
+        // 0d0d0d, d9d9d9, f2f2f2, 403d3e, 736e6e -----------------------------
+        colorCharcoalBlack: "#0D0D0D", // Đen than
+        colorLightAshGray: "#D9D9D9", // Xám tro sáng
+        colorSnowGray: "#F2F2F2", // Xám tuyết (gần trắng)
+        colorGraphite: "#403D3E", // Xám chì
+        colorMutedTaupe: "#736E6E", // Nâu xám dịu
+
+        // Card color
+        colorOliveGreenDark: "#395F18", //Xanh ô-liu đậm
+        colorLemonChiffon: "#FEF6C7", // Kem nhạt
+        colorLeafGreen: "#456D2D", // Xanh lá đậm
+
+        // BOX SHADOW -------------------------
+        boxShadowPrimary:
+            "rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px, rgba(10, 37, 64, 0.35) 0px -2px 6px 0px inset",
+        boxShadowBtn:
+            "rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset",
+        boxShadowBtnHover:
+            "rgba(0, 0, 0, 0.3) 0px 2px 4px, rgba(0, 0, 0, 0.2) 0px 5px 10px -2px, rgba(0, 0, 0, 0.15) 0px -2px 0px inset",
+        boxShadow63: "rgb(204, 219, 232) 3px 3px 6px 0px inset, rgba(255, 255, 255, 0.5) -3px -3px 6px 1px inset",
 
         // GRADIENT BG
         gradientBlueToViolet: GRADIENT_BLUE_TO_VIOLET,

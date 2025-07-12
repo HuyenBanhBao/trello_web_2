@@ -55,8 +55,8 @@ function CardDescriptionMdEditor({ cardDescriptionProp, handleUpdateCardDescript
                     <Button
                         sx={{
                             alignSelf: "flex-end",
-                            color: "#FEF6C7",
-                            border: "1px solid #FEF6C7",
+                            color: (theme) => theme.trello.colorSnowGray,
+                            border: (theme) => `1px solid ${theme.trello.colorSnowGray}`,
                             backgroundColor: "transparent",
                             "&:hover": {
                                 backgroundColor: "rgba(254, 246, 199, 0.2)",
@@ -77,8 +77,8 @@ function CardDescriptionMdEditor({ cardDescriptionProp, handleUpdateCardDescript
                     <Button
                         sx={{
                             alignSelf: "flex-end",
-                            color: "#FEF6C7",
-                            border: "1px solid #FEF6C7",
+                            color: (theme) => theme.trello.colorSnowGray,
+                            border: (theme) => `1px solid ${theme.trello.colorSnowGray}`,
                             backgroundColor: "transparent",
                             "&:hover": {
                                 backgroundColor: "rgba(254, 246, 199, 0.1)",

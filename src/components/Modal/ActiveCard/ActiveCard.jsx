@@ -54,7 +54,7 @@ const SidebarItem = styled(Box)(({ theme }) => ({
     // color: theme.palette.mode === "dark" ? "#90caf9" : "#172b4d",
     backgroundColor: theme.palette.mode === "dark" ? "#2f3542" : "#091e420f",
     padding: "10px",
-    border: "1px solid #FEF6C7",
+    border: `1px solid ${theme.trello.colorSnowGray}`,
     borderRadius: "4px",
     userSelect: "none",
     boxShadow: theme.palette.mode === "dark" ? "0 2px 4px rgba(0, 0, 0, 0.4)" : "0 2px 4px rgba(0, 0, 0, 0.1)",
@@ -168,7 +168,7 @@ function ActiveCard() {
                     overflow: "hidden", // Ẩn tràn nội dung bên ngoài
                     // padding: "40px 20px 20px",
                     margin: "50px auto",
-                    backgroundColor: (theme) => (theme.palette.mode === "dark" ? "#1A2027" : "#395F18"),
+                    backgroundColor: (theme) => (theme.palette.mode === "dark" ? "#1A2027" : theme.trello.colorPaleSky),
                 }}
             >
                 {/* ----------------------- BUTTON CLOSE ----------------------- */}
@@ -179,13 +179,16 @@ function ActiveCard() {
                         top: "12px",
                         right: "10px",
                         cursor: "pointer",
-                        border: "1px solid #FEF6C7",
+                        border: (theme) => `1px solid ${theme.trello.colorSnowGray}`,
                         borderRadius: "50%",
                     }}
                 >
                     <CancelIcon
                         color="error"
-                        sx={{ color: "#FEF6C7", "&:hover": { color: "rgba(254, 246, 199, 0.8)" } }}
+                        sx={{
+                            color: (theme) => theme.trello.colorSnowGray,
+                            "&:hover": { color: "rgba(254, 246, 199, 0.8)" },
+                        }}
                         onClick={handleCloseModal}
                     />
                 </Box>
@@ -199,9 +202,10 @@ function ActiveCard() {
                         display: "inline-flex",
                         alignItems: "center",
                         gap: 1,
-                        color: "#FEF6C7",
-                        borderBottom: "1px solid #FEF6C7",
-                        backgroundColor: (theme) => (theme.palette.mode === "dark" ? "#1A2027" : "#395F18"),
+                        color: (theme) => theme.trello.colorSnowGray,
+                        borderBottom: (theme) => `1px solid ${theme.trello.colorSnowGray}`,
+                        backgroundColor: (theme) =>
+                            theme.palette.mode === "dark" ? "#1A2027" : theme.trello.colorSlateBlue,
                     }}
                 >
                     <CreditCardIcon />
@@ -220,20 +224,22 @@ function ActiveCard() {
                     sx={{
                         overflowY: "auto",
                         padding: "0 2px 0 8px",
-                        color: "#FEF6C7",
-                        backgroundColor: (theme) => (theme.palette.mode === "dark" ? "#1A2027" : "#395F18"),
+                        color: (theme) => theme.trello.colorSnowGray,
+                        backgroundColor: (theme) =>
+                            theme.palette.mode === "dark" ? "#1A2027" : theme.trello.colorSlateBlue,
                     }}
                 >
                     {/* -------------------- Card cover images -------------------- */}
                     {activeCard?.cover && (
                         <Box sx={{ mt: 1 }}>
-                            <img
-                                style={{
+                            <Box
+                                component="img"
+                                sx={{
                                     width: "100%",
                                     height: "320px",
                                     borderRadius: "6px",
                                     objectFit: "cover",
-                                    border: "1px solid #FEF6C7",
+                                    border: (theme) => `1px solid ${theme.trello.colorSnowGray}`,
                                 }}
                                 src={activeCard?.cover}
                                 alt="card-cover"
@@ -249,9 +255,10 @@ function ActiveCard() {
                                 sx={{
                                     mb: 2,
                                     p: 1,
-                                    border: "1px solid #FEF6C7",
+                                    border: (theme) => `1px solid ${theme.trello.colorSnowGray}`,
                                     borderRadius: "4px",
-                                    backgroundColor: (theme) => (theme.palette.mode === "dark" ? "#1A2027" : "#456D2D"),
+                                    backgroundColor: (theme) =>
+                                        theme.palette.mode === "dark" ? "#1A2027" : theme.trello.colorAshGray,
                                 }}
                             >
                                 <Typography sx={{ fontWeight: "600", mb: 1 }}>Members</Typography>
@@ -270,8 +277,9 @@ function ActiveCard() {
                                     mb: 2,
                                     p: 1,
                                     borderRadius: "4px",
-                                    border: "1px solid #FEF6C7",
-                                    backgroundColor: (theme) => (theme.palette.mode === "dark" ? "#1A2027" : "#456D2D"),
+                                    border: (theme) => `1px solid ${theme.trello.colorSnowGray}`,
+                                    backgroundColor: (theme) =>
+                                        theme.palette.mode === "dark" ? "#1A2027" : theme.trello.colorAshGray,
                                 }}
                             >
                                 <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
@@ -294,8 +302,9 @@ function ActiveCard() {
                                     mb: 2,
                                     p: 1,
                                     borderRadius: "4px",
-                                    border: "1px solid #FEF6C7",
-                                    backgroundColor: (theme) => (theme.palette.mode === "dark" ? "#1A2027" : "#456D2D"),
+                                    border: (theme) => `1px solid ${theme.trello.colorSnowGray}`,
+                                    backgroundColor: (theme) =>
+                                        theme.palette.mode === "dark" ? "#1A2027" : theme.trello.colorAshGray,
                                 }}
                             >
                                 <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
@@ -319,8 +328,9 @@ function ActiveCard() {
                                 sx={{
                                     p: 1,
                                     borderRadius: "4px",
-                                    border: "1px solid #FEF6C7",
-                                    backgroundColor: (theme) => (theme.palette.mode === "dark" ? "#1A2027" : "#456D2D"),
+                                    border: (theme) => `1px solid ${theme.trello.colorSnowGray}`,
+                                    backgroundColor: (theme) =>
+                                        theme.palette.mode === "dark" ? "#1A2027" : theme.trello.colorAshGray,
                                 }}
                             >
                                 <Typography sx={{ fontWeight: "600", mb: 1 }}>Add To Card</Typography>

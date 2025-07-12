@@ -113,11 +113,13 @@ const BoardColumns = ({ columns }) => {
                             <Button
                                 startIcon={<LibraryAddIcon />}
                                 sx={{
-                                    color: (theme) => theme.trello.primaryColorTextBar,
                                     p: 1,
                                     pl: 2,
                                     width: "100%",
                                     justifyContent: "flex-start",
+                                    color: (theme) => theme.trello.colorFogWhiteBlue,
+                                    border: (theme) => `1px solid ${theme.trello.colorFrostGray}`,
+                                    boxShadow: (theme) => theme.trello.boxShadowPrimary,
                                 }}
                             >
                                 Add new column
@@ -136,6 +138,8 @@ const BoardColumns = ({ columns }) => {
                                 display: "flex",
                                 flexDirection: "column",
                                 gap: 1,
+                                border: (theme) => `1px solid ${theme.trello.colorFrostGray}`,
+                                boxShadow: (theme) => theme.trello.boxShadowPrimary,
                             }}
                         >
                             <TextField
@@ -183,11 +187,17 @@ const BoardColumns = ({ columns }) => {
                                     color="success"
                                     size="small"
                                     sx={{
-                                        boxShadow: "none",
-                                        border: "0.5px solid",
-                                        borderColor: (theme) => theme.palette.success.main,
+                                        // width: { xs: "100%", sm: "120px" },
+                                        color: (theme) => theme.trello.colorDustyCloud,
+                                        backgroundColor: (theme) => theme.trello.colorSlateBlue,
+
+                                        boxShadow: (theme) => theme.trello.boxShadowBtn,
+                                        transition: "all 0.25s ease-in-out",
+
                                         "&:hover": {
-                                            bgcolor: (theme) => theme.palette.success.main,
+                                            borderColor: "white",
+                                            boxShadow: (theme) => theme.trello.boxShadowBtnHover,
+                                            backgroundColor: (theme) => theme.trello.colorSlateBlue,
                                         },
                                     }}
                                 >
@@ -199,11 +209,16 @@ const BoardColumns = ({ columns }) => {
                                     color="warning"
                                     size="small"
                                     sx={{
-                                        boxShadow: "none",
-                                        border: "0.5px solid",
-                                        borderColor: (theme) => theme.palette.warning.main,
+                                        color: (theme) => theme.trello.colorDustyCloud,
+                                        backgroundColor: (theme) => theme.trello.colorGoldenSand,
+
+                                        boxShadow: (theme) => theme.trello.boxShadowBtn,
+                                        transition: "all 0.25s ease-in-out",
+
                                         "&:hover": {
-                                            bgcolor: (theme) => theme.palette.warning.main,
+                                            borderColor: "white",
+                                            boxShadow: (theme) => theme.trello.boxShadowBtnHover,
+                                            backgroundColor: (theme) => theme.trello.colorGoldenSand,
                                         },
                                     }}
                                 >

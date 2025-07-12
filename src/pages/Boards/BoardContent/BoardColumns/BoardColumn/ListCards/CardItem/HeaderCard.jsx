@@ -46,6 +46,22 @@ const HeaderCard = ({ column, attributes, listeners }) => {
             confirmationText: "Confirm",
             cancellationText: "Cancel",
             buttonOrder: ["confirm", "cancel"],
+            confirmationButtonProps: {
+                variant: "contained",
+                sx: {
+                    color: (theme) => theme.trello.colorDustyCloud,
+                    backgroundColor: (theme) => theme.trello.colorSlateBlue,
+
+                    boxShadow: (theme) => theme.trello.boxShadowBtn,
+                    transition: "all 0.25s ease-in-out",
+
+                    "&:hover": {
+                        borderColor: "white",
+                        boxShadow: (theme) => theme.trello.boxShadowBtnHover,
+                        backgroundColor: (theme) => theme.trello.colorSlateBlue,
+                    },
+                },
+            },
         });
 
         if (confirmed) {
