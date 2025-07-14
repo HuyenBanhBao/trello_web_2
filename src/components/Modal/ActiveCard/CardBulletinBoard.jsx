@@ -3,28 +3,25 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Avatar from "@mui/material/Avatar";
 import TextField from "@mui/material/TextField";
-import Tooltip from "@mui/material/Tooltip";
 import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined";
 import { useSelector } from "react-redux";
 import { selectCurrentUser } from "~/redux/user/userSlice";
 import { useConfirm } from "material-ui-confirm";
 import { toast } from "react-toastify";
 
-function CardActivitySection({ cardComments = [], onAddCardComment, onDeleteCardComment }) {
+function CardBulletinBoard({ cardBulletin = [], onAddCardBulletin, onDeleteCardBulletin }) {
     const currentUser = useSelector(selectCurrentUser);
 
     // -------------------------------------- Add Card Comment --------------------------------------
-    const handleAddCardComment = (event) => {
+    const handleAddCardBulletin = (event) => {
         // Bắt hành động người dùng nhấn phím Enter && không phải hành động Shift + Enter
         if (event.key === "Enter" && !event.shiftKey) {
             event.preventDefault(); // Thêm dòng này để khi Enter không bị nhảy dòng
             if (!event.target?.value) return; // Nếu không có giá trị gì thì return không làm gì cả
 
             // Tạo một biến commend data để gửi api
-            const commentToAdd = {
-                userAvatar: currentUser?.avatar,
-                userDisplayName: currentUser?.displayName,
-                content: event.target.value.trim(),
+            const bulletinToAdd = {
+                bulletin: event.target.value.trim(),
             };
             // Gọi api thêm comment lên component cha
             /**
@@ -35,19 +32,19 @@ function CardActivitySection({ cardComments = [], onAddCardComment, onDeleteCard
              * await callAPIUpdateCard({ commentToAdd }); trong component cha đã hoàn tất, nghĩa là API đã xử lý xong việc thêm comment.
              * Sau đó mới chạy: event.target.value = "", tức là xóa nội dung ô input.
              */
-            onAddCardComment(commentToAdd).then(() => {
+            onAddCardBulletin(bulletinToAdd).then(() => {
                 event.target.value = "";
             });
         }
     };
 
     // -------------------------------------- Delete Card Comment --------------------------------------
-    const confirmDeleteCardComment = useConfirm();
-    const handleDeleteCardComment = async (commentDelete) => {
+    const confirmDeleteCardBulletin = useConfirm();
+    const handleDeleteCardComment = async (bulletinDelete) => {
         // eslint-disable-next-line no-unused-vars
-        const { confirmed, reason } = await confirmDeleteCardComment({
-            title: "Delete column?",
-            description: "Are you sure you want to delete this COMMENT",
+        const { confirmed, reason } = await confirmDeleteCardBulletin({
+            title: "Delete?",
+            description: "Are you sure you want to delete this BULLETIN",
             confirmationText: "Confirm",
             cancellationText: "Cancel",
             buttonOrder: ["confirm", "cancel"],
@@ -70,8 +67,8 @@ function CardActivitySection({ cardComments = [], onAddCardComment, onDeleteCard
         });
 
         if (confirmed) {
-            onDeleteCardComment(commentDelete).then(() => {
-                toast.success("Comment deleted!");
+            onDeleteCardBulletin(bulletinDelete).then(() => {
+                toast.success("Đã xóa thông báo!");
             });
         }
     };
@@ -82,18 +79,18 @@ function CardActivitySection({ cardComments = [], onAddCardComment, onDeleteCard
             <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 2 }}>
                 <Avatar
                     sx={{ width: 36, height: 36, cursor: "pointer" }}
-                    alt="trungquandev"
+                    alt={currentUser?.username}
                     src={currentUser?.avatar}
                 />
                 <TextField
                     sx={{
                         mt: "4px",
                         "& .MuiOutlinedInput-root": {
-                            bgcolor: (theme) => (theme.palette.mode === "dark" ? "#33485D" : "transparent"),
+                            bgcolor: (theme) => theme.trello.colorDarkNavyGray,
                             padding: "8px 12px",
+                            border: (theme) => `1px solid ${theme.trello.colorPaleSky}`,
                             borderRadius: "4px",
-                            border: "0.5px solid rgba(242, 242, 242, 0.3)",
-                            boxShadow: "0 0 1px rgba(242, 242, 242, 0.3)",
+                            boxShadow: (theme) => theme.trello.boxShadowBtn,
                             "& fieldset": {
                                 border: "none", // ẩn border mặc định
                             },
@@ -116,76 +113,87 @@ function CardActivitySection({ cardComments = [], onAddCardComment, onDeleteCard
                         },
                     }}
                     fullWidth
-                    placeholder="Write a comment..."
+                    placeholder="Add New..."
                     type="text"
                     variant="outlined"
                     multiline
-                    onKeyDown={handleAddCardComment}
+                    onKeyDown={handleAddCardBulletin}
                 />
             </Box>
 
             {/* Hiển thị danh sách các comments */}
-            {cardComments.length === 0 && (
-                <Typography sx={{ pl: "45px", fontSize: "14px", fontWeight: "500", color: "#b1b1b1" }}>
-                    No activity found!
-                </Typography>
-            )}
-            {cardComments.map((comment, index) => (
-                <Box sx={{ display: "flex", gap: 1, width: "100%", mb: 1.5 }} key={index}>
-                    <Tooltip>
-                        <Avatar
-                            sx={{ width: 36, height: 36, cursor: "pointer" }}
-                            alt={comment.userDisplayName}
-                            src={comment.userAvatar}
-                        />
-                    </Tooltip>
-                    <Box sx={{ width: "inherit" }}>
-                        <Typography variant="span" sx={{ fontWeight: "bold", mr: 1, userSelect: "none" }}>
-                            {comment.userDisplayName}
-                        </Typography>
-
-                        <Typography variant="span" sx={{ fontSize: "12px", userSelect: "none" }}>
-                            {/* Format ngày tháng */}
-                            {moment(comment.commentedAt).format("llll")}
-                        </Typography>
-
-                        <Typography variant="span" sx={{ userSelect: "none", position: "relative" }}>
-                            <DeleteOutlinedIcon
-                                onClick={() => handleDeleteCardComment(comment)}
-                                fontSize="small"
+            <Box
+                sx={{
+                    py: 1.5,
+                    pl: 2,
+                    border: (theme) => `2px solid ${theme.trello.colorIronBlue}`,
+                    borderRadius: 1.5,
+                    backgroundColor: (theme) => theme.trello.colorPaleSky,
+                    boxShadow: (theme) => theme.trello.boxShadowBulletin,
+                    maxHeight: "300px",
+                    overflowY: "auto",
+                    //
+                }}
+            >
+                {cardBulletin.map((bulletin, index) => (
+                    <Box sx={{ display: "flex", gap: 1, width: "100%" }} key={index}>
+                        <Box sx={{ width: "inherit" }}>
+                            {/* -------------- DATE -------------- */}
+                            <Typography
+                                variant="span"
                                 sx={{
-                                    position: "absolute",
-                                    p: "4px",
-                                    left: "16px",
-                                    width: "24px",
-                                    height: "24px",
-                                    "&:hover": {
-                                        color: (theme) => theme.trello.colorSkyMist,
-                                        cursor: "pointer",
-                                    },
+                                    fontSize: "11px",
+                                    userSelect: "none",
+                                    color: (theme) => theme.trello.colorIronBlue,
                                 }}
-                            />
-                        </Typography>
+                            >
+                                {/* Format ngày tháng */}
+                                {/* {moment(comment.commentedAt).format("llll")} */}
+                                {moment(bulletin.bulletinedAt).format("llll")}
+                            </Typography>
 
-                        <Box
-                            sx={{
-                                display: "block",
-                                bgcolor: (theme) => (theme.palette.mode === "dark" ? "#33485D" : "transparent"),
-                                p: "8px 12px",
-                                mt: "4px",
-                                border: "0.5px solid rgba(254, 246, 199, 0.3)",
-                                borderRadius: "4px",
-                                wordBreak: "break-word",
-                                boxShadow: "0 0 1px rgba(254, 246, 199, 0.3)",
-                            }}
-                        >
-                            {comment.content}
+                            <Box sx={{ display: "flex", alignItems: "center" }}>
+                                {/* -------------- INFO -------------- */}
+                                <Box
+                                    sx={{
+                                        flex: 1,
+                                        display: "block",
+                                        bgcolor: (theme) =>
+                                            theme.palette.mode === "dark" ? "#33485D" : theme.trello.colorDarkNavyGray,
+                                        p: "8px 12px",
+                                        // border: (theme) => `1px solid ${theme.trello.colorPaleSky}`,
+                                        borderRadius: "4px",
+                                        wordBreak: "break-word",
+                                        userSelect: "none",
+                                        boxShadow: (theme) => theme.trello.boxShadowBtn,
+                                    }}
+                                >
+                                    {bulletin.bulletin}
+                                </Box>
+                                {/* -------------- BTN DELETE -------------- */}
+                                <Typography variant="span" sx={{ userSelect: "none" }}>
+                                    <DeleteOutlinedIcon
+                                        onClick={() => handleDeleteCardComment(bulletin)}
+                                        fontSize="small"
+                                        sx={{
+                                            p: "4px",
+                                            width: "30px",
+                                            height: "30px",
+                                            color: (theme) => theme.trello.colorDarkNavyGray,
+                                            "&:hover": {
+                                                color: (theme) => theme.trello.colorSkyMist,
+                                                cursor: "pointer",
+                                            },
+                                        }}
+                                    />
+                                </Typography>
+                            </Box>
                         </Box>
                     </Box>
-                </Box>
-            ))}
+                ))}
+            </Box>
         </Box>
     );
 }
 
-export default CardActivitySection;
+export default CardBulletinBoard;

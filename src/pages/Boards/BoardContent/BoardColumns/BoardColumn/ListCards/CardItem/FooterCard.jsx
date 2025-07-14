@@ -6,7 +6,7 @@ import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import Tooltip from "@mui/material/Tooltip";
 import { cloneDeep } from "lodash";
-
+import { useTheme } from "@mui/material/styles";
 // --------------------- IMPORT ICONS -------------------------
 import AddCardIcon from "@mui/icons-material/AddCard";
 import DragHandleIcon from "@mui/icons-material/DragHandle";
@@ -19,6 +19,7 @@ import { useDispatch, useSelector } from "react-redux";
 // --------------------- MAIN COMPONENTS ---------------------
 
 const FooterCard = ({ column }) => {
+    const themeTrello = useTheme();
     const dispatch = useDispatch();
     const board = useSelector(selectCurrentActiveBoard);
     // ===================================== STATE & FUNCTIONS =====================================
@@ -81,9 +82,14 @@ const FooterCard = ({ column }) => {
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "space-between",
+                        color: (theme) => theme.trello.colorSnowGray,
                     }}
                 >
-                    <Button onClick={toggleFormAddCard} startIcon={<AddCardIcon />}>
+                    <Button
+                        sx={{ color: (theme) => theme.trello.colorSnowGray }}
+                        onClick={toggleFormAddCard}
+                        startIcon={<AddCardIcon />}
+                    >
                         Add new card
                     </Button>
                     <Tooltip title="Drag to move">
@@ -96,8 +102,9 @@ const FooterCard = ({ column }) => {
                         width: "100%",
                         p: "10px",
                         height: "fit-content",
-                        borderRadius: "6px",
-                        bgcolor: "#ffffff3d",
+                        borderBottomLeftRadius: "6px",
+                        borderBottomRightRadius: "6px",
+                        bgcolor: "transparent",
                         display: "flex",
                         gap: 1,
                     }}
@@ -112,24 +119,26 @@ const FooterCard = ({ column }) => {
                         onChange={(e) => setNewNameCard(e.target.value)}
                         sx={{
                             "& label": {
-                                color: "text.primary",
+                                color: (theme) => theme.trello.colorDarkNavyGray,
                             },
                             "& input": {
                                 color: (theme) => theme.palette.primary.main,
-                                bgcolor: (theme) => (theme.palette.mode === "dark" ? "#333643" : "white"),
+                                bgcolor: (theme) => theme.trello.colorFogWhiteBlue,
+                                borderRadius: "8px",
                             },
                             "& label.Mui-focused": {
-                                color: (theme) => theme.palette.primary.main,
+                                color: "transparent",
                             },
                             "& .MuiOutlinedInput-root": {
                                 "& fieldset": {
-                                    borderColor: (theme) => theme.palette.primary.main,
+                                    borderColor: (theme) => theme.trello.colorSkyMist,
+                                    borderRadius: "8px",
                                 },
                                 "&:hover fieldset": {
-                                    borderColor: (theme) => theme.palette.primary.main,
+                                    borderColor: (theme) => theme.trello.colorSkyMist,
                                 },
                                 "&.Mui-focused fieldset": {
-                                    borderColor: (theme) => theme.palette.primary.main,
+                                    borderColor: (theme) => theme.trello.colorSkyMist,
                                 },
                             },
                             "& .MuiOutLinedInput-input": {
@@ -148,23 +157,15 @@ const FooterCard = ({ column }) => {
                             className="interceptor-loading"
                             onClick={addNewCard}
                             variant="contained"
-                            color="success"
                             size="small"
-                            sx={{
-                                boxShadow: "none",
-                                border: "0.5px solid",
-                                borderColor: (theme) => theme.palette.success.main,
-                                "&:hover": {
-                                    bgcolor: (theme) => theme.palette.success.main,
-                                },
-                            }}
+                            sx={themeTrello.trello.btnPrimary}
                         >
                             Add
                         </Button>
                         <CloseIcon
                             onClick={toggleFormAddCard}
                             fontSize="small"
-                            sx={{ color: (theme) => theme.palette.warning.light, cursor: "pointer" }}
+                            sx={{ color: (theme) => theme.trello.colorSnowGray, cursor: "pointer" }}
                         />
                     </Box>
                 </Box>

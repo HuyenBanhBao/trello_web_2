@@ -5,7 +5,7 @@ import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import BoardColumn from "./BoardColumn/BoardColumn";
 import LibraryAddIcon from "@mui/icons-material/LibraryAdd";
-
+import { useTheme } from "@mui/material/styles";
 import { createNewColumnAPI } from "~/apis";
 import { generatePlaceholder } from "~/utils/formatters";
 import { cloneDeep } from "lodash";
@@ -15,6 +15,7 @@ import { updateCurrentActiveBoard, selectCurrentActiveBoard } from "~/redux/acti
 import { SortableContext, horizontalListSortingStrategy } from "@dnd-kit/sortable";
 // ---------------------------------- MAIN COMPONENT ---------------------
 const BoardColumns = ({ columns }) => {
+    const themeTrello = useTheme();
     // ===================================== STATE & FUNCTIONS =====================================
     // ===================================== OPEN - CLOSE FORM ADD NEW COLUMN =====================================
     const dispatch = useDispatch(); // Khai báo dispatch
@@ -186,20 +187,7 @@ const BoardColumns = ({ columns }) => {
                                     variant="contained"
                                     color="success"
                                     size="small"
-                                    sx={{
-                                        // width: { xs: "100%", sm: "120px" },
-                                        color: (theme) => theme.trello.colorDustyCloud,
-                                        backgroundColor: (theme) => theme.trello.colorSlateBlue,
-
-                                        boxShadow: (theme) => theme.trello.boxShadowBtn,
-                                        transition: "all 0.25s ease-in-out",
-
-                                        "&:hover": {
-                                            borderColor: "white",
-                                            boxShadow: (theme) => theme.trello.boxShadowBtnHover,
-                                            backgroundColor: (theme) => theme.trello.colorSlateBlue,
-                                        },
-                                    }}
+                                    sx={themeTrello.trello.btnPrimary}
                                 >
                                     Add columns
                                 </Button>
@@ -208,19 +196,7 @@ const BoardColumns = ({ columns }) => {
                                     variant="contained"
                                     color="warning"
                                     size="small"
-                                    sx={{
-                                        color: (theme) => theme.trello.colorDustyCloud,
-                                        backgroundColor: (theme) => theme.trello.colorGoldenSand,
-
-                                        boxShadow: (theme) => theme.trello.boxShadowBtn,
-                                        transition: "all 0.25s ease-in-out",
-
-                                        "&:hover": {
-                                            borderColor: "white",
-                                            boxShadow: (theme) => theme.trello.boxShadowBtnHover,
-                                            backgroundColor: (theme) => theme.trello.colorGoldenSand,
-                                        },
-                                    }}
+                                    sx={themeTrello.trello.btnPrimaryCancel}
                                 >
                                     Cancel
                                 </Button>

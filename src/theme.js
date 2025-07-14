@@ -91,12 +91,40 @@ const theme = extendTheme({
             "rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset",
         boxShadowBtnHover:
             "rgba(0, 0, 0, 0.3) 0px 2px 4px, rgba(0, 0, 0, 0.2) 0px 5px 10px -2px, rgba(0, 0, 0, 0.15) 0px -2px 0px inset",
-        boxShadow63: "rgb(204, 219, 232) 3px 3px 6px 0px inset, rgba(255, 255, 255, 0.5) -3px -3px 6px 1px inset",
+        boxShadowBulletin: "rgb(76 76 76) 3px 3px 6px 0px inset, rgb(255 255 255 / 50%) -3px -3px 6px 1px inset",
 
         // GRADIENT BG
         gradientBlueToViolet: GRADIENT_BLUE_TO_VIOLET,
         gradientBg: GRADIENT_BG,
         gradientBgDark: GRADIENT_BG_DARK,
+
+        // BUTTON STYLES
+        btnPrimary: {
+            color: (theme) => theme.trello.colorDustyCloud,
+            backgroundColor: (theme) => theme.trello.colorSlateBlue,
+
+            boxShadow: (theme) => theme.trello.boxShadowBtn,
+            transition: "all 0.25s ease-in-out",
+
+            "&:hover": {
+                borderColor: "white",
+                boxShadow: (theme) => theme.trello.boxShadowBtnHover,
+                backgroundColor: (theme) => theme.trello.colorSlateBlue,
+            },
+        },
+        btnPrimaryCancel: {
+            color: (theme) => theme.trello.colorDustyCloud,
+            backgroundColor: (theme) => theme.trello.colorGoldenSand,
+
+            boxShadow: (theme) => theme.trello.boxShadowBtn,
+            transition: "all 0.25s ease-in-out",
+
+            "&:hover": {
+                borderColor: "white",
+                boxShadow: (theme) => theme.trello.boxShadowBtnHover,
+                backgroundColor: (theme) => theme.trello.colorGoldenSand,
+            },
+        },
     },
     colorSchemes: {
         // light: {

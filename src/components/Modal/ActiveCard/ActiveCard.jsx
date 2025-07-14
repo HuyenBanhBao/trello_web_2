@@ -1,21 +1,17 @@
+// --------------------- MUI ---------------------
 import AddOutlinedIcon from "@mui/icons-material/AddOutlined";
 import AddToDriveOutlinedIcon from "@mui/icons-material/AddToDriveOutlined";
-import ArchiveOutlinedIcon from "@mui/icons-material/ArchiveOutlined";
-import ArrowForwardOutlinedIcon from "@mui/icons-material/ArrowForwardOutlined";
 import AspectRatioOutlinedIcon from "@mui/icons-material/AspectRatioOutlined";
-import AttachFileOutlinedIcon from "@mui/icons-material/AttachFileOutlined";
-import AutoAwesomeOutlinedIcon from "@mui/icons-material/AutoAwesomeOutlined";
 import AutoFixHighOutlinedIcon from "@mui/icons-material/AutoFixHighOutlined";
 import CancelIcon from "@mui/icons-material/Cancel";
-import ContentCopyOutlinedIcon from "@mui/icons-material/ContentCopyOutlined";
+import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined";
 import CreditCardIcon from "@mui/icons-material/CreditCard";
-import DvrOutlinedIcon from "@mui/icons-material/DvrOutlined";
+import QuestionAnswerOutlinedIcon from "@mui/icons-material/QuestionAnswerOutlined";
 import ImageOutlinedIcon from "@mui/icons-material/ImageOutlined";
 import LocalOfferOutlinedIcon from "@mui/icons-material/LocalOfferOutlined";
 import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined";
-import ShareOutlinedIcon from "@mui/icons-material/ShareOutlined";
-import SubjectRoundedIcon from "@mui/icons-material/SubjectRounded";
 import TaskAltOutlinedIcon from "@mui/icons-material/TaskAltOutlined";
+import NewspaperIcon from "@mui/icons-material/Newspaper";
 import WatchLaterOutlinedIcon from "@mui/icons-material/WatchLaterOutlined";
 import Box from "@mui/material/Box";
 import Divider from "@mui/material/Divider";
@@ -24,13 +20,18 @@ import Stack from "@mui/material/Stack";
 import { styled } from "@mui/material/styles";
 import Typography from "@mui/material/Typography";
 import Grid from "@mui/material/Unstable_Grid2";
+import { useConfirm } from "material-ui-confirm";
 // -------------- Import from components --------------
-import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
-import { updateCardDetailsAPI } from "~/apis";
+import { useDispatch, useSelector } from "react-redux";
+import { updateCardDetailsAPI, deleteCardDetailsAPI } from "~/apis";
 import ToggleFocusInput from "~/components/Form/ToggleFocusInput";
 import VisuallyHiddenInput from "~/components/Form/VisuallyHiddenInput";
-import { updateCardInBoard } from "~/redux/activeBoard/activeBoardSlice";
+import {
+    updateCurrentActiveBoard,
+    updateCardInBoard,
+    selectCurrentActiveBoard,
+} from "~/redux/activeBoard/activeBoardSlice";
 import {
     clearAndHideCurrentActiveCard,
     selectCurrentActiveCard,
@@ -40,9 +41,9 @@ import {
 import { selectCurrentUser } from "~/redux/user/userSlice";
 import { singleFileValidator } from "~/utils/validators";
 import CardActivitySection from "./CardActivitySection";
-import CardDescriptionMdEditor from "./CardDescriptionMdEditor";
 import CardUserGroup from "./CardUserGroup";
 import { CARD_MEMBER_ACTIONS } from "~/utils/constants";
+import CardBulletinBoard from "./CardBulletinBoard";
 // --------------------------------- Function ---------------------------------------
 const SidebarItem = styled(Box)(({ theme }) => ({
     display: "flex",
@@ -79,6 +80,7 @@ const SidebarItem = styled(Box)(({ theme }) => ({
  */
 function ActiveCard() {
     const dispatch = useDispatch();
+    const board = useSelector(selectCurrentActiveBoard);
     const activeCard = useSelector(selectCurrentActiveCard);
     const currentUser = useSelector(selectCurrentUser);
     const isShowModalActiveCard = useSelector(selectIsShowModalActiveCard);
@@ -90,10 +92,9 @@ function ActiveCard() {
         // setIsOpen(false);
     };
 
-    // Function goi API dùng chung cho các trường hợp update card title, desc, cover, comment
+    // Function goi API dùng chung cho các trường hợp update card title, desc, cover, comment =================================================================
     const callAPIUpdateCard = async (updateData) => {
         const updatedCard = await updateCardDetailsAPI(activeCard._id, updateData);
-
         // B1: Cập nhật lại cái card đang active trong modal hiện tại
         dispatch(updateCurrentActiveCard(updatedCard));
         // B2: Cập nhật lại cái bản ghi card trong cái activeBoard (nested data)
@@ -101,15 +102,17 @@ function ActiveCard() {
 
         return updatedCard;
     };
-
+    // ------------------ RENAME CARD TITLE ------------------
     const onUpdateCardTitle = (newTitle) => {
         callAPIUpdateCard({ title: newTitle.trim() }); // Call Api
     };
 
-    const onUpdateCardDescription = (newDesc) => {
-        callAPIUpdateCard({ description: newDesc }); // Call Api
-    };
+    // ------------------ UPDATE DESC ------------------
+    // const onUpdateCardDescription = (newDesc) => {
+    //     callAPIUpdateCard({ description: newDesc }); // Call Api
+    // };
 
+    // ------------------ UPLOAD IMAGE ------------------
     const onUploadCardCover = (event) => {
         // console.log(event.target?.files[0]);
         const error = singleFileValidator(event.target?.files[0]);
@@ -129,15 +132,126 @@ function ActiveCard() {
         );
     };
 
+    // ---------------------- DELETE IMAGE --------------------
+    const confirmDeleteCol = useConfirm();
+    const handleDeleteCover = async () => {
+        // eslint-disable-next-line no-unused-vars
+        const { confirmed, reason } = await confirmDeleteCol({
+            title: "Delete column?",
+            description: "Are you sure you want to delete this column and it's Cards?",
+            confirmationText: "Confirm",
+            cancellationText: "Cancel",
+            buttonOrder: ["confirm", "cancel"],
+            confirmationButtonProps: {
+                variant: "contained",
+                sx: {
+                    color: (theme) => theme.trello.colorDustyCloud,
+                    backgroundColor: (theme) => theme.trello.colorSlateBlue,
+
+                    boxShadow: (theme) => theme.trello.boxShadowBtn,
+                    transition: "all 0.25s ease-in-out",
+
+                    "&:hover": {
+                        borderColor: "white",
+                        boxShadow: (theme) => theme.trello.boxShadowBtnHover,
+                        backgroundColor: (theme) => theme.trello.colorSlateBlue,
+                    },
+                },
+            },
+        });
+        if (confirmed) {
+            let reqData = new FormData();
+            reqData.append("cardCover", "");
+            // Gọi API...
+            toast.promise(callAPIUpdateCard(reqData), {
+                pending: "Deleting...",
+            });
+        }
+    };
+
     // Dùng async await ở đây để component con CardActivitySection chờ và nếu thành công thì mới clear thẻ input comment
+    //  ------------------ ADD BULLETIN ------------------
+    const onAddCardBulletin = async (bulletinToAdd) => {
+        // Gọi api thêm comment lên component cha
+        await callAPIUpdateCard({ bulletinToAdd });
+    };
+    //  ------------------ ADD COMMENT ------------------
     const onAddCardComment = async (commentToAdd) => {
         // Gọi api thêm comment lên component cha
         await callAPIUpdateCard({ commentToAdd });
     };
+    // ------------------ DELETE BULLETIN ------------------
+    const onDeleteCardBulletin = async (bulletinDelete) => {
+        await callAPIUpdateCard({ bulletinDelete });
+    };
 
+    // ------------------ DELETE COMMENT ------------------
+    const onDeleteCardComment = async (commentDelete) => {
+        await callAPIUpdateCard({ commentDelete });
+    };
+
+    //  ------------------ UPDATE MEMBERS ------------------
     const onUpdateCardMembers = (incomingMemberInfo) => {
         // Gọi API update cardMembers
         callAPIUpdateCard({ incomingMemberInfo });
+    };
+
+    // Delete card -------------------------------------
+    const confirmDeleteCard = useConfirm();
+    const handleDeleteCard = async () => {
+        // eslint-disable-next-line no-unused-vars
+        const { confirmed, reason } = await confirmDeleteCard({
+            title: "Delete column?",
+            description: "Are you sure you want to delete this Card",
+            confirmationText: "Confirm",
+            cancellationText: "Cancel",
+            buttonOrder: ["confirm", "cancel"],
+            confirmationButtonProps: {
+                variant: "contained",
+                sx: {
+                    color: (theme) => theme.trello.colorDustyCloud,
+                    backgroundColor: (theme) => theme.trello.colorSlateBlue,
+
+                    boxShadow: (theme) => theme.trello.boxShadowBtn,
+                    transition: "all 0.25s ease-in-out",
+
+                    "&:hover": {
+                        borderColor: "white",
+                        boxShadow: (theme) => theme.trello.boxShadowBtnHover,
+                        backgroundColor: (theme) => theme.trello.colorSlateBlue,
+                    },
+                },
+            },
+        });
+
+        if (confirmed) {
+            const newBoard = { ...board };
+            // 2. Tìm column chứa card đang active
+            const columnOfActiveCard = newBoard.columns.find((col) =>
+                col.cards.some((card) => card._id === activeCard._id)
+            );
+            // 3. Lọc card mới (loại bỏ card đang active)
+            const updatedCards = columnOfActiveCard.cards.filter((card) => card._id !== activeCard._id);
+            // 4. Lọc lại cả cardOrderIds nếu có
+            const updatedCardOrderIds = columnOfActiveCard.cardOrderIds?.filter((id) => id !== activeCard._id);
+            console.log(updatedCardOrderIds);
+
+            // 5. Tạo column mới đã được cập nhật
+            const updatedColumn = {
+                ...columnOfActiveCard,
+                cards: updatedCards,
+                cardOrderIds: updatedCardOrderIds,
+            };
+            // 6. Cập nhật lại newBoard.columns
+            newBoard.columns = newBoard.columns.map((col) => (col._id === updatedColumn._id ? updatedColumn : col));
+            //  Cập nhật lại board hiện tại trên Redux store (sau khi xóa card)
+            dispatch(updateCurrentActiveBoard(newBoard));
+            //  Gọi API xóa column khỏi database (backend)
+            deleteCardDetailsAPI(activeCard._id).then((res) => {
+                toast.success(res?.deleteResult);
+                handleCloseModal();
+            });
+        }
     };
 
     return (
@@ -157,7 +271,7 @@ function ActiveCard() {
                     position: "relative",
                     display: "flex",
                     flexDirection: "column",
-                    width: 900,
+                    width: "70vw",
                     maxWidth: "95vw",
                     maxHeight: "95vh",
                     bgcolor: "white",
@@ -165,8 +279,7 @@ function ActiveCard() {
                     borderRadius: "8px",
                     // border: "none",
                     outline: "none",
-                    overflow: "hidden", // Ẩn tràn nội dung bên ngoài
-                    // padding: "40px 20px 20px",
+                    overflow: "hidden",
                     margin: "50px auto",
                     backgroundColor: (theme) => (theme.palette.mode === "dark" ? "#1A2027" : theme.trello.colorPaleSky),
                 }}
@@ -216,6 +329,7 @@ function ActiveCard() {
                         inputFontSize="22px"
                         value={activeCard?.title}
                         onChangedValue={onUpdateCardTitle}
+                        onKeyDown={onUpdateCardTitle}
                     />
                 </Box>
 
@@ -255,10 +369,11 @@ function ActiveCard() {
                                 sx={{
                                     mb: 2,
                                     p: 1,
-                                    border: (theme) => `1px solid ${theme.trello.colorSnowGray}`,
+                                    // border: (theme) => `1px solid ${theme.trello.colorSnowGray}`,
                                     borderRadius: "4px",
                                     backgroundColor: (theme) =>
                                         theme.palette.mode === "dark" ? "#1A2027" : theme.trello.colorAshGray,
+                                    boxShadow: (theme) => theme.trello.boxShadowBtn,
                                 }}
                             >
                                 <Typography sx={{ fontWeight: "600", mb: 1 }}>Members</Typography>
@@ -277,23 +392,34 @@ function ActiveCard() {
                                     mb: 2,
                                     p: 1,
                                     borderRadius: "4px",
-                                    border: (theme) => `1px solid ${theme.trello.colorSnowGray}`,
+                                    // border: (theme) => `1px solid ${theme.trello.colorSnowGray}`,
                                     backgroundColor: (theme) =>
                                         theme.palette.mode === "dark" ? "#1A2027" : theme.trello.colorAshGray,
+                                    boxShadow: (theme) => theme.trello.boxShadowBtn,
                                 }}
                             >
                                 <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
-                                    <SubjectRoundedIcon />
-                                    <Typography variant="span" sx={{ fontWeight: "600", fontSize: "20px" }}>
-                                        Description
+                                    <NewspaperIcon />
+                                    <Typography
+                                        variant="span"
+                                        sx={{ fontWeight: "600", fontSize: "20px", userSelect: "none" }}
+                                    >
+                                        Bảng tin
                                     </Typography>
                                 </Box>
 
-                                {/* Feature 03: Xử lý mô tả của Card */}
-                                <CardDescriptionMdEditor
+                                {/* Feature 03: Xử lý bảng tintin của Card */}
+
+                                <CardBulletinBoard
+                                    //
+                                    cardBulletin={activeCard?.bulletins}
+                                    onAddCardBulletin={onAddCardBulletin}
+                                    onDeleteCardBulletin={onDeleteCardBulletin}
+                                />
+                                {/* <CardDescriptionMdEditor
                                     cardDescriptionProp={activeCard?.description}
                                     handleUpdateCardDescription={onUpdateCardDescription}
-                                />
+                                /> */}
                             </Box>
 
                             {/* ------------------ Activity ----------------- */}
@@ -302,15 +428,19 @@ function ActiveCard() {
                                     mb: 2,
                                     p: 1,
                                     borderRadius: "4px",
-                                    border: (theme) => `1px solid ${theme.trello.colorSnowGray}`,
+                                    // border: (theme) => `1px solid ${theme.trello.colorSnowGray}`,
                                     backgroundColor: (theme) =>
                                         theme.palette.mode === "dark" ? "#1A2027" : theme.trello.colorAshGray,
+                                    boxShadow: (theme) => theme.trello.boxShadowBtn,
                                 }}
                             >
                                 <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
-                                    <DvrOutlinedIcon />
-                                    <Typography variant="span" sx={{ fontWeight: "600", fontSize: "20px" }}>
-                                        Activity
+                                    <QuestionAnswerOutlinedIcon />
+                                    <Typography
+                                        variant="span"
+                                        sx={{ fontWeight: "600", fontSize: "20px", userSelect: "none" }}
+                                    >
+                                        Message
                                     </Typography>
                                 </Box>
 
@@ -318,6 +448,7 @@ function ActiveCard() {
                                 <CardActivitySection
                                     cardComments={activeCard?.comments}
                                     onAddCardComment={onAddCardComment}
+                                    onDeleteCardComment={onDeleteCardComment}
                                 />
                             </Box>
                         </Grid>
@@ -328,9 +459,10 @@ function ActiveCard() {
                                 sx={{
                                     p: 1,
                                     borderRadius: "4px",
-                                    border: (theme) => `1px solid ${theme.trello.colorSnowGray}`,
+                                    // border: (theme) => `1px solid ${theme.trello.colorSnowGray}`,
                                     backgroundColor: (theme) =>
                                         theme.palette.mode === "dark" ? "#1A2027" : theme.trello.colorAshGray,
+                                    boxShadow: (theme) => theme.trello.boxShadowBtn,
                                 }}
                             >
                                 <Typography sx={{ fontWeight: "600", mb: 1 }}>Add To Card</Typography>
@@ -353,16 +485,20 @@ function ActiveCard() {
                                         </SidebarItem>
                                     )}
                                     {/* Feature 06: Xử lý hành động cập nhật ảnh Cover của Card */}
-                                    <SidebarItem className="active" component="label">
-                                        <ImageOutlinedIcon fontSize="small" />
-                                        Cover
-                                        <VisuallyHiddenInput type="file" onChange={onUploadCardCover} />
-                                    </SidebarItem>
+                                    {!activeCard?.cover && (
+                                        <SidebarItem className="active" component="label">
+                                            <ImageOutlinedIcon fontSize="small" />
+                                            Add Image
+                                            <VisuallyHiddenInput type="file" onChange={onUploadCardCover} />
+                                        </SidebarItem>
+                                    )}
+                                    {activeCard?.cover && (
+                                        <SidebarItem onClick={handleDeleteCover}>
+                                            <DeleteOutlinedIcon fontSize="small" />
+                                            Delete Image
+                                        </SidebarItem>
+                                    )}
 
-                                    <SidebarItem>
-                                        <AttachFileOutlinedIcon fontSize="small" />
-                                        Attachment
-                                    </SidebarItem>
                                     <SidebarItem>
                                         <LocalOfferOutlinedIcon fontSize="small" />
                                         Labels
@@ -401,13 +537,26 @@ function ActiveCard() {
 
                                 <Divider sx={{ my: 2 }} />
 
-                                <Typography sx={{ fontWeight: "600", mb: 1 }}>Actions</Typography>
+                                <Typography sx={{ fontWeight: "600", mb: 1 }}>Move</Typography>
                                 <Stack direction="column" spacing={1}>
-                                    <SidebarItem>
-                                        <ArrowForwardOutlinedIcon fontSize="small" />
-                                        Move
+                                    <SidebarItem
+                                        onClick={handleDeleteCard}
+                                        sx={{
+                                            color: (theme) => theme.trello.colorDustyCloud,
+                                            backgroundColor: (theme) => theme.trello.colorSlateBlue,
+                                            boxShadow: (theme) => theme.trello.boxShadowBtn,
+                                            transition: "all 0.25s ease-in-out",
+
+                                            "&:hover": {
+                                                boxShadow: (theme) => theme.trello.boxShadowBtnHover,
+                                                backgroundColor: (theme) => theme.trello.colorSlateBlue,
+                                            },
+                                        }}
+                                    >
+                                        <DeleteOutlinedIcon fontSize="small" />
+                                        DELETE CARD
                                     </SidebarItem>
-                                    <SidebarItem>
+                                    {/* <SidebarItem>
                                         <ContentCopyOutlinedIcon fontSize="small" />
                                         Copy
                                     </SidebarItem>
@@ -422,7 +571,7 @@ function ActiveCard() {
                                     <SidebarItem>
                                         <ShareOutlinedIcon fontSize="small" />
                                         Share
-                                    </SidebarItem>
+                                    </SidebarItem> */}
                                 </Stack>
                             </Box>
                         </Grid>

@@ -23,7 +23,7 @@ function BoardUserGroup({ boardUsers = [], board, limit = 4 }) {
     return (
         <Box sx={{ display: "flex", gap: "4px", userSelect: "none" }}>
             {/* Hiển thị giới hạn số lượng user theo số limit */}
-            <Box sx={{ display: { xs: "none", lg: "flex" }, gap: 1 }}>
+            {/* <Box sx={{ display: { xs: "none", lg: "flex" }, gap: 1 }}>
                 {boardUsers.map((user, index) => {
                     if (index < limit) {
                         return (
@@ -37,7 +37,7 @@ function BoardUserGroup({ boardUsers = [], board, limit = 4 }) {
                         );
                     }
                 })}
-            </Box>
+            </Box> */}
 
             {/* Nếu số lượng users nhiều hơn limit thì hiện thêm +number */}
             {boardUsers.length > limit && (
@@ -46,39 +46,33 @@ function BoardUserGroup({ boardUsers = [], board, limit = 4 }) {
                         aria-describedby={popoverId}
                         onClick={handleTogglePopover}
                         sx={{
-                            width: { xs: "100px", lg: "36px" },
-                            height: 36,
-                            borderRadius: { xs: "8px", lg: "50%" },
-                            cursor: "pointer",
+                            //
                             display: "flex",
-                            alignItems: "center",
                             justifyContent: "center",
+                            width: { xs: "100%", sm: "100px" },
                             fontSize: "14px",
                             fontWeight: "500",
-                            color: (theme) =>
-                                theme.palette.mode === "dark"
-                                    ? theme.trello.primaryColorTextBar
-                                    : theme.trello.colorPureBlack,
-                            // backgroundColor: "#a4b0be",
-                            background: (theme) =>
-                                theme.palette.mode === "dark"
-                                    ? theme.trello.gradientBgDark
-                                    : theme.trello.colorDustLavender,
-                            transition: "all 0.3s ease",
+                            p: "7px 15px",
+                            color: "white",
+                            border: (theme) => `1px solid ${theme.trello.colorFogWhiteBlue}`,
+                            borderRadius: "4px",
+                            backgroundColor: "transparent",
+
+                            boxShadow: (theme) => theme.trello.boxShadowBtn,
+                            transition: "all 0.25s ease-in-out", // ✅ mượt khi hover
+
                             "&:hover": {
-                                opacity: 0.7,
-                                boxShadow: "0 4px 12px rgba(0, 0, 0, 0.2)",
-                            },
-                            "&:active": {
-                                transform: "scale(0.98)",
+                                borderColor: "white",
+                                boxShadow: (theme) => theme.trello.boxShadowBtnHover,
+                                backgroundColor: "rgba(255, 255, 255, 0.08)",
                             },
                         }}
                     >
-                        {/* Hiện "User" ở xs/sm/md */}
-                        <Box sx={{ display: { xs: "block", lg: "none" } }}>User</Box>
-
-                        {/* Hiện "All" từ lg trở lên */}
-                        <Box sx={{ display: { xs: "none", lg: "block" } }}>All</Box>
+                        List User
+                        {/* // Hiện "User" ở xs/sm/md */}
+                        {/* <Box sx={{ display: { xs: "block", lg: "none" } }}>User</Box> */}
+                        {/* Hiện "All" từ lg trở lên
+                        <Box sx={{ display: { xs: "none", lg: "block" } }}>All</Box> */}
                     </Box>
                 </Tooltip>
             )}
