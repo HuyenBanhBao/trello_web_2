@@ -77,7 +77,6 @@ const BoardBar = ({ board }) => {
 
                         {/* -------------------- BOARD MEMBERS -------------------- */}
                         <Chip sx={MENU_STYLES} icon={<AddToDriveIcon />} label="Add To Google Drive" clickable />
-
                         <Chip sx={MENU_STYLES} icon={<BoltIcon />} label="Automation" clickable />
                         <Chip sx={MENU_STYLES} icon={<FilterListIcon />} label="Filter" clickable />
                     </Box>

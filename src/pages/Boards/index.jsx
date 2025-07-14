@@ -155,6 +155,7 @@ function Boards() {
                         {boards?.length > 0 && (
                             <Box
                                 sx={{
+                                    pt: 1,
                                     display: "flex",
                                     flexWrap: "wrap",
                                     gap: 2,
@@ -181,14 +182,42 @@ function Boards() {
                                             minWidth: "100px", // hoặc thấp hơn nếu muốn
                                         }}
                                     >
-                                        <Card sx={{ width: "100%" }}>
+                                        <Card
+                                            component={Link}
+                                            to={`/boards/${b._id}`}
+                                            sx={{
+                                                display: "block",
+                                                width: "100%",
+                                                userSelect: "none",
+                                                textDecoration: "none",
+                                                borderRadius: "8px",
+                                                color: "inherit",
+                                                cursor: "pointer",
+                                                transition: "all 0.2s ease-in-out", // ✅ hiệu ứng mượt
+                                                "&:hover": {
+                                                    transform: "translateY(-4px)", // ✅ nổi lên 4px
+                                                    boxShadow: 3, // hoặc dùng theme.trello.boxShadowBtnHover nếu có
+                                                },
+                                            }}
+                                        >
                                             <Box
                                                 sx={{
+                                                    borderTopRightRadius: "8px",
+                                                    borderTopLeftRadius: "8px",
                                                     height: "30px",
                                                     backgroundColor: (theme) => theme.trello.colorDarkNavyGray,
                                                 }}
                                             />
-                                            <CardContent sx={{ p: 1.5, "&:last-child": { p: 1.5 } }}>
+                                            <CardContent
+                                                sx={{
+                                                    p: 1.5,
+                                                    height: "100px",
+                                                    borderBottomRightRadius: "8px",
+                                                    borderBottomLeftRadius: "8px",
+                                                    bgcolor: (theme) => theme.trello.colorSnowGray,
+                                                    "&:last-child": { p: 1.5 },
+                                                }}
+                                            >
                                                 <Typography gutterBottom variant="h6">
                                                     {b?.title}
                                                 </Typography>
@@ -203,20 +232,6 @@ function Boards() {
                                                 >
                                                     {b?.description}
                                                 </Typography>
-                                                <Box
-                                                    component={Link}
-                                                    to={`/boards/${b._id}`}
-                                                    sx={{
-                                                        mt: 1,
-                                                        display: "flex",
-                                                        alignItems: "center",
-                                                        justifyContent: "flex-end",
-                                                        color: "primary.main",
-                                                        "&:hover": { color: "primary.light" },
-                                                    }}
-                                                >
-                                                    Go to board <ArrowRightIcon fontSize="small" />
-                                                </Box>
                                             </CardContent>
                                         </Card>
                                     </Box>

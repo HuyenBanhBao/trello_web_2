@@ -9,7 +9,6 @@ import ListItemText from "@mui/material/ListItemText";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import { useConfirm } from "material-ui-confirm";
 // --------------------- IMPORT ICONS -------------------------
-import ContentCut from "@mui/icons-material/ContentCut";
 import Cloud from "@mui/icons-material/Cloud";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
@@ -21,24 +20,42 @@ import { updateCurrentActiveBoard, selectCurrentActiveBoard } from "~/redux/acti
 import { useDispatch, useSelector } from "react-redux";
 import { deleteColumnDetailsAPI, updateColumnDetailsAPI } from "~/apis";
 import ToggleFocusInput from "~/components/Form/ToggleFocusInput";
-
+import SendMessToAll from "~/components/Modal/Other/SendMessToAll";
+import SendBulletinToAll from "~/components/Modal/Other/SendBulletinToAll";
+import { selectCurrentUser } from "~/redux/user/userSlice";
+import { updateCurrentActiveColumn, selectCurrentActiveColumn } from "~/redux/aciveColumn/activeColumnSlice";
+import { updateCardInBoard } from "~/redux/activeBoard/activeBoardSlice";
 // ===================================================== MAIN COMPONENT =====================================================
 const HeaderCard = ({ column, attributes, listeners }) => {
     const dispatch = useDispatch();
     const board = useSelector(selectCurrentActiveBoard);
+    const activeColumn = useSelector(selectCurrentActiveColumn);
+    const currentUser = useSelector(selectCurrentUser);
 
     const [anchorEl, setAnchorEl] = useState(null);
     const open = Boolean(anchorEl);
+    // ------------------------------- Open  -------------------------------
     const handleClick = (event) => {
-        setAnchorEl(event.currentTarget);
+        dispatch(updateCurrentActiveColumn(column));
+
+        const isOwner = board.ownerIds.includes(currentUser._id);
+        if (isOwner) {
+            setAnchorEl(event.currentTarget);
+        } else {
+            // Tùy bạn: có thể hiển thị toast hoặc bỏ qua
+            toast.warning("Bạn không có quyền mở modal này.");
+        }
     };
+
+    // ------------------------------- Close -------------------------------
     const handleClose = () => {
         setAnchorEl(null);
     };
 
-    // Xử lý xóa cột
+    // ------------------------------- Xử lý xóa cột -------------------------------
     const confirmDeleteCol = useConfirm();
     const handleDeleteCol = async () => {
+        handleClose();
         // eslint-disable-next-line no-unused-vars
         const { confirmed, reason } = await confirmDeleteCol({
             title: "Delete column?",
@@ -71,9 +88,9 @@ const HeaderCard = ({ column, attributes, listeners }) => {
             const newBoard = { ...board };
             newBoard.columns = newBoard.columns.filter((c) => c._id !== column._id);
             newBoard.columnOrderIds = newBoard.columnOrderIds.filter((id) => id !== column._id);
-            // setBoard(newBoard);
+            //  Cập nhật lại board hiện tại trên Redux store (sau khi xóa column)
             dispatch(updateCurrentActiveBoard(newBoard));
-            //
+            //  Gọi API xóa column khỏi database (backend)
             deleteColumnDetailsAPI(column._id).then((res) => {
                 toast.success(res?.deleteResult);
             });
@@ -81,6 +98,7 @@ const HeaderCard = ({ column, attributes, listeners }) => {
         // console.log(reason);
     };
 
+    // ------------------------------- UPDATE TITLE -------------------------------
     const onUpdateColumnTitle = (newTitle) => {
         // Gọi API update column và xử lý dữ liệu Board trong redux
         updateColumnDetailsAPI(column._id, { title: newTitle }).then(() => {
@@ -91,6 +109,28 @@ const HeaderCard = ({ column, attributes, listeners }) => {
                 })
             );
         });
+    };
+
+    // Function gọi API dùng chung để xử lý các trường hợp update
+    const callAPIUpdateColumn = async (updateData) => {
+        const updatedCardsInColumn = await updateColumnDetailsAPI(activeColumn._id, updateData);
+        console.log(updatedCardsInColumn);
+        // B1: Update lại Column trong Redux
+        dispatch(updateCurrentActiveColumn({ ...activeColumn, cards: updatedCardsInColumn }));
+        // B2: Với mỗi card vừa update, cập nhật lại bản ghi trong activeBoard
+        updatedCardsInColumn.forEach((card) => {
+            dispatch(updateCardInBoard(card));
+        });
+        return updatedCardsInColumn;
+    };
+
+    // ------------------------------- SEND MESS TO ALL CARD IN ONE COLUMN -------------------------------
+    const onAddComentToAllCard = async (commentToAdd) => {
+        await callAPIUpdateColumn({ commentToAdd });
+    };
+    // ------------------------------- SEND BULLETIN TO ALL CARD IN ONE COLUMN -------------------------------
+    const onAddBulletinToAllCard = async (bulletinToAdd) => {
+        await callAPIUpdateColumn({ bulletinToAdd });
     };
 
     // ========================================================================================
@@ -105,7 +145,14 @@ const HeaderCard = ({ column, attributes, listeners }) => {
                     justifyContent: "space-between",
                 }}
             >
-                <Box sx={{ display: "flex", gap: "8px", alignItems: "center" }}>
+                <Box
+                    sx={{
+                        display: "flex",
+                        gap: "8px",
+                        alignItems: "center",
+                        color: (theme) => theme.trello.colorSkyMist,
+                    }}
+                >
                     <DragIndicatorOutlinedIcon
                         {...attributes}
                         {...listeners}
@@ -114,7 +161,6 @@ const HeaderCard = ({ column, attributes, listeners }) => {
                             cursor: "grab",
                             backgroundColor: "rgba(0, 0, 0, 0.05)",
                             borderRadius: "8px",
-                            color: "rgba(0, 0, 0, 0.5)",
                             marginLeft: "-8px",
                             ":hover": {
                                 backgroundColor: "rgba(0, 0, 0, 0.1)",
@@ -133,7 +179,7 @@ const HeaderCard = ({ column, attributes, listeners }) => {
                             aria-haspopup="true"
                             aria-expanded={open ? "true" : undefined}
                             onClick={handleClick}
-                            sx={{ color: "text.primary", cursor: "pointer" }}
+                            sx={{ color: (theme) => theme.trello.colorSnowGray, cursor: "pointer" }}
                         />
                     </Tooltip>
                     <Menu
@@ -141,23 +187,15 @@ const HeaderCard = ({ column, attributes, listeners }) => {
                         anchorEl={anchorEl}
                         open={open}
                         onClose={handleClose}
-                        onClick={handleClose}
                         MenuListProps={{
                             "aria-labelledby": "basic-column-dropdown",
                         }}
                     >
-                        <MenuItem>
-                            <ListItemIcon>
-                                <ContentCut fontSize="small" />
-                            </ListItemIcon>
-                            <ListItemText>Cut</ListItemText>
-                        </MenuItem>
-                        <MenuItem>
-                            <ListItemIcon>
-                                <ContentCopyIcon fontSize="small" />
-                            </ListItemIcon>
-                            <ListItemText>Copy</ListItemText>
-                        </MenuItem>
+                        {/* ----------- BUTTON SEND MESS ----------- */}
+                        <SendMessToAll onAddComentToAllCard={onAddComentToAllCard} />
+                        {/* ----------- BUTTON SEND BULLETIN ----------- */}
+                        <SendBulletinToAll onAddBulletinToAllCard={onAddBulletinToAllCard} />
+                        {/* OTHER */}
                         <MenuItem>
                             <ListItemIcon>
                                 <ContentPasteIcon fontSize="small" />

@@ -50,7 +50,7 @@ function InviteBoardUser({ board }) {
         <Box
             sx={{
                 width: { xs: "100%", sm: "100px" },
-                mr: { xs: "0", sm: 1 },
+                // mr: { xs: "0", sm: 1 },
             }}
         >
             <Tooltip
@@ -66,15 +66,15 @@ function InviteBoardUser({ board }) {
                         width: { xs: "100%", sm: "100px" },
                         color: "white",
                         borderColor: "white",
-                        backgroundColor: "transparent", // nếu bạn muốn rõ hơn hiệu ứng nền
+                        backgroundColor: "transparent",
 
                         boxShadow: (theme) => theme.trello.boxShadowBtn,
-                        transition: "all 0.25s ease-in-out", // ✅ mượt khi hover
+                        transition: "all 0.25s ease-in-out",
 
                         "&:hover": {
                             borderColor: "white",
-                            boxShadow: (theme) => theme.trello.boxShadowBtnHover, // ✅ bóng đổ đậm hơn 1 chút
-                            backgroundColor: "rgba(255, 255, 255, 0.08)", // ✅ nền nhạt hơn để cảm giác "hover"
+                            boxShadow: (theme) => theme.trello.boxShadowBtnHover,
+                            backgroundColor: "rgba(255, 255, 255, 0.08)",
                         },
                     }}
                 >

@@ -17,6 +17,11 @@ import { toast } from "react-toastify";
 //     // console.log(response);
 //     return response.data;
 // };
+export const createNewBoardAPI = async (newBoardData) => {
+    const response = await authorizedAxiosInstance.post(`${API_ROOT}/v1/boards`, newBoardData);
+    toast.success("Boards created successfully");
+    return response.data;
+};
 export const updateBoardDetailsAPI = async (boardId, updateData) => {
     const response = await authorizedAxiosInstance.put(`${API_ROOT}/v1/boards/${boardId}`, updateData); // axios.get trả về một promise nên chúng ta có thể dùng await để chờ response trả về
     // console.log(response);
@@ -47,6 +52,16 @@ export const createNewCardAPI = async (newCardData) => {
     return response.data;
 };
 
+export const updateCardDetailsAPI = async (cardId, updateData) => {
+    const response = await authorizedAxiosInstance.put(`${API_ROOT}/v1/cards/${cardId}`, updateData);
+    return response.data;
+};
+
+export const deleteCardDetailsAPI = async (cardId) => {
+    const response = await authorizedAxiosInstance.delete(`${API_ROOT}/v1/cards/${cardId}`);
+    return response.data;
+};
+
 // ==================================================== API Users ====================================================
 export const registerUserAPI = async (data) => {
     const response = await authorizedAxiosInstance.post(`${API_ROOT}/v1/users/register`, data);
@@ -64,6 +79,8 @@ export const verifyUserAPI = async (data) => {
     return response.data;
 };
 
+// ==================================================== API MOVE ====================================================
+
 export const refreshTokenAPI = async () => {
     const response = await authorizedAxiosInstance.get(`${API_ROOT}/v1/users/refresh_token`);
     return response.data;
@@ -71,17 +88,6 @@ export const refreshTokenAPI = async () => {
 
 export const fetchBoardsAPI = async (searchPath) => {
     const response = await authorizedAxiosInstance.get(`${API_ROOT}/v1/boards${searchPath}`);
-    return response.data;
-};
-
-export const createNewBoardAPI = async (newBoardData) => {
-    const response = await authorizedAxiosInstance.post(`${API_ROOT}/v1/boards`, newBoardData);
-    toast.success("Boards created successfully");
-    return response.data;
-};
-
-export const updateCardDetailsAPI = async (cardId, updateData) => {
-    const response = await authorizedAxiosInstance.put(`${API_ROOT}/v1/cards/${cardId}`, updateData);
     return response.data;
 };
 

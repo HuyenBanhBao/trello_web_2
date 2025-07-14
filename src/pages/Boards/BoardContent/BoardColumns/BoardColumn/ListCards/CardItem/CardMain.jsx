@@ -7,8 +7,8 @@ import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 
 // -------------------------- ICONS --------------------------
+import NewspaperIcon from "@mui/icons-material/Newspaper";
 import GroupIcon from "@mui/icons-material/Group";
-import AttachmentIcon from "@mui/icons-material/Attachment";
 import ForumIcon from "@mui/icons-material/Forum";
 // import DriveFileRenameOutlineOutlinedIcon from "@mui/icons-material/DriveFileRenameOutlineOutlined";
 
@@ -63,7 +63,8 @@ const CardMain = ({ card }) => {
                 sx={{
                     cursor: "grab",
                     overflow: "unset",
-                    boxShadow: (theme) => theme.trello.boxShadowCard,
+                    borderRadius: "4px",
+                    boxShadow: (theme) => theme.trello.boxShadowBulletin,
                 }}
             >
                 {card?.cover && <CardMedia sx={{ height: 140 }} image={card?.cover} />}
@@ -74,17 +75,20 @@ const CardMain = ({ card }) => {
                         p: card?.FE_PlaceholderCard ? "none" : 1.5,
                         "&:last-child": { p: card?.FE_PlaceholderCard ? "1px" : 1.5 },
                         minHeight: card?.FE_PlaceholderCard ? "5px" : "48px",
-                        borderRadius: "4px",
-                        border: (theme) =>
-                            card?.FE_PlaceholderCard ? `3px solid ${theme.trello.colorSlateBlue}` : "none",
-                        backgroundColor: (theme) =>
-                            card?.FE_PlaceholderCard ? theme.trello.colorSlateBlue : "inherit",
                     }}
                 >
                     {card?.FE_PlaceholderCard && <Typography sx={{ width: "100%" }}></Typography>}
                     {!card?.FE_PlaceholderCard && (
                         <>
-                            <Typography sx={{ flex: 1 }}>{card?.title}</Typography>
+                            <Typography
+                                sx={{
+                                    flex: 1,
+                                    fontWeight: "500",
+                                    color: (theme) => theme.trello.colorDarkNavyGray,
+                                }}
+                            >
+                                PHÒNG {card?.title}
+                            </Typography>
                             {/* {mouseIsOver && (
                                 <DriveFileRenameOutlineOutlinedIcon
                                     sx={{
@@ -102,18 +106,30 @@ const CardMain = ({ card }) => {
                 {showCardAction() && (
                     <CardActions sx={{ p: "0 4px 8px 4px" }}>
                         {!!card?.memberIds?.length && (
-                            <Button startIcon={<GroupIcon />} size="small">
+                            <Button
+                                sx={{ color: (theme) => theme.trello.colorSageGreen }}
+                                startIcon={<GroupIcon />}
+                                size="small"
+                            >
                                 {card?.memberIds?.length}
                             </Button>
                         )}
                         {!!card?.comments?.length && (
-                            <Button startIcon={<ForumIcon />} size="small">
+                            <Button
+                                sx={{ color: (theme) => theme.trello.colorSageGreen }}
+                                startIcon={<ForumIcon />}
+                                size="small"
+                            >
                                 {card?.comments?.length}
                             </Button>
                         )}
-                        {!!card?.attachments?.length && (
-                            <Button startIcon={<AttachmentIcon />} size="small">
-                                {card?.attachments?.length}
+                        {!!card?.bulletins?.length && (
+                            <Button
+                                sx={{ color: (theme) => theme.trello.colorSageGreen }}
+                                startIcon={<NewspaperIcon />}
+                                size="small"
+                            >
+                                {card?.bulletins?.length}
                             </Button>
                         )}
                     </CardActions>

@@ -17,6 +17,7 @@ import RadioGroup from "@mui/material/RadioGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import { styled } from "@mui/material/styles";
 import { createNewBoardAPI } from "~/apis";
+import { useTheme } from "@mui/material/styles";
 
 // =====================================================================================================================
 const SidebarItem = styled(Box)(({ theme }) => ({
@@ -47,6 +48,7 @@ const BOARD_TYPES = {
  * Note: Modal là một low-component mà bọn MUI sử dụng bên trong những thứ như Dialog, Drawer, Menu, Popover. Ở đây dĩ nhiên chúng ta có thể sử dụng Dialog cũng không thành vấn đề gì, nhưng sẽ sử dụng Modal để dễ linh hoạt tùy biến giao diện từ con số 0 cho phù hợp với mọi nhu cầu nhé.
  */
 function SidebarCreateBoardModal({ afterCreateNewBoard }) {
+    const themeTrello = useTheme();
     const {
         control,
         register,
@@ -233,13 +235,7 @@ function SidebarCreateBoardModal({ afterCreateNewBoard }) {
                                         className="interceptor-loading"
                                         type="submit"
                                         variant="contained"
-                                        sx={{
-                                            color: (theme) => theme.trello.colorSnowGray,
-                                            backgroundColor: (theme) => theme.trello.colorSlateBlue,
-                                            "&:hover": {
-                                                backgroundColor: (theme) => theme.trello.colorDeepNavy,
-                                            },
-                                        }}
+                                        sx={themeTrello.trello.btnPrimary}
                                     >
                                         Create
                                     </Button>

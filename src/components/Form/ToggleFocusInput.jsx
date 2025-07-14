@@ -59,6 +59,7 @@ function ToggleFocusInput({ value, onChangedValue, inputFontSize = "16px", ...pr
                 },
                 "& .MuiOutlinedInput-input": {
                     px: "6px",
+                    color: (theme) => theme.trello.colorSnowGray,
                     overflow: "hidden",
                     whiteSpace: "nowrap",
                     textOverflow: "ellipsis",
