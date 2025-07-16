@@ -1,10 +1,13 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import TextField from "@mui/material/TextField";
 
 // Một Trick xử lý css khá hay trong việc làm UI UX khi cần ẩn hiện một cái input: Hiểu đơn giản là thay vì phải tạo biến State để chuyển đổi qua lại giữa thẻ Input và Text thông thường thì chúng ta sẽ CSS lại cho cái thẻ Input trông như text bình thường, chỉ khi click và focus vào nó thì style lại trở về như cái input ban đầu.
 // Controlled Input trong MUI: https://mui.com/material-ui/react-text-field/#uncontrolled-vs-controlled
-function ToggleFocusInput({ value, onChangedValue, inputFontSize = "16px", ...props }) {
+function EditableInput({ value, onChangedValue, inputFontSize = "16px", ...props }) {
     const [inputValue, setInputValue] = useState(value);
+    useEffect(() => {
+        setInputValue(value);
+    }, [value]);
     // Blur là khi chúng ta không còn Focus vào phần tử nữa thì sẽ trigger hành động ở đây.
     const triggerBlur = () => {
         // Support Trim cái dữ liệu State inputValue cho đẹp luôn sau khi blur ra ngoài
@@ -22,7 +25,7 @@ function ToggleFocusInput({ value, onChangedValue, inputFontSize = "16px", ...pr
 
     return (
         <TextField
-            id="toggle-focus-input-controlled"
+            id="editable-input-controlled"
             fullWidth
             variant="outlined"
             size="small"
@@ -38,7 +41,7 @@ function ToggleFocusInput({ value, onChangedValue, inputFontSize = "16px", ...pr
                 "& label": {},
                 "& input": { fontSize: inputFontSize, fontWeight: "bold" },
                 "&.card-title-modal .MuiOutlinedInput-input": {
-                    color: (theme) => theme.trello.colorSnowGray,
+                    color: (theme) => theme.trello.colorSlateBlue,
                 },
 
                 "& .MuiOutlinedInput-root": {
@@ -55,7 +58,8 @@ function ToggleFocusInput({ value, onChangedValue, inputFontSize = "16px", ...pr
                 },
                 "& .MuiOutlinedInput-input": {
                     px: "6px",
-                    color: (theme) => theme.trello.colorSnowGray,
+                    color: (theme) => theme.trello.colorSlateBlue,
+                    textAlign: "center",
                     overflow: "hidden",
                     whiteSpace: "nowrap",
                     textOverflow: "ellipsis",
@@ -65,4 +69,4 @@ function ToggleFocusInput({ value, onChangedValue, inputFontSize = "16px", ...pr
     );
 }
 
-export default ToggleFocusInput;
+export default EditableInput;

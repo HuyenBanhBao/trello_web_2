@@ -1,16 +1,14 @@
 import { useState } from "react";
 import { useSelector } from "react-redux";
+import { useTheme } from "@mui/material/styles";
 // ------------------- MUI -------------------
 import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
 import Avatar from "@mui/material/Avatar";
 import MenuItem from "@mui/material/MenuItem";
-import { styled } from "@mui/material/styles";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import CancelIcon from "@mui/icons-material/Cancel";
-import ListItemIcon from "@mui/material/ListItemIcon";
-import ListItemText from "@mui/material/ListItemText";
 import NewspaperIcon from "@mui/icons-material/Newspaper";
 // ------------------- Component -------------------
 import { selectCurrentUser } from "~/redux/user/userSlice";
@@ -23,25 +21,11 @@ import { selectCurrentUser } from "~/redux/user/userSlice";
  * - Luôn log kết quả qua từng bước để ktra dữ liệu về có đúng với mình cần hay k
  */
 // =====================================================================================================================
-const SidebarItem = styled(Box)(({ theme }) => ({
-    display: "flex",
-    alignItems: "center",
-    gap: "8px",
-    cursor: "pointer",
-    backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
-    padding: "12px 16px",
-    borderRadius: "8px",
-    "&:hover": {
-        backgroundColor: theme.palette.mode === "dark" ? "#33485D" : theme.palette.grey[300],
-    },
-    "&.active": {
-        color: theme.palette.mode === "dark" ? "#90caf9" : "#0c66e4",
-        backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#e9f2ff",
-    },
-}));
 
-function SendBulletinToAll({ onAddBulletinToAllCard }) {
+function SendBulletinToAll({ onAddBulletinToAllCard, activeColumn }) {
+    const theme = useTheme();
     const currentUser = useSelector(selectCurrentUser);
+
     const [isOpen, setIsOpen] = useState(false);
     const handleOpenModal = () => {
         setIsOpen(true);
@@ -65,16 +49,15 @@ function SendBulletinToAll({ onAddBulletinToAllCard }) {
             onAddBulletinToAllCard(bulletinToAdd).then(() => {
                 event.target.value = "";
             });
+            handleCloseModal();
         }
     };
 
     return (
         <>
-            <MenuItem onClick={handleOpenModal}>
-                <ListItemIcon>
-                    <NewspaperIcon fontSize="small" />
-                </ListItemIcon>
-                <ListItemText>Gửi thông báo</ListItemText>
+            <MenuItem onClick={handleOpenModal} sx={theme.trello.btnSidebar}>
+                <Box>Gửi thông báo</Box>
+                <NewspaperIcon fontSize="small" />
             </MenuItem>
 
             <Modal
@@ -117,77 +100,98 @@ function SendBulletinToAll({ onAddBulletinToAllCard }) {
                             onClick={handleCloseModal}
                         />
                     </Box>
-                    <Box
-                        id="modal-send-mess-to-all"
-                        sx={{
-                            display: "flex",
-                            alignItems: "center",
-                            gap: 1,
-                            mb: 3,
-                            color: (theme) => theme.trello.colorSlateBlue,
-                        }}
-                    >
-                        <NewspaperIcon />
-                        <Typography variant="h6" component="h2" sx={{ fontStyle: "italic", fontWeight: "600" }}>
-                            Dán thông báo
-                        </Typography>
-                    </Box>
-                    <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 2 }}>
-                        <Avatar
-                            sx={{ width: 36, height: 36, cursor: "pointer" }}
-                            alt={currentUser?.username}
-                            src={currentUser?.avatar}
-                        />
-                        <TextField
+                    {!activeColumn ? (
+                        <Box
+                            id="modal-send-mess-to-all"
                             sx={{
-                                mt: "4px",
-                                "& .MuiOutlinedInput-root": {
-                                    bgcolor: (theme) => (theme.palette.mode === "dark" ? "#33485D" : "transparent"),
-                                    padding: "8px 12px",
-                                    borderRadius: "4px",
-                                    border: "0.5px solid rgba(48, 48, 48, 0.3)",
-                                    boxShadow: "0 0 1px rgba(46, 46, 46, 0.3)",
-                                    "& fieldset": {
-                                        border: "none", // ẩn border mặc định
-                                    },
-                                    "&:hover fieldset": {
-                                        border: "1px solid rgba(49, 49, 49, 0.8)",
-                                    },
-                                    "&.Mui-focused fieldset": {
-                                        border: "1px solid rgba(49, 49, 49, 0.8)",
-                                    },
-                                },
-                                "& .MuiOutlinedInput-input": {
-                                    padding: 0, // padding đã có ở `.MuiOutlinedInput-root` rồi
-                                    wordBreak: "break-word",
-                                    color: (theme) => theme.trello.colorSlateBlue,
-                                    caretColor: (theme) => theme.trello.colorSlateBlue,
-                                    "&::placeholder": {
-                                        color: (theme) => theme.trello.colorSlateBlue,
-                                        opacity: 0.5,
-                                    },
-                                },
+                                display: "flex",
+                                alignItems: "center",
+                                gap: 1,
+                                mb: 3,
+                                color: (theme) => theme.trello.colorSlateBlue,
                             }}
-                            fullWidth
-                            placeholder="Write a comment..."
-                            type="text"
-                            variant="outlined"
-                            multiline
-                            onKeyDown={handleAddCardBulletins}
-                        />
-                    </Box>
+                        >
+                            <NewspaperIcon />
+                            <Typography variant="h6" component="h2" sx={{ fontStyle: "italic", fontWeight: "600" }}>
+                                Chọn một dãy trọ!!!
+                            </Typography>
+                        </Box>
+                    ) : (
+                        <Box>
+                            <Box
+                                id="modal-send-mess-to-all"
+                                sx={{
+                                    display: "flex",
+                                    alignItems: "center",
+                                    gap: 1,
+                                    mb: 3,
+                                    color: (theme) => theme.trello.colorSlateBlue,
+                                }}
+                            >
+                                <NewspaperIcon />
+                                <Typography variant="h6" component="h2" sx={{ fontStyle: "italic", fontWeight: "600" }}>
+                                    Dán thông báo
+                                </Typography>
+                            </Box>
+                            <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 2 }}>
+                                <Avatar
+                                    sx={{ width: 36, height: 36, cursor: "pointer" }}
+                                    alt={currentUser?.username}
+                                    src={currentUser?.avatar}
+                                />
+                                <TextField
+                                    sx={{
+                                        mt: "4px",
+                                        "& .MuiOutlinedInput-root": {
+                                            bgcolor: (theme) =>
+                                                theme.palette.mode === "dark" ? "#33485D" : "transparent",
+                                            padding: "8px 12px",
+                                            borderRadius: "4px",
+                                            border: "0.5px solid rgba(48, 48, 48, 0.3)",
+                                            boxShadow: "0 0 1px rgba(46, 46, 46, 0.3)",
+                                            "& fieldset": {
+                                                border: "none", // ẩn border mặc định
+                                            },
+                                            "&:hover fieldset": {
+                                                border: "1px solid rgba(49, 49, 49, 0.8)",
+                                            },
+                                            "&.Mui-focused fieldset": {
+                                                border: "1px solid rgba(49, 49, 49, 0.8)",
+                                            },
+                                        },
+                                        "& .MuiOutlinedInput-input": {
+                                            padding: 0, // padding đã có ở `.MuiOutlinedInput-root` rồi
+                                            wordBreak: "break-word",
+                                            color: (theme) => theme.trello.colorSlateBlue,
+                                            caretColor: (theme) => theme.trello.colorSlateBlue,
+                                            "&::placeholder": {
+                                                color: (theme) => theme.trello.colorSlateBlue,
+                                                opacity: 0.5,
+                                            },
+                                        },
+                                    }}
+                                    fullWidth
+                                    placeholder="Write a comment..."
+                                    type="text"
+                                    variant="outlined"
+                                    multiline
+                                    onKeyDown={handleAddCardBulletins}
+                                />
+                            </Box>
 
-                    <Box
-                        sx={{
-                            display: "flex",
-                            justifyContent: "flex-end",
-                            fontSize: "12px",
-                            fontStyle: "italic",
-                            color: (theme) => theme.trello.colorSlateBlue,
-                        }}
-                    >
-                        Nhấn ENTER để gửi !
-                    </Box>
+                            <Box
+                                sx={{
+                                    display: "flex",
+                                    justifyContent: "flex-end",
+                                    fontSize: "12px",
+                                    fontStyle: "italic",
+                                    color: (theme) => theme.trello.colorSlateBlue,
+                                }}
+                            >
+                                Nhấn ENTER để gửi !
+                            </Box>
+                        </Box>
+                    )}
                 </Box>
             </Modal>
         </>

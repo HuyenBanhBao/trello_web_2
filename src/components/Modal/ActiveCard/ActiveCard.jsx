@@ -1,34 +1,37 @@
 // --------------------- MUI ---------------------
+import { useState } from "react";
+import Box from "@mui/material/Box";
+import Stack from "@mui/material/Stack";
+import Modal from "@mui/material/Modal";
+import Divider from "@mui/material/Divider";
+import { styled } from "@mui/material/styles";
+import Grid from "@mui/material/Unstable_Grid2";
+import { useConfirm } from "material-ui-confirm";
+import Typography from "@mui/material/Typography";
+import CancelIcon from "@mui/icons-material/Cancel";
+import NewspaperIcon from "@mui/icons-material/Newspaper";
+import CreditCardIcon from "@mui/icons-material/CreditCard";
 import AddOutlinedIcon from "@mui/icons-material/AddOutlined";
+import ImageOutlinedIcon from "@mui/icons-material/ImageOutlined";
+import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined";
+import TaskAltOutlinedIcon from "@mui/icons-material/TaskAltOutlined";
+import KingBedOutlinedIcon from "@mui/icons-material/KingBedOutlined";
+import PaidOutlinedIcon from "@mui/icons-material/PaidOutlined";
+import { useTheme } from "@mui/material/styles";
+import WatchLaterOutlinedIcon from "@mui/icons-material/WatchLaterOutlined";
+import LocalOfferOutlinedIcon from "@mui/icons-material/LocalOfferOutlined";
 import AddToDriveOutlinedIcon from "@mui/icons-material/AddToDriveOutlined";
 import AspectRatioOutlinedIcon from "@mui/icons-material/AspectRatioOutlined";
 import AutoFixHighOutlinedIcon from "@mui/icons-material/AutoFixHighOutlined";
-import CancelIcon from "@mui/icons-material/Cancel";
-import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined";
-import CreditCardIcon from "@mui/icons-material/CreditCard";
-import QuestionAnswerOutlinedIcon from "@mui/icons-material/QuestionAnswerOutlined";
-import ImageOutlinedIcon from "@mui/icons-material/ImageOutlined";
-import LocalOfferOutlinedIcon from "@mui/icons-material/LocalOfferOutlined";
 import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined";
-import TaskAltOutlinedIcon from "@mui/icons-material/TaskAltOutlined";
-import NewspaperIcon from "@mui/icons-material/Newspaper";
-import WatchLaterOutlinedIcon from "@mui/icons-material/WatchLaterOutlined";
-import Box from "@mui/material/Box";
-import Divider from "@mui/material/Divider";
-import Modal from "@mui/material/Modal";
-import Stack from "@mui/material/Stack";
-import { styled } from "@mui/material/styles";
-import Typography from "@mui/material/Typography";
-import Grid from "@mui/material/Unstable_Grid2";
-import { useConfirm } from "material-ui-confirm";
-// -------------- Import from components --------------
+import QuestionAnswerOutlinedIcon from "@mui/icons-material/QuestionAnswerOutlined";
+// -------------- REACT --------------
 import { toast } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
-import { updateCardDetailsAPI, deleteCardDetailsAPI } from "~/apis";
-import ToggleFocusInput from "~/components/Form/ToggleFocusInput";
-import VisuallyHiddenInput from "~/components/Form/VisuallyHiddenInput";
+// -------------- Import from components --------------
 import {
     updateCurrentActiveBoard,
+    updateColumnInBoard,
     updateCardInBoard,
     selectCurrentActiveBoard,
 } from "~/redux/activeBoard/activeBoardSlice";
@@ -38,12 +41,20 @@ import {
     updateCurrentActiveCard,
     selectIsShowModalActiveCard,
 } from "~/redux/activeCard/activeCardSlice";
-import { selectCurrentUser } from "~/redux/user/userSlice";
-import { singleFileValidator } from "~/utils/validators";
-import CardActivitySection from "./CardActivitySection";
+import { updateCurrentActiveColumn, clearAndHideCurrentActiveColumn } from "~/redux/aciveColumn/activeColumnSlice";
 import CardUserGroup from "./CardUserGroup";
-import { CARD_MEMBER_ACTIONS } from "~/utils/constants";
 import CardBulletinBoard from "./CardBulletinBoard";
+import CardActivitySection from "./CardActivitySection";
+import { CARD_MEMBER_ACTIONS } from "~/utils/constants";
+import { singleFileValidator } from "~/utils/validators";
+import { selectCurrentUser } from "~/redux/user/userSlice";
+import ToggleFocusInput from "~/components/Form/ToggleFocusInput";
+import { updateCardDetailsAPI, deleteCardDetailsAPI, updateColumnDetailsAPI } from "~/apis";
+import VisuallyHiddenInput from "~/components/Form/VisuallyHiddenInput";
+import CardEditableInfo from "../Other/CardEditableInfo";
+import ServiceInCard from "../Other/ServiceInCard";
+import { Button } from "@mui/material";
+// ==================================================================================
 // --------------------------------- Function ---------------------------------------
 const SidebarItem = styled(Box)(({ theme }) => ({
     display: "flex",
@@ -79,16 +90,23 @@ const SidebarItem = styled(Box)(({ theme }) => ({
  * Note: Modal là một low-component mà bọn MUI sử dụng bên trong những thứ như Dialog, Drawer, Menu, Popover. Ở đây dĩ nhiên chúng ta có thể sử dụng Dialog cũng không thành vấn đề gì, nhưng sẽ sử dụng Modal để dễ linh hoạt tùy biến giao diện từ con số 0 cho phù hợp với mọi nhu cầu nhé.
  */
 function ActiveCard() {
+    const themeTrello = useTheme();
     const dispatch = useDispatch();
     const board = useSelector(selectCurrentActiveBoard);
     const activeCard = useSelector(selectCurrentActiveCard);
     const currentUser = useSelector(selectCurrentUser);
     const isShowModalActiveCard = useSelector(selectIsShowModalActiveCard);
+
+    // --------------------- useState -------------------------
+    const [serviceFormCardData, setServiceFormCardData] = useState({});
+    const [serviceFormColumnData, setServiceFormColumnData] = useState({});
+
     // không dùng biến state để check đóng mở Modal nữa vì sẽ check theo isShowModalActiveCard
     // const [isOpen, setIsOpen] = useState(true);
     // const handleOpenModal = () => setIsOpen(true);
     const handleCloseModal = () => {
         dispatch(clearAndHideCurrentActiveCard()); // Đặt lại currentActiveCard là null
+        dispatch(clearAndHideCurrentActiveColumn());
         // setIsOpen(false);
     };
 
@@ -102,6 +120,18 @@ function ActiveCard() {
 
         return updatedCard;
     };
+
+    // Function goi API dùng chung cho các trường hợp update card title, desc, cover, comment =================================================================
+    const callAPIUpdateColumn = async (updateData) => {
+        const updatedColumn = await updateColumnDetailsAPI(activeCard.columnId, updateData);
+        // B1: Cập nhật lại cái column đang active trong modal hiện tại
+        dispatch(updateCurrentActiveColumn(updatedColumn));
+        // B2: Cập nhật lại cái bản ghi column trong cái activeBoard (nested data)
+        dispatch(updateColumnInBoard(updatedColumn));
+
+        return updatedColumn;
+    };
+
     // ------------------ RENAME CARD TITLE ------------------
     const onUpdateCardTitle = (newTitle) => {
         callAPIUpdateCard({ title: newTitle.trim() }); // Call Api
@@ -196,7 +226,17 @@ function ActiveCard() {
         callAPIUpdateCard({ incomingMemberInfo });
     };
 
-    // Delete card -------------------------------------
+    // ------------------- UPDATE INFO SERVICE CARD -------------------
+    const handleSaveInfoServiceRoom = () => {
+        callAPIUpdateCard(serviceFormCardData).then(() => {
+            toast.success("Cập nhật phí dịch vụ thành công!");
+        });
+        callAPIUpdateColumn(serviceFormColumnData);
+    };
+
+    // --------------------------- UPDATE INFO SERVICE COLUMN ---------------------------
+
+    // ------------------------------------- Delete card -------------------------------------
     const confirmDeleteCard = useConfirm();
     const handleDeleteCard = async () => {
         // eslint-disable-next-line no-unused-vars
@@ -254,6 +294,7 @@ function ActiveCard() {
         }
     };
 
+    // ================================================================================================================
     return (
         <Modal
             disableScrollLock
@@ -307,7 +348,6 @@ function ActiveCard() {
                 </Box>
 
                 {/* ---------------------- Card title -------------------- */}
-
                 <Box
                     sx={{
                         pl: 2.5,
@@ -333,7 +373,7 @@ function ActiveCard() {
                     />
                 </Box>
 
-                {/* ---------------------- Card member ---------------------- */}
+                {/* ---------------------- CARD CONTAINER ---------------------- */}
                 <Box
                     sx={{
                         overflowY: "auto",
@@ -344,6 +384,7 @@ function ActiveCard() {
                     }}
                 >
                     {/* -------------------- Card cover images -------------------- */}
+                    {/* CẦN SỬA LẠI */}
                     {activeCard?.cover && (
                         <Box sx={{ mt: 1 }}>
                             <Box
@@ -360,33 +401,12 @@ function ActiveCard() {
                             />
                         </Box>
                     )}
+                    {/* ----------------------------------------------------------------- */}
 
                     <Grid container spacing={1} sx={{ mb: 1, mt: 1 }}>
-                        {/* ---------------------- Left side ---------------------- */}
+                        {/* ---------------------- LEFT SIDE ---------------------- */}
                         <Grid xs={12} sm={9}>
-                            {/* ----------- Members ----------- */}
-                            <Box
-                                sx={{
-                                    mb: 2,
-                                    p: 1,
-                                    // border: (theme) => `1px solid ${theme.trello.colorSnowGray}`,
-                                    borderRadius: "4px",
-                                    backgroundColor: (theme) =>
-                                        theme.palette.mode === "dark" ? "#1A2027" : theme.trello.colorAshGray,
-                                    boxShadow: (theme) => theme.trello.boxShadowBtn,
-                                }}
-                            >
-                                <Typography sx={{ fontWeight: "600", mb: 1 }}>Members</Typography>
-
-                                {/* Feature 02: Xử lý các thành viên của Card */}
-                                <CardUserGroup
-                                    //
-                                    cardMemberIds={activeCard?.memberIds}
-                                    onUpdateCardMembers={onUpdateCardMembers}
-                                />
-                            </Box>
-
-                            {/* ----------------- Description ------------------ */}
+                            {/* ----------------- Bảng tin ------------------ */}
                             <Box
                                 sx={{
                                     mb: 2,
@@ -408,10 +428,8 @@ function ActiveCard() {
                                     </Typography>
                                 </Box>
 
-                                {/* Feature 03: Xử lý bảng tintin của Card */}
-
+                                {/* Xử lý bảng tin của Card */}
                                 <CardBulletinBoard
-                                    //
                                     cardBulletin={activeCard?.bulletins}
                                     onAddCardBulletin={onAddCardBulletin}
                                     onDeleteCardBulletin={onDeleteCardBulletin}
@@ -420,6 +438,70 @@ function ActiveCard() {
                                     cardDescriptionProp={activeCard?.description}
                                     handleUpdateCardDescription={onUpdateCardDescription}
                                 /> */}
+                            </Box>
+
+                            {/* -------------------- GROUPS -------------------- */}
+                            <Box sx={{ display: "flex", gap: 2 }}>
+                                {/* ----------- INFO ----------- */}
+                                <Box
+                                    sx={{
+                                        flex: 3,
+                                        mb: 2,
+                                        p: 1,
+                                        borderRadius: "4px",
+                                        // border: (theme) => `1px solid ${theme.trello.colorSnowGray}`,
+                                        backgroundColor: (theme) =>
+                                            theme.palette.mode === "dark" ? "#1A2027" : theme.trello.colorAshGray,
+                                        boxShadow: (theme) => theme.trello.boxShadowBtn,
+                                    }}
+                                >
+                                    <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
+                                        <PaidOutlinedIcon />
+                                        <Typography
+                                            variant="span"
+                                            sx={{ fontWeight: "600", fontSize: "20px", userSelect: "none", mr: "auto" }}
+                                        >
+                                            Phí dịch vụ
+                                        </Typography>
+
+                                        <Button
+                                            //
+                                            sx={themeTrello.trello.btnPrimary}
+                                            onClick={handleSaveInfoServiceRoom}
+                                        >
+                                            SAVE
+                                        </Button>
+                                    </Box>
+                                    <CardEditableInfo
+                                        setServiceFormCardData={setServiceFormCardData}
+                                        setServiceFormColumnData={setServiceFormColumnData}
+                                    />
+                                </Box>
+
+                                {/* ----------- Dich Vu ----------- */}
+                                <Box
+                                    sx={{
+                                        flex: 2,
+                                        mb: 2,
+                                        p: 1,
+                                        borderRadius: "4px",
+                                        // border: (theme) => `1px solid ${theme.trello.colorSnowGray}`,
+                                        backgroundColor: (theme) =>
+                                            theme.palette.mode === "dark" ? "#1A2027" : theme.trello.colorAshGray,
+                                        boxShadow: (theme) => theme.trello.boxShadowBtn,
+                                    }}
+                                >
+                                    <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
+                                        <KingBedOutlinedIcon />
+                                        <Typography
+                                            variant="span"
+                                            sx={{ fontWeight: "600", fontSize: "20px", userSelect: "none" }}
+                                        >
+                                            Thông tin phòng
+                                        </Typography>
+                                    </Box>
+                                    <ServiceInCard />
+                                </Box>
                             </Box>
 
                             {/* ------------------ Activity ----------------- */}
@@ -455,6 +537,53 @@ function ActiveCard() {
 
                         {/* ---------------------- Right side ---------------------- */}
                         <Grid xs={12} sm={3}>
+                            {/* ----------- Members ----------- */}
+                            <Box
+                                sx={{
+                                    mb: 2,
+                                    p: 1,
+                                    // border: (theme) => `1px solid ${theme.trello.colorSnowGray}`,
+                                    borderRadius: "4px",
+                                    backgroundColor: (theme) =>
+                                        theme.palette.mode === "dark" ? "#1A2027" : theme.trello.colorAshGray,
+                                    boxShadow: (theme) => theme.trello.boxShadowBtn,
+                                }}
+                            >
+                                <Typography sx={{ fontWeight: "600", mb: 1 }}>Members</Typography>
+
+                                {/* Feature 02: Xử lý các thành viên của Card */}
+                                <CardUserGroup
+                                    //
+                                    cardMemberIds={activeCard?.memberIds}
+                                    onUpdateCardMembers={onUpdateCardMembers}
+                                />
+                            </Box>
+
+                            {/* ----------------- INFO ----------------- */}
+                            <Box
+                                sx={{
+                                    mb: 2,
+                                    p: 1,
+                                    borderRadius: "4px",
+                                    // border: (theme) => `1px solid ${theme.trello.colorSnowGray}`,
+                                    backgroundColor: (theme) =>
+                                        theme.palette.mode === "dark" ? "#1A2027" : theme.trello.colorAshGray,
+                                    boxShadow: (theme) => theme.trello.boxShadowBtn,
+                                }}
+                            >
+                                <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
+                                    <KingBedOutlinedIcon />
+                                    <Typography
+                                        variant="span"
+                                        sx={{ fontWeight: "600", fontSize: "20px", userSelect: "none" }}
+                                    >
+                                        Thông tin phòng
+                                    </Typography>
+                                </Box>
+
+                                {/* Update and edit thông tin của card */}
+                            </Box>
+                            {/* --------------------------------- BUTTONS --------------------------------- */}
                             <Box
                                 sx={{
                                     p: 1,
@@ -465,7 +594,9 @@ function ActiveCard() {
                                     boxShadow: (theme) => theme.trello.boxShadowBtn,
                                 }}
                             >
-                                <Typography sx={{ fontWeight: "600", mb: 1 }}>Add To Card</Typography>
+                                <Typography sx={{ fontWeight: "600", mb: 1, userSelect: "none" }}>
+                                    Add To Card
+                                </Typography>
                                 <Stack direction="column" spacing={1}>
                                     {/* Feature 05: Xử lý hành động bản thân user tự join vào card */}
                                     {/* Nếu user hiện tại đang đăng nhập chưa thuộc mảng memberIds của card thì mới cho hiện nút Join ra */}
@@ -519,7 +650,7 @@ function ActiveCard() {
 
                                 <Divider sx={{ my: 2 }} />
 
-                                <Typography sx={{ fontWeight: "600", mb: 1 }}>Power-Ups</Typography>
+                                <Typography sx={{ fontWeight: "600", mb: 1, userSelect: "none" }}>Power-Ups</Typography>
                                 <Stack direction="column" spacing={1}>
                                     <SidebarItem>
                                         <AspectRatioOutlinedIcon fontSize="small" />
@@ -537,7 +668,7 @@ function ActiveCard() {
 
                                 <Divider sx={{ my: 2 }} />
 
-                                <Typography sx={{ fontWeight: "600", mb: 1 }}>Move</Typography>
+                                <Typography sx={{ fontWeight: "600", mb: 1, userSelect: "none" }}>Move</Typography>
                                 <Stack direction="column" spacing={1}>
                                     <SidebarItem
                                         onClick={handleDeleteCard}

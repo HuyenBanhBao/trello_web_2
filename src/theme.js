@@ -13,7 +13,7 @@ const GRADIENT_BLUE_TO_VIOLET = "linear-gradient(135deg, #30cfd0 0%, #330867 100
 const GRADIENT_BG = "linear-gradient(135deg, #667eea  0%, #764ba2 100%)";
 const GRADIENT_BG_DARK = "linear-gradient(135deg, #041B2D  0%, #004E9A 100%)";
 
-// Create a theme instance.
+// Create a theme instance.395F18
 
 // Create a theme instance.
 const theme = extendTheme({
@@ -36,7 +36,14 @@ const theme = extendTheme({
         colorBlushPink: "#EAE2E0", // Hồng phấn nhẹ
         colorOliveMoss: "#75805E", // Rêu ô-liu
         colorSageGreen: "#819B80", // Xanh xô thơm
-        colorGoldenSand: "#CD9E72", // Cát vàng óng
+        colorArmyGreen: "#4B5320", // Xanh quân đội
+        colorMossGreen: "#8A9A5B", // Xanh rêu
+        colorOliveDrab: "#6B8E23", // Ô-liu nhạt
+        colorKhakiGreen: "#7C9A6E", // Xanh rêu vàng nhẹ
+        colorLaurelGreen: "#A9BA9D", // Xanh lá nguyệt quế
+        colorCeladonGreen: "#ACE1AF", // Xanh ngọc mờ
+        colorDustyGreen: "#9FAE9D", // Xanh mốc nhạt
+        colorGreenSmoke: "#9CA998", // Xanh khói
 
         // 787878, FFFBFA, EAE7CB, FFFAEA, 00203E // Bộ 2 ------------------------------------------------------------------
         colorSteelGray: "#787878", // Xám thép
@@ -87,6 +94,7 @@ const theme = extendTheme({
         // BOX SHADOW -------------------------
         boxShadowPrimary:
             "rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px, rgba(10, 37, 64, 0.35) 0px -2px 6px 0px inset",
+
         boxShadowBtn:
             "rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset",
         boxShadowBtnHover:
@@ -125,6 +133,51 @@ const theme = extendTheme({
                 backgroundColor: (theme) => theme.trello.colorGoldenSand,
             },
         },
+
+        btnSidebar: {
+            p: 1,
+            gap: 2,
+            mb: 1,
+            borderRadius: "4px",
+            width: "100%",
+            display: "flex",
+            justifyContent: "center",
+            fontWeight: "600",
+            fontSize: "14px",
+            color: (theme) => theme.trello.colorDustyCloud,
+            bgcolor: (theme) => theme.trello.colorOliveMoss,
+            boxShadow: (theme) => theme.trello.boxShadowBtn,
+            transition: "all 0.25s ease-in-out",
+            "&:hover": {
+                boxShadow: (theme) => theme.trello.boxShadowBtnHover,
+                bgcolor: (theme) => theme.trello.colorOliveMoss,
+            },
+        },
+
+        textFieldEdiable: {
+            display: "flex",
+            alignItems: "center",
+            fontWeight: "bold",
+            whiteSpace: "nowrap",
+            gap: 1,
+            p: "0 8px",
+            color: (theme) => theme.trello.colorAshGray,
+            boxShadow: (theme) => theme.trello.boxShadowBulletin,
+            backgroundColor: (theme) => theme.trello.colorSkyMist,
+            borderRadius: "8px",
+        },
+        textFieldEdiableSlideBar: {
+            display: "flex",
+            alignItems: "center",
+            fontWeight: "bold",
+            whiteSpace: "nowrap",
+            gap: 1,
+            p: "0 8px",
+            color: (theme) => theme.trello.colorAshGray,
+            boxShadow: (theme) => theme.trello.boxShadowBulletin,
+            backgroundColor: (theme) => theme.trello.colorSkyMist,
+            borderRadius: "8px",
+        },
     },
     colorSchemes: {
         // light: {
@@ -147,15 +200,15 @@ const theme = extendTheme({
             styleOverrides: {
                 body: {
                     "*::-webkit-scrollbar": {
-                        width: "6px",
+                        width: "8px",
                         height: "6px",
                     },
                     "*::-webkit-scrollbar-thumb": {
-                        backgroundColor: "rgba(189, 195, 199, 0.5)",
+                        backgroundColor: "rgba(3, 37, 60, 0.5)",
                         borderRadius: "99px",
                     },
                     "*::-webkit-scrollbar-thumb:hover": {
-                        background: "rgba(189, 195, 199, 0.8)",
+                        background: "rgba(3, 37, 60, 0.8)",
                     },
                 },
             },

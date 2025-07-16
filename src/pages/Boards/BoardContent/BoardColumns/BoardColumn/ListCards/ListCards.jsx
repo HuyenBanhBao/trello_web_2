@@ -6,7 +6,7 @@ import CardsMain from "./CardItem/CardMain";
 import { SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
 // ----------------------------------------------------------
 // --------------------- MAIN COMPONENT ---------------------
-const ListCards = ({ cards }) => {
+const ListCards = ({ cards, column }) => {
     return (
         <>
             <SortableContext items={cards?.map((c) => c._id)} strategy={verticalListSortingStrategy}>
@@ -33,7 +33,7 @@ const ListCards = ({ cards }) => {
                     }}
                 >
                     {cards?.map((card) => (
-                        <CardsMain key={card._id} card={card} />
+                        <CardsMain key={card._id} card={card} column={column} />
                     ))}
                 </Box>
             </SortableContext>

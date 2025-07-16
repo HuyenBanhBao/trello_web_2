@@ -1,4 +1,5 @@
 // import { useState } from "react";
+import { Box } from "@mui/material";
 import Card from "@mui/material/Card";
 import CardActions from "@mui/material/CardActions";
 import CardContent from "@mui/material/CardContent";
@@ -18,9 +19,10 @@ import { CSS } from "@dnd-kit/utilities";
 // --------------------------------------------------------------------
 import { useDispatch } from "react-redux";
 import { updateCurrentActiveCard, showModalActiveCard } from "~/redux/activeCard/activeCardSlice";
+import { updateCurrentActiveColumn } from "~/redux/aciveColumn/activeColumnSlice";
 
 // =================================================== MAIN COMPONENT ===================================================
-const CardMain = ({ card }) => {
+const CardMain = ({ card, column }) => {
     const dispatch = useDispatch();
 
     // const [mouseIsOver, setMouseIsOver] = useState(false);
@@ -44,6 +46,8 @@ const CardMain = ({ card }) => {
     };
 
     const setActiveCard = () => {
+        // Cap nhat column
+        dispatch(updateCurrentActiveColumn(column));
         // Cập nhật data cho activeCard trong redux
         dispatch(updateCurrentActiveCard(card));
         // Hiện modal active card lên
@@ -80,15 +84,32 @@ const CardMain = ({ card }) => {
                     {card?.FE_PlaceholderCard && <Typography sx={{ width: "100%" }}></Typography>}
                     {!card?.FE_PlaceholderCard && (
                         <>
-                            <Typography
+                            <Box
                                 sx={{
+                                    display: "flex",
+                                    alignItems: "center",
+                                    gap: 1,
                                     flex: 1,
                                     fontWeight: "500",
                                     color: (theme) => theme.trello.colorDarkNavyGray,
                                 }}
                             >
-                                PHÒNG {card?.title}
-                            </Typography>
+                                PHÒNG
+                                <Typography
+                                    sx={{
+                                        display: "block",
+                                        p: "5px 10px",
+                                        fontWeight: "600",
+                                        borderRadius: "6px",
+                                        border: (theme) => `1px solid ${theme.trello.colorFrostGray}`,
+                                        color: (theme) => theme.trello.colorSnowGray,
+                                        bgcolor: (theme) => theme.trello.colorSageGreen,
+                                        boxShadow: (theme) => theme.trello.boxShadowPrimary,
+                                    }}
+                                >
+                                    {card?.title}
+                                </Typography>
+                            </Box>
                             {/* {mouseIsOver && (
                                 <DriveFileRenameOutlineOutlinedIcon
                                     sx={{

@@ -53,7 +53,7 @@ const BoardColumn = ({ column }) => {
                 {/* --------------- HEADER --------------- */}
                 <HeaderCard column={column} attributes={attributes} listeners={listeners} />
                 {/* --------------- BODY --------------- */}
-                <ListCards cards={orderedCards} />
+                <ListCards cards={orderedCards} column={column} />
                 {/* --------------- FOOTER --------------- */}
                 <FooterCard column={column} />
             </Box>

@@ -2,7 +2,9 @@
 import React, { useState, useEffect } from "react";
 import Box from "@mui/material/Box";
 import { cloneDeep, isEmpty } from "lodash";
+import Grid from "@mui/material/Unstable_Grid2";
 // --------------------- IMPORT COMPONENTS ---------------------
+import BoardSlideBar from "./BoardSlidebar/BoardSlideBar";
 import BoardColumns from "./BoardColumns/BoardColumns";
 import BoardColumn from "./BoardColumns/BoardColumn/BoardColumn";
 import CardMain from "./BoardColumns/BoardColumn/ListCards/CardItem/CardMain";
@@ -271,23 +273,35 @@ const BoardContent = ({ board, moveColumns, moveCardInTheSameColumn, moveCardToD
             >
                 <Box
                     sx={{
+                        display: "flex",
                         width: "100%",
-                        p: "10px 0",
+
                         height: (theme) => theme.trello.boardContentHeight,
                         background: (theme) =>
                             theme.palette.mode === "dark" ? theme.trello.gradientBgDark : theme.trello.colorPaleSky,
                     }}
                 >
-                    {/* --------------------- BOX COLUMNS ---------------------- */}
-                    {/* <BoardColumns columns={board?.columns} /> */}
-                    <BoardColumns columns={orderedColumns} />
-                    <DragOverlay dropAnimation={dropAnimation}>
-                        {!activeDragItemType && null}
-                        {activeDragItemType === ACTIVE_DRAG_ITEM_TYPE.COLUMN && (
-                            <BoardColumn column={activeDragItemData} />
-                        )}
-                        {activeDragItemType === ACTIVE_DRAG_ITEM_TYPE.CARD && <CardMain card={activeDragItemData} />}
-                    </DragOverlay>
+                    <Grid container>
+                        <Grid sx={{ width: "350px", p: "10px 0", height: (theme) => theme.trello.boardContentHeight }}>
+                            <BoardSlideBar />
+                        </Grid>
+                        {/* --------------------- BOX COLUMNS ---------------------- */}
+                        {/* <BoardColumns columns={board?.columns} /> */}
+                        <Grid sx={{ flex: 1, p: "10px 0", height: (theme) => theme.trello.boardContentHeight }}>
+                            <Box sx={{ height: "100%", width: "100%" }}>
+                                <BoardColumns columns={orderedColumns} />
+                                <DragOverlay dropAnimation={dropAnimation}>
+                                    {!activeDragItemType && null}
+                                    {activeDragItemType === ACTIVE_DRAG_ITEM_TYPE.COLUMN && (
+                                        <BoardColumn column={activeDragItemData} />
+                                    )}
+                                    {activeDragItemType === ACTIVE_DRAG_ITEM_TYPE.CARD && (
+                                        <CardMain card={activeDragItemData} />
+                                    )}
+                                </DragOverlay>
+                            </Box>
+                        </Grid>
+                    </Grid>
                 </Box>
             </DndContext>
         </>
