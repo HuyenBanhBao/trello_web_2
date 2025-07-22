@@ -5,6 +5,7 @@ import Trello from "@mui/icons-material/ViewKanban";
 import { Link } from "react-router-dom";
 // --------------------- MAIN COMPONENTS -------------------------
 const AvatarApp = () => {
+    // =================================================
     return (
         <Box
             sx={{

@@ -27,11 +27,18 @@ export const updateBoardDetailsAPI = async (boardId, updateData) => {
     // console.log(response);
     return response.data;
 };
+
+export const deleteBoardDetailsAPI = async (boardId) => {
+    const response = await authorizedAxiosInstance.delete(`${API_ROOT}/v1/boards/${boardId}`);
+    return response.data;
+};
+
 export const moveCardToDifferentColumnsAPI = async (updateData) => {
     const response = await authorizedAxiosInstance.put(`${API_ROOT}/v1/boards/supports/moving_card`, updateData); // axios.get trả về một promise nên chúng ta có thể dùng await để chờ response trả về
     // console.log(response);
     return response.data;
 };
+
 // ==================================================== API Columns ====================================================
 export const createNewColumnAPI = async (newColumnData) => {
     const response = await authorizedAxiosInstance.post(`${API_ROOT}/v1/columns`, newColumnData); //
@@ -54,6 +61,11 @@ export const createNewCardAPI = async (newCardData) => {
 
 export const updateCardDetailsAPI = async (cardId, updateData) => {
     const response = await authorizedAxiosInstance.put(`${API_ROOT}/v1/cards/${cardId}`, updateData);
+    return response.data;
+};
+
+export const updateCardDetailsReportAPI = async (cardId, updateData) => {
+    const response = await authorizedAxiosInstance.put(`${API_ROOT}/v1/cards/${cardId}/report`, updateData);
     return response.data;
 };
 

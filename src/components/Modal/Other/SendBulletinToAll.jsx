@@ -62,7 +62,7 @@ function SendBulletinToAll({ onAddBulletinToAllCard, activeColumn }) {
 
             <Modal
                 open={isOpen}
-                // onClose={handleCloseModal} // chỉ sử dụng onClose trong trường hợp muốn đóng Modal bằng nút ESC hoặc click ra ngoài Modal
+                onClose={!activeColumn ? handleCloseModal : undefined}
                 aria-labelledby="modal-send-mess-to-all"
                 aria-describedby="modal-send-mess-description"
             >

@@ -7,6 +7,8 @@ import { useSelector } from "react-redux";
 import { selectCurrentActiveCard } from "~/redux/activeCard/activeCardSlice";
 import { selectCurrentActiveColumn } from "~/redux/aciveColumn/activeColumnSlice";
 import TextField from "@mui/material/TextField";
+import PaidOutlinedIcon from "@mui/icons-material/PaidOutlined";
+import { Button } from "@mui/material";
 // ----------------------------------------------- ICON -----------------------------------------------
 import {
     ElectricalServicesOutlined as ElectricIcon,
@@ -21,7 +23,7 @@ import {
 } from "@mui/icons-material";
 
 // ================================================ MAIN ================================================
-const CardEditableInfo = ({ setServiceFormCardData }) => {
+const CardEditableInfo = ({ setServiceFormCardData, handleSaveInfoServiceRoom }) => {
     const theme = useTheme();
     const activeCard = useSelector(selectCurrentActiveCard);
     const activeColumn = useSelector(selectCurrentActiveColumn);
@@ -66,7 +68,7 @@ const CardEditableInfo = ({ setServiceFormCardData }) => {
             valueKey: "priceRoom",
             suffix: "k /tháng",
             bg: "#D4CFC9",
-            size: 6,
+            size: 9,
         },
         {
             label: null,
@@ -74,7 +76,7 @@ const CardEditableInfo = ({ setServiceFormCardData }) => {
             valueKey: "userRoom",
             suffix: "",
             bg: "#E1E4E8",
-            size: 2,
+            size: 3,
         },
         {
             label: "H/Đ: ",
@@ -82,7 +84,7 @@ const CardEditableInfo = ({ setServiceFormCardData }) => {
             valueKey: "contract",
             suffix: "tháng",
             bg: "#E5E5E5",
-            size: 4,
+            size: 6,
         },
         {
             label: "Số điện:",
@@ -90,7 +92,7 @@ const CardEditableInfo = ({ setServiceFormCardData }) => {
             valueKey: "numElec",
             suffix: "",
             bg: "#DCD3C4",
-            size: 3,
+            size: 6,
         },
     ];
     const fieldsColumn = [
@@ -100,7 +102,7 @@ const CardEditableInfo = ({ setServiceFormCardData }) => {
             valueKey: "priceElec",
             suffix: "k /số",
             bg: "#DCD3C4",
-            size: 4,
+            size: 5,
         },
         {
             label: null,
@@ -108,7 +110,7 @@ const CardEditableInfo = ({ setServiceFormCardData }) => {
             valueKey: "priceWater",
             suffix: "k /ng",
             bg: "#D6EAE9",
-            size: 5,
+            size: 7,
         },
         {
             label: "Máy giặt:",
@@ -116,7 +118,7 @@ const CardEditableInfo = ({ setServiceFormCardData }) => {
             valueKey: "priceWash",
             suffix: "k /ng",
             bg: "#CED4DA",
-            size: 8,
+            size: 7,
         },
         {
             label: null,
@@ -124,7 +126,7 @@ const CardEditableInfo = ({ setServiceFormCardData }) => {
             valueKey: "priceTrash",
             suffix: "k /ng",
             bg: "#E5E5E5",
-            size: 4,
+            size: 5,
         },
         {
             label: "Đã cọc",
@@ -145,115 +147,147 @@ const CardEditableInfo = ({ setServiceFormCardData }) => {
     ];
 
     return (
-        <Box sx={{ flexGrow: 1, mt: 1 }}>
-            <Grid container spacing={1}>
-                {fieldsCard.map((item, index) => (
-                    <Grid item xs={item.size} key={index}>
-                        <Box
-                            sx={{
-                                ...theme.trello?.textFieldEdiable,
-                                backgroundColor: item.bg,
-                                display: "flex",
-                                alignItems: "center",
-                            }}
-                        >
-                            {item.label && <span>{item.label}</span>}
-                            <EditableInput
-                                value={formValues[item.valueKey] || ""}
-                                onChangedValue={item.valueKey ? handleChange(item.valueKey) : undefined}
-                            />
-                            {item.suffix && <span>{item.suffix}</span>}
-                            {item.icon}
-                        </Box>
-                    </Grid>
-                ))}
-                {fieldsColumn.map((item, index) => (
-                    <Grid item xs={item.size} key={index}>
-                        <Box
-                            sx={{
-                                ...theme.trello?.textFieldEdiable,
-                                backgroundColor: item.bg,
-                                display: "flex",
-                                alignItems: "center",
-                            }}
-                        >
-                            {item.label && <span>{item.label}</span>}
-                            <TextField
-                                //
-                                value={activeColumn[item.valueKey] || ""}
-                                InputProps={{ readOnly: true }}
-                                variant="outlined"
-                                size="small"
-                                autoComplete="off"
-                                // Magic here :D
+        <Box
+            sx={{
+                flex: 3,
+                mb: 2,
+                p: 1,
+                borderRadius: "4px",
+                // border: (theme) => `1px solid ${theme.trello.colorSnowGray}`,
+                backgroundColor: (theme) => (theme.palette.mode === "dark" ? "#1A2027" : theme.trello.colorAshGray),
+                boxShadow: (theme) => theme.trello.boxShadowBtn,
+            }}
+        >
+            <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
+                <PaidOutlinedIcon />
+                <Typography variant="span" sx={{ fontWeight: "600", fontSize: "20px", userSelect: "none", mr: "auto" }}>
+                    Phí dịch vụ
+                </Typography>
+
+                <Button
+                    //
+                    sx={theme.trello.btnPrimary}
+                    onClick={handleSaveInfoServiceRoom}
+                >
+                    SAVE
+                </Button>
+            </Box>
+            <Box sx={{ flexGrow: 1, mt: 1 }}>
+                <Grid container spacing={1}>
+                    {fieldsCard.map((item, index) => (
+                        <Grid item xs={item.size} key={index}>
+                            <Box
                                 sx={{
-                                    "& label": {},
-                                    "& input": { fontSize: "16px", fontWeight: "bold" },
-                                    "&.card-title-modal .MuiOutlinedInput-input": {
-                                        color: (theme) => theme.trello.colorSlateBlue,
-                                    },
-                                    "& .MuiOutlinedInput-root": {
-                                        backgroundColor: "transparent",
-                                        "& fieldset": { borderColor: "transparent" },
-                                    },
-                                    "& .MuiOutlinedInput-root:hover": {
-                                        borderColor: "transparent",
-                                        "& fieldset": { borderColor: "transparent" },
-                                    },
-                                    "& .MuiOutlinedInput-root.Mui-focused": {
-                                        backgroundColor: "transparent",
-                                        "& fieldset": { borderColor: "transparent" },
-                                    },
-                                    "& .MuiOutlinedInput-input": {
-                                        px: "6px",
-                                        color: (theme) => theme.trello.colorSlateBlue,
-                                        textAlign: "center",
-                                        overflow: "hidden",
-                                        whiteSpace: "nowrap",
-                                        textOverflow: "ellipsis",
-                                    },
+                                    ...theme.trello?.textFieldEdiable,
+                                    backgroundColor: item.bg,
+                                    display: "flex",
+                                    alignItems: "center",
                                 }}
-                            />
-                            {item.suffix && <span>{item.suffix}</span>}
-                            {item.icon}
+                            >
+                                {item.label && <span>{item.label}</span>}
+                                <EditableInput
+                                    value={formValues[item.valueKey] || ""}
+                                    onChangedValue={item.valueKey ? handleChange(item.valueKey) : undefined}
+                                />
+                                {item.suffix && <span>{item.suffix}</span>}
+                                {item.icon}
+                            </Box>
+                        </Grid>
+                    ))}
+                    {fieldsColumn.map((item, index) => (
+                        <Grid item xs={item.size} key={index}>
+                            <Box
+                                sx={{
+                                    ...theme.trello?.textFieldEdiable,
+                                    backgroundColor: item.bg,
+                                    display: "flex",
+                                    alignItems: "center",
+                                }}
+                            >
+                                {item.label && <span>{item.label}</span>}
+                                <TextField
+                                    //
+                                    value={activeColumn[item.valueKey] || ""}
+                                    InputProps={{ readOnly: true }}
+                                    variant="outlined"
+                                    size="small"
+                                    autoComplete="off"
+                                    // Magic here :D
+                                    sx={{
+                                        "& label": {},
+                                        "& input": { fontSize: "16px", fontWeight: "bold" },
+                                        "&.card-title-modal .MuiOutlinedInput-input": {
+                                            color: (theme) => theme.trello.colorSlateBlue,
+                                        },
+                                        "& .MuiOutlinedInput-root": {
+                                            backgroundColor: "transparent",
+                                            "& fieldset": { borderColor: "transparent" },
+                                        },
+                                        "& .MuiOutlinedInput-root:hover": {
+                                            borderColor: "transparent",
+                                            "& fieldset": { borderColor: "transparent" },
+                                        },
+                                        "& .MuiOutlinedInput-root.Mui-focused": {
+                                            backgroundColor: "transparent",
+                                            "& fieldset": { borderColor: "transparent" },
+                                        },
+                                        "& .MuiOutlinedInput-input": {
+                                            px: "6px",
+                                            color: (theme) => theme.trello.colorSlateBlue,
+                                            textAlign: "center",
+                                            overflow: "hidden",
+                                            whiteSpace: "nowrap",
+                                            textOverflow: "ellipsis",
+                                        },
+                                    }}
+                                />
+                                {item.suffix && <span>{item.suffix}</span>}
+                                {item.icon}
+                            </Box>
+                        </Grid>
+                    ))}
+                    <Grid item xs={12}>
+                        <Box
+                            sx={{
+                                display: "flex",
+                                alignItems: "center",
+                                gap: 1,
+                                fontSize: "16px",
+                                fontWeight: "600",
+                                color: (theme) => theme.trello.colorLemonChiffon,
+                            }}
+                        >
+                            <Typography
+                                variant="span"
+                                sx={{
+                                    p: "8px 15px",
+                                    borderRadius: "6px",
+                                    border: (theme) => `1px solid ${theme.trello.colorFrostGray}`,
+                                    bgcolor: (theme) => theme.trello.colorOliveGreenDark,
+                                    boxShadow: (theme) => theme.trello.boxShadowPrimary,
+                                }}
+                            >
+                                Total:
+                            </Typography>
+                            <Typography
+                                variant="span"
+                                sx={{
+                                    flex: 1,
+                                    py: "8px",
+                                    borderRadius: "6px",
+                                    border: (theme) => `1px solid ${theme.trello.colorFrostGray}`,
+                                    bgcolor: (theme) => theme.trello.colorOliveGreenDark,
+                                    boxShadow: (theme) => theme.trello.boxShadowPrimary,
+                                    textAlign: "center",
+                                }}
+                            >
+                                {total.toLocaleString("vi-VN")}
+                                {".000 đ"}
+                            </Typography>
                         </Box>
                     </Grid>
-                ))}
-                <Grid item xs={12}>
-                    <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                        <Typography
-                            sx={{
-                                //
-                                p: "8px 15px",
-                                fontWeight: "600",
-                                borderRadius: "6px",
-                                border: (theme) => `1px solid ${theme.trello.colorFrostGray}`,
-                                color: (theme) => theme.trello.colorSnowGray,
-                                bgcolor: (theme) => theme.trello.colorSageGreen,
-                                boxShadow: (theme) => theme.trello.boxShadowPrimary,
-                            }}
-                        >
-                            Total:
-                        </Typography>
-                        <Typography
-                            sx={{
-                                flex: 1,
-                                py: "8px",
-                                fontSize: "30px",
-                                fontWeight: "600",
-                                borderRadius: "6px",
-                                border: (theme) => `1px solid ${theme.trello.colorFrostGray}`,
-                                color: (theme) => theme.trello.colorSnowGray,
-                                bgcolor: (theme) => theme.trello.colorSageGreen,
-                                boxShadow: (theme) => theme.trello.boxShadowPrimary,
-                                textAlign: "center",
-                            }}
-                        >
-                            {total}
-                        </Typography>
-                    </Box>
                 </Grid>
-            </Grid>
+            </Box>
         </Box>
     );
 };

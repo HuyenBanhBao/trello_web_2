@@ -98,7 +98,6 @@ const BoardContent = ({ board, moveColumns, moveCardInTheSameColumn, moveCardToD
             setOrderedColumns((prevColumns) => {
                 // index of the card to be moved (Vị trí của phần tử cần di chuyển)
                 const overCardIndex = overColumn?.cards?.findIndex((c) => c._id === overCardId);
-
                 let newCardIndex;
                 const isBelowOverItem =
                     active.rect.current.translated &&
@@ -281,13 +280,21 @@ const BoardContent = ({ board, moveColumns, moveCardInTheSameColumn, moveCardToD
                             theme.palette.mode === "dark" ? theme.trello.gradientBgDark : theme.trello.colorPaleSky,
                     }}
                 >
-                    <Grid container>
+                    <Grid container sx={{ width: "100%" }}>
                         <Grid sx={{ width: "350px", p: "10px 0", height: (theme) => theme.trello.boardContentHeight }}>
                             <BoardSlideBar />
                         </Grid>
                         {/* --------------------- BOX COLUMNS ---------------------- */}
                         {/* <BoardColumns columns={board?.columns} /> */}
-                        <Grid sx={{ flex: 1, p: "10px 0", height: (theme) => theme.trello.boardContentHeight }}>
+                        <Grid
+                            sx={{
+                                width: "100%",
+                                flex: 1,
+                                p: "10px 0",
+                                mr: 1,
+                                height: (theme) => theme.trello.boardContentHeight,
+                            }}
+                        >
                             <Box sx={{ height: "100%", width: "100%" }}>
                                 <BoardColumns columns={orderedColumns} />
                                 <DragOverlay dropAnimation={dropAnimation}>

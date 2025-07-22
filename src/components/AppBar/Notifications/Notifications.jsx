@@ -31,34 +31,30 @@ const BOARD_INVITATION_STATUS = {
     REJECTED: "REJECTED",
 };
 
+// ==========================================================================================================================
 function Notifications() {
     const [anchorEl, setAnchorEl] = useState(null);
     const open = Boolean(anchorEl);
     const handleClickNotificationIcon = (event) => {
         setAnchorEl(event.currentTarget);
-
         setNewNotification(false);
     };
     const handleClose = () => {
         setAnchorEl(null);
     };
 
-    const [newNotification, setNewNotification] = useState(false); // Ktra có thông báo mới hay khôngkhông
-
-    // lấy dữ liệu user từ trong redux
-    const currentUser = useSelector(selectCurrentUser);
-
-    // Lấy dữ liệu notification từ Redux
-    const notifications = useSelector(selectCurrentNotifications);
+    const [newNotification, setNewNotification] = useState(false); // Ktra có thông báo mới hay không
+    const currentUser = useSelector(selectCurrentUser); // lấy dữ liệu user từ trong redux
+    const notifications = useSelector(selectCurrentNotifications); // Lấy dữ liệu notification từ Redux
 
     const navigate = useNavigate();
-
     // Fetch danh sách các lời mời
     const dispatch = useDispatch();
     // Gọi API fetch danh sách các lời mời
     useEffect(() => {
         dispatch(fetchInvitationsAPI());
-        // Tạo 1 Func xử lý khi nhận được sự kiên real-time. https://socket.io/how-to/use-with-react
+        //------------------------------------------------------------
+        // Bước 4: Tạo 1 Func xử lý khi nhận được sự kiên real-time. https://socket.io/how-to/use-with-react
         const onReceiveNewInvitation = (invitation) => {
             // Nếu thằng user đang đăng nhập hiện tại mà lưu trong redux chính là thằng invitee trong bản ghi invitation
             if (invitation.inviteeId === currentUser._id) {
@@ -68,7 +64,7 @@ function Notifications() {
                 setNewNotification(true);
             }
         };
-        // Lắng nghe sự kiên real-time có tên là "BE_USER_INVITED_TO_BOARD" từ server gửi về
+        // Lắng nghe sự kiên real-time có tên là "BE_USER_INVITED_TO_BOARD" từ server gửi về. Bước 4
         socketIoInstance.on("BE_USER_INVITED_TO_BOARD", onReceiveNewInvitation);
         // Clean up sự kiện để ngăn chặn việc bị đăng ký lại sự kiện . https://socket.io/how-to/use-with-react#cleanup
         return () => {
@@ -213,7 +209,7 @@ function Notifications() {
                                 {/* Thời gian của thông báo */}
                                 <Box sx={{ textAlign: "right" }}>
                                     <Typography variant="span" sx={{ fontSize: "13px" }}>
-                                        {moment().format("llll")}
+                                        {moment(notification.createdAt).format("llll")}
                                     </Typography>
                                 </Box>
                             </Box>

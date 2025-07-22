@@ -3,9 +3,9 @@ import Typography from "@mui/material/Typography";
 import EditableInput from "~/components/Form/EditableInput";
 import { Button } from "@mui/material";
 import PaidOutlinedIcon from "@mui/icons-material/PaidOutlined";
-
+import Collapse from "@mui/material/Collapse";
 import { useEffect, useState } from "react";
-import { Box, Grid } from "@mui/material";
+import { Box } from "@mui/material";
 import { useSelector } from "react-redux";
 import { selectCurrentActiveColumn } from "~/redux/aciveColumn/activeColumnSlice";
 // ----------------------------------------------- ICON -----------------------------------------------
@@ -15,10 +15,6 @@ import {
     WifiOutlined as WifiIcon,
     DeleteOutlined as TrashIcon,
     LocalLaundryServiceOutlined as WasherIcon,
-    PaidOutlined as MoneyIcon,
-    CreditCard as CreditCardIcon,
-    CalendarMonth as CalendarIcon,
-    PersonOutlineOutlined as UserIcon,
 } from "@mui/icons-material";
 
 // ==================================================================================
@@ -51,19 +47,15 @@ const BSBPriceService = ({ onHandleupdateSercolumn }) => {
             });
         }
     }, [activeColumn]);
-    // useEffect(() => {
-    //     const updateServiceColumn = {
-    //         priceWash: formValues.priceWash,
-    //         priceWifi: formValues.priceWifi,
-    //         priceElec: formValues.priceElec,
-    //         priceWater: formValues.priceWater,
-    //         priceTrash: formValues.priceTrash,
-    //     };
-    //     setFormValuesUpdate(updateServiceColumn);
-    // }, [formValues]);
 
     const handleChange = (field) => (value) => {
         setFormValues((prev) => ({ ...prev, [field]: value }));
+    };
+
+    // ---------------- OPEN CLOSE ITEMS OF SLIDEBAR -------------------------
+    const [openManage, setOpenManage] = useState(false);
+    const toggleManage = () => {
+        setOpenManage((prev) => !prev);
     };
     // ===============================================================================
     const fields = [
@@ -113,69 +105,72 @@ const BSBPriceService = ({ onHandleupdateSercolumn }) => {
                 p: 1,
                 color: theme.trello.colorFogWhiteBlue,
                 borderRadius: "4px",
-                backgroundColor: theme.trello.colorKhakiGreen,
+                backgroundColor: theme.trello.colorAshGray,
                 boxShadow: theme.trello.boxShadowBtn,
             }}
         >
             <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 1.5 }}>
-                <Box
-                    sx={{
-                        width: "100%",
-                        display: "flex",
-                        alignItems: "center",
-                        gap: 1.5,
-                        color: theme.trello.colorDarkNavyGray,
-                    }}
-                >
-                    <PaidOutlinedIcon />
-                    <Typography
-                        variant="span"
+                <Collapse in={openManage} collapsedSize={38}>
+                    <Box
                         sx={{
-                            fontWeight: "600",
-                            fontSize: "16px",
-                            userSelect: "none",
-                            mr: "auto",
+                            width: "100%",
+                            display: "flex",
+                            alignItems: "center",
+                            gap: 1.5,
+                            color: theme.trello.colorDarkNavyGray,
                         }}
                     >
-                        PHÍ DỊCH VỤ
-                    </Typography>
-                    <Button
-                        sx={{
-                            ...theme.trello.btnPrimary,
-                            fontWeight: "600",
-                            bgcolor: theme.trello.colorOliveMoss,
-                            "&:hover": {
-                                boxShadow: theme.trello.boxShadowBtnHover,
-                                bgcolor: theme.trello.colorOliveMoss,
-                            },
-                        }}
-                        onClick={handleSaveInfoServiceRoom}
-                    >
-                        SAVE
-                    </Button>
-                </Box>
-                {/* -------- */}
-                <Box>
-                    {fields.map((item, index) => (
-                        <Box
-                            key={index}
+                        <PaidOutlinedIcon />
+                        <Typography
+                            onClick={toggleManage}
+                            variant="span"
                             sx={{
-                                ...theme.trello?.textFieldEdiable,
-                                mt: 1,
-                                backgroundColor: item.bg,
-                                display: "flex",
-                                alignItems: "center",
+                                fontWeight: "600",
+                                fontSize: "16px",
+                                userSelect: "none",
+                                mr: "auto",
                             }}
                         >
-                            <EditableInput
-                                value={formValues[item.valueKey] || ""}
-                                onChangedValue={item.valueKey ? handleChange(item.valueKey) : undefined}
-                            />
-                            {item.suffix && <span>{item.suffix}</span>}
-                            {item.icon}
-                        </Box>
-                    ))}
-                </Box>
+                            PHÍ DỊCH VỤ
+                        </Typography>
+                        <Button
+                            sx={{
+                                ...theme.trello.btnPrimary,
+                                fontWeight: "600",
+                                bgcolor: theme.trello.colorSlateBlue,
+                                "&:hover": {
+                                    boxShadow: theme.trello.boxShadowBtnHover,
+                                    bgcolor: theme.trello.colorSlateBlue,
+                                },
+                            }}
+                            onClick={handleSaveInfoServiceRoom}
+                        >
+                            SAVE
+                        </Button>
+                    </Box>
+                    {/* -------- */}
+                    <Box>
+                        {fields.map((item, index) => (
+                            <Box
+                                key={index}
+                                sx={{
+                                    ...theme.trello?.textFieldEdiable,
+                                    mt: 1,
+                                    backgroundColor: item.bg,
+                                    display: "flex",
+                                    alignItems: "center",
+                                }}
+                            >
+                                <EditableInput
+                                    value={formValues[item.valueKey] || ""}
+                                    onChangedValue={item.valueKey ? handleChange(item.valueKey) : undefined}
+                                />
+                                {item.suffix && <span>{item.suffix}</span>}
+                                {item.icon}
+                            </Box>
+                        ))}
+                    </Box>
+                </Collapse>
             </Box>
         </Box>
     );
