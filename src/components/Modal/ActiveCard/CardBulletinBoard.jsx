@@ -1,14 +1,16 @@
 import moment from "moment";
 import Box from "@mui/material/Box";
-import Typography from "@mui/material/Typography";
+import { toast } from "react-toastify";
+import { useSelector } from "react-redux";
 import Avatar from "@mui/material/Avatar";
 import TextField from "@mui/material/TextField";
-import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined";
-import { useSelector } from "react-redux";
-import { selectCurrentUser } from "~/redux/user/userSlice";
 import { useConfirm } from "material-ui-confirm";
-import { toast } from "react-toastify";
+import Typography from "@mui/material/Typography";
+import NewspaperIcon from "@mui/icons-material/Newspaper";
+import { selectCurrentUser } from "~/redux/user/userSlice";
+import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined";
 
+// ========================================================================================
 function CardBulletinBoard({ cardBulletin = [], onAddCardBulletin, onDeleteCardBulletin }) {
     const currentUser = useSelector(selectCurrentUser);
 
@@ -73,124 +75,146 @@ function CardBulletinBoard({ cardBulletin = [], onAddCardBulletin, onDeleteCardB
         }
     };
 
+    // ========================================================================================
     return (
-        <Box sx={{ mt: 2 }}>
-            {/* Xử lý thêm comment vào Card */}
-            <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 2 }}>
-                <Avatar
-                    sx={{ width: 36, height: 36, cursor: "pointer" }}
-                    alt={currentUser?.username}
-                    src={currentUser?.avatar}
-                />
-                <TextField
-                    sx={{
-                        mt: "4px",
-                        "& .MuiOutlinedInput-root": {
-                            bgcolor: (theme) => theme.trello.colorDarkNavyGray,
-                            padding: "8px 12px",
-                            border: (theme) => `1px solid ${theme.trello.colorPaleSky}`,
-                            borderRadius: "4px",
-                            boxShadow: (theme) => theme.trello.boxShadowBtn,
-                            "& fieldset": {
-                                border: "none", // ẩn border mặc định
-                            },
-                            "&:hover fieldset": {
-                                border: "1px solid rgba(242, 242, 242, 0.8)",
-                            },
-                            "&.Mui-focused fieldset": {
-                                border: "1px solid rgba(242, 242, 242, 0.8)",
-                            },
-                        },
-                        "& .MuiOutlinedInput-input": {
-                            padding: 0, // padding đã có ở `.MuiOutlinedInput-root` rồi
-                            wordBreak: "break-word",
-                            color: (theme) => theme.trello.colorSnowGray,
-                            caretColor: (theme) => theme.trello.colorSnowGray,
-                            "&::placeholder": {
-                                color: (theme) => theme.trello.colorSnowGray,
-                                opacity: 0.5,
-                            },
-                        },
-                    }}
-                    fullWidth
-                    placeholder="Add New..."
-                    type="text"
-                    variant="outlined"
-                    multiline
-                    onKeyDown={handleAddCardBulletin}
-                />
+        <Box
+            sx={{
+                mb: 2,
+                p: 1,
+                borderRadius: "4px",
+                // border: (theme) => `1px solid ${theme.trello.colorSnowGray}`,
+                backgroundColor: (theme) => (theme.palette.mode === "dark" ? "#1A2027" : theme.trello.colorAshGray),
+                boxShadow: (theme) => theme.trello.boxShadowBtn,
+            }}
+        >
+            <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
+                <NewspaperIcon />
+                <Typography variant="span" sx={{ fontWeight: "600", fontSize: "20px", userSelect: "none" }}>
+                    Bảng tin
+                </Typography>
             </Box>
 
-            {/* Hiển thị danh sách các comments */}
-            <Box
-                sx={{
-                    py: 1.5,
-                    pl: 2,
-                    border: (theme) => `2px solid ${theme.trello.colorIronBlue}`,
-                    borderRadius: 1.5,
-                    backgroundColor: (theme) => theme.trello.colorPaleSky,
-                    boxShadow: (theme) => theme.trello.boxShadowBulletin,
-                    maxHeight: "300px",
-                    overflowY: "auto",
-                    //
-                }}
-            >
-                {cardBulletin.map((bulletin, index) => (
-                    <Box sx={{ display: "flex", gap: 1, width: "100%" }} key={index}>
-                        <Box sx={{ width: "inherit" }}>
-                            {/* -------------- DATE -------------- */}
-                            <Typography
-                                variant="span"
-                                sx={{
-                                    fontSize: "11px",
-                                    userSelect: "none",
-                                    color: (theme) => theme.trello.colorIronBlue,
-                                }}
-                            >
-                                {/* Format ngày tháng */}
-                                {/* {moment(comment.commentedAt).format("llll")} */}
-                                {moment(bulletin.bulletinedAt).format("llll")}
-                            </Typography>
+            {/* Xử lý bảng tin của Card */}
+            <Box sx={{ mt: 2 }}>
+                {/* Xử lý thêm comment vào Card */}
+                <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 2 }}>
+                    <Avatar
+                        sx={{ width: 36, height: 36, cursor: "pointer" }}
+                        alt={currentUser?.username}
+                        src={currentUser?.avatar}
+                    />
+                    <TextField
+                        sx={{
+                            mt: "4px",
+                            "& .MuiOutlinedInput-root": {
+                                bgcolor: (theme) => theme.trello.colorDarkNavyGray,
+                                padding: "8px 12px",
+                                border: (theme) => `1px solid ${theme.trello.colorPaleSky}`,
+                                borderRadius: "4px",
+                                boxShadow: (theme) => theme.trello.boxShadowBtn,
+                                "& fieldset": {
+                                    border: "none", // ẩn border mặc định
+                                },
+                                "&:hover fieldset": {
+                                    border: "1px solid rgba(242, 242, 242, 0.8)",
+                                },
+                                "&.Mui-focused fieldset": {
+                                    border: "1px solid rgba(242, 242, 242, 0.8)",
+                                },
+                            },
+                            "& .MuiOutlinedInput-input": {
+                                padding: 0, // padding đã có ở `.MuiOutlinedInput-root` rồi
+                                wordBreak: "break-word",
+                                color: (theme) => theme.trello.colorSnowGray,
+                                caretColor: (theme) => theme.trello.colorSnowGray,
+                                "&::placeholder": {
+                                    color: (theme) => theme.trello.colorSnowGray,
+                                    opacity: 0.5,
+                                },
+                            },
+                        }}
+                        fullWidth
+                        placeholder="Add New..."
+                        type="text"
+                        variant="outlined"
+                        multiline
+                        onKeyDown={handleAddCardBulletin}
+                    />
+                </Box>
 
-                            <Box sx={{ display: "flex", alignItems: "center" }}>
-                                {/* -------------- INFO -------------- */}
-                                <Box
+                {/* Hiển thị danh sách các comments */}
+                <Box
+                    sx={{
+                        py: 1.5,
+                        pl: 2,
+                        border: (theme) => `2px solid ${theme.trello.colorIronBlue}`,
+                        borderRadius: 1.5,
+                        backgroundColor: (theme) => theme.trello.colorPaleSky,
+                        boxShadow: (theme) => theme.trello.boxShadowBulletin,
+                        maxHeight: "300px",
+                        overflowY: "auto",
+                        //
+                    }}
+                >
+                    {cardBulletin.map((bulletin, index) => (
+                        <Box sx={{ display: "flex", gap: 1, width: "100%" }} key={index}>
+                            <Box sx={{ width: "inherit" }}>
+                                {/* -------------- DATE -------------- */}
+                                <Typography
+                                    variant="span"
                                     sx={{
-                                        flex: 1,
-                                        display: "block",
-                                        bgcolor: (theme) =>
-                                            theme.palette.mode === "dark" ? "#33485D" : theme.trello.colorDarkNavyGray,
-                                        p: "8px 12px",
-                                        // border: (theme) => `1px solid ${theme.trello.colorPaleSky}`,
-                                        borderRadius: "4px",
-                                        wordBreak: "break-word",
+                                        fontSize: "11px",
                                         userSelect: "none",
-                                        boxShadow: (theme) => theme.trello.boxShadowBtn,
+                                        color: (theme) => theme.trello.colorIronBlue,
                                     }}
                                 >
-                                    {bulletin.bulletin}
-                                </Box>
-                                {/* -------------- BTN DELETE -------------- */}
-                                <Typography variant="span" sx={{ userSelect: "none" }}>
-                                    <DeleteOutlinedIcon
-                                        onClick={() => handleDeleteCardComment(bulletin)}
-                                        fontSize="small"
-                                        sx={{
-                                            p: "4px",
-                                            width: "30px",
-                                            height: "30px",
-                                            color: (theme) => theme.trello.colorDarkNavyGray,
-                                            "&:hover": {
-                                                color: (theme) => theme.trello.colorSkyMist,
-                                                cursor: "pointer",
-                                            },
-                                        }}
-                                    />
+                                    {/* Format ngày tháng */}
+                                    {/* {moment(comment.commentedAt).format("llll")} */}
+                                    {moment(bulletin.bulletinedAt).format("llll")}
                                 </Typography>
+
+                                <Box sx={{ display: "flex", alignItems: "center" }}>
+                                    {/* -------------- INFO -------------- */}
+                                    <Box
+                                        sx={{
+                                            flex: 1,
+                                            display: "block",
+                                            bgcolor: (theme) =>
+                                                theme.palette.mode === "dark"
+                                                    ? "#33485D"
+                                                    : theme.trello.colorDarkNavyGray,
+                                            p: "8px 12px",
+                                            // border: (theme) => `1px solid ${theme.trello.colorPaleSky}`,
+                                            borderRadius: "4px",
+                                            wordBreak: "break-word",
+                                            userSelect: "none",
+                                            boxShadow: (theme) => theme.trello.boxShadowBtn,
+                                        }}
+                                    >
+                                        {bulletin.bulletin}
+                                    </Box>
+                                    {/* -------------- BTN DELETE -------------- */}
+                                    <Typography variant="span" sx={{ userSelect: "none" }}>
+                                        <DeleteOutlinedIcon
+                                            onClick={() => handleDeleteCardComment(bulletin)}
+                                            fontSize="small"
+                                            sx={{
+                                                p: "4px",
+                                                width: "30px",
+                                                height: "30px",
+                                                color: (theme) => theme.trello.colorDarkNavyGray,
+                                                "&:hover": {
+                                                    color: (theme) => theme.trello.colorSkyMist,
+                                                    cursor: "pointer",
+                                                },
+                                            }}
+                                        />
+                                    </Typography>
+                                </Box>
                             </Box>
                         </Box>
-                    </Box>
-                ))}
+                    ))}
+                </Box>
             </Box>
         </Box>
     );

@@ -11,22 +11,35 @@ import { useTheme } from "@mui/material/styles";
 import AddCardIcon from "@mui/icons-material/AddCard";
 import DragHandleIcon from "@mui/icons-material/DragHandle";
 import CloseIcon from "@mui/icons-material/Close";
-
 import { createNewCardAPI } from "~/apis";
 // --------------------- REDUX ---------------------
 import { updateCurrentActiveBoard, selectCurrentActiveBoard } from "~/redux/activeBoard/activeBoardSlice";
 import { useDispatch, useSelector } from "react-redux";
+import { updateCurrentActiveColumn } from "~/redux/aciveColumn/activeColumnSlice";
+// import { selectCurrentUser } from "~/redux/user/userSlice";
 // --------------------- MAIN COMPONENTS ---------------------
 
 const FooterCard = ({ column }) => {
     const themeTrello = useTheme();
     const dispatch = useDispatch();
     const board = useSelector(selectCurrentActiveBoard);
+    // const currentUser = useSelector(selectCurrentUser);
+    // const [anchorEl, setAnchorEl] = useState(null);
     // ===================================== STATE & FUNCTIONS =====================================
     // ===================================== OPEN - CLOSE FORM ADD NEW COLUMN =====================================
     const [openFormAddCard, setOpenFormAddCard] = useState(false);
     const toggleFormAddCard = () => {
         setOpenFormAddCard(!openFormAddCard);
+    };
+    // ------------------------------- Open  -------------------------------
+    const handleClick = () => {
+        dispatch(updateCurrentActiveColumn(column));
+        // const isOwner = board.ownerIds.includes(currentUser._id);
+        // if (isOwner) {
+        //     // Tùy bạn: có thể hiển thị toast hoặc bỏ qua
+        //     toast.warning("Bạn không có quyền mở modal này.");
+        //     return;
+        // }
     };
 
     // ===================================== FORM ADD NEW CARD =====================================
@@ -93,7 +106,7 @@ const FooterCard = ({ column }) => {
                         Add new card
                     </Button>
                     <Tooltip title="Drag to move">
-                        <DragHandleIcon sx={{ cursor: "pointer" }} />
+                        <DragHandleIcon onClick={handleClick} sx={{ cursor: "pointer" }} />
                     </Tooltip>
                 </Box>
             ) : (

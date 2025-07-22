@@ -17,7 +17,7 @@ const ListCards = ({ cards, column }) => {
                         m: "0 5px",
                         display: "flex",
                         flexDirection: "column",
-                        rowGap: 1,
+                        rowGap: 1.5,
                         overflowX: "hidden",
                         overflowY: "auto",
                         maxHeight: (theme) => `calc(${theme.trello.cardsHeight} - ${theme.spacing(5)})`,

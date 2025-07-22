@@ -50,7 +50,7 @@ const BOARD_TYPES = {
 function SidebarCreateBoardModal({ afterCreateNewBoard }) {
     const themeTrello = useTheme();
     const {
-        control,
+        // control,
         register,
         handleSubmit,
         reset,
@@ -69,11 +69,10 @@ function SidebarCreateBoardModal({ afterCreateNewBoard }) {
         // const { title, description, type } = data;
         createNewBoardAPI(data).then(() => {
             handleCloseModal();
-            afterCreateNewBoard(); // Thông báo đế component cha để xử lýlý
+            afterCreateNewBoard();
         });
     };
 
-    // <>...</> nhắc lại cho bạn anof chưa biết hoặc quên nhé: nó là React Fragment, dùng để bọc các phần tử lại mà không cần chỉ định DOM Node cụ thể nào cả.
     return (
         <>
             <SidebarItem onClick={handleOpenModal}>
@@ -182,7 +181,7 @@ function SidebarCreateBoardModal({ afterCreateNewBoard }) {
                                  * https://stackoverflow.com/a/73336101
                                  * https://mui.com/material-ui/react-radio-button/
                                  */}
-                                <Controller
+                                {/* <Controller
                                     name="type"
                                     defaultValue={BOARD_TYPES.PUBLIC}
                                     control={control}
@@ -227,7 +226,7 @@ function SidebarCreateBoardModal({ afterCreateNewBoard }) {
                                             />
                                         </RadioGroup>
                                     )}
-                                />
+                                /> */}
 
                                 <Box sx={{ alignSelf: "flex-end" }}>
                                     <Button

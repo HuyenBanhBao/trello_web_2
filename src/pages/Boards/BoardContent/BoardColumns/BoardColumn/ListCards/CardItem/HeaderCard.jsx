@@ -1,37 +1,15 @@
-import { useState } from "react";
-import { toast } from "react-toastify";
 import Box from "@mui/material/Box";
-import Tooltip from "@mui/material/Tooltip";
-
-import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import DragIndicatorOutlinedIcon from "@mui/icons-material/DragIndicatorOutlined";
 // --------------------- REDUX ---------------------
 import { updateCurrentActiveBoard, selectCurrentActiveBoard } from "~/redux/activeBoard/activeBoardSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { updateColumnDetailsAPI } from "~/apis";
 import ToggleFocusInput from "~/components/Form/ToggleFocusInput";
-import { selectCurrentUser } from "~/redux/user/userSlice";
-import { updateCurrentActiveColumn } from "~/redux/aciveColumn/activeColumnSlice";
+import { Typography } from "@mui/material";
 // ===================================================== MAIN COMPONENT =====================================================
 const HeaderCard = ({ column, attributes, listeners }) => {
     const dispatch = useDispatch();
     const board = useSelector(selectCurrentActiveBoard);
-    const currentUser = useSelector(selectCurrentUser);
-
-    const [anchorEl, setAnchorEl] = useState(null);
-    const open = Boolean(anchorEl);
-    // ------------------------------- Open  -------------------------------
-    const handleClick = (event) => {
-        dispatch(updateCurrentActiveColumn(column));
-        const isOwner = board.ownerIds.includes(currentUser._id);
-        if (isOwner) {
-            setAnchorEl(event.currentTarget);
-        } else {
-            // Tùy bạn: có thể hiển thị toast hoặc bỏ qua
-            toast.warning("Bạn không có quyền mở modal này.");
-        }
-    };
-
     // ------------------------------- UPDATE TITLE -------------------------------
     const onUpdateColumnTitle = (newTitle) => {
         // Gọi API update column và xử lý dữ liệu Board trong redux
@@ -84,16 +62,21 @@ const HeaderCard = ({ column, attributes, listeners }) => {
                     <ToggleFocusInput value={column?.title} onChangedValue={onUpdateColumnTitle}></ToggleFocusInput>
                 </Box>
                 <Box>
-                    <Tooltip title="More options">
-                        <KeyboardArrowDownIcon
-                            id="basic-column-dropdown"
-                            aria-controls={open ? "basic-menu-column-dropdown" : undefined}
-                            aria-haspopup="true"
-                            aria-expanded={open ? "true" : undefined}
-                            onClick={handleClick}
-                            sx={{ color: (theme) => theme.trello.colorSnowGray, cursor: "pointer" }}
-                        />
-                    </Tooltip>
+                    <Typography
+                        sx={{
+                            whiteSpace: "nowrap",
+                            bgcolor: (theme) => theme.trello.colorPaleSky,
+                            p: "3px 6px",
+                            fontSize: "10px",
+                            fontWeight: "500",
+                            color: (theme) => theme.trello.colorSlateBlue,
+                            borderRadius: "4px",
+                            boxShadow: (theme) => theme.trello.boxShadowPrimary,
+                        }}
+                    >
+                        {column.cards.length}
+                        {` Room`}
+                    </Typography>
                 </Box>
             </Box>
         </>

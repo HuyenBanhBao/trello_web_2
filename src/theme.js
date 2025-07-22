@@ -91,6 +91,21 @@ const theme = extendTheme({
         colorLemonChiffon: "#FEF6C7", // Kem nhạt
         colorLeafGreen: "#456D2D", // Xanh lá đậm
 
+        // ERROR color
+        colorErrorElec: "#fed1d0",
+        colorErrorWater: "#81d0ff",
+        // colorErrorOther: "#f8da8b",
+
+        // WARNING COLOR
+        colorErrorOtherWarm: "#f6c46b", // Cam dịu – cảnh báo nhẹ
+        colorErrorOtherWarmer: "#f4b15a", // Cam trung tính – nút CTA
+        colorErrorOtherStrong: "#ef9f43", // Cam mạnh – trạng thái cảnh báo rõ ràng
+        colorErrorOtherLighter: "#fff1c9", // rất nhạt – background nhẹ
+        colorErrorOtherLight: "#fbe2a4", // nhạt – hover/soft UI
+        colorErrorOther: "#f8da8b", // màu chính – warning nhẹ
+        colorErrorOtherDark: "#e0be6f", // tối hơn – border / icon
+        colorErrorOtherDarker: "#bfa04f", // rất tối – tiêu đề / chữ chính
+
         // BOX SHADOW -------------------------
         boxShadowPrimary:
             "rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px, rgba(10, 37, 64, 0.35) 0px -2px 6px 0px inset",
@@ -145,12 +160,12 @@ const theme = extendTheme({
             fontWeight: "600",
             fontSize: "14px",
             color: (theme) => theme.trello.colorDustyCloud,
-            bgcolor: (theme) => theme.trello.colorOliveMoss,
+            bgcolor: (theme) => theme.trello.colorSlateBlue,
             boxShadow: (theme) => theme.trello.boxShadowBtn,
             transition: "all 0.25s ease-in-out",
             "&:hover": {
                 boxShadow: (theme) => theme.trello.boxShadowBtnHover,
-                bgcolor: (theme) => theme.trello.colorOliveMoss,
+                bgcolor: (theme) => theme.trello.colorSlateBlue,
             },
         },
 
@@ -166,6 +181,19 @@ const theme = extendTheme({
             backgroundColor: (theme) => theme.trello.colorSkyMist,
             borderRadius: "8px",
         },
+        textFieldShowProfit: {
+            display: "flex",
+            alignItems: "center",
+            fontWeight: "bold",
+            whiteSpace: "nowrap",
+            gap: 1,
+            p: "8px 10px",
+            color: (theme) => theme.trello.colorLemonChiffon,
+            boxShadow: (theme) => theme.trello.boxShadowPrimary,
+            backgroundColor: (theme) => theme.trello.colorOliveGreenDark,
+            borderRadius: "8px",
+        },
+
         textFieldEdiableSlideBar: {
             display: "flex",
             alignItems: "center",

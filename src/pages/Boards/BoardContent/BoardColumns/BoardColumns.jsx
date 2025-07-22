@@ -85,12 +85,16 @@ const BoardColumns = ({ columns }) => {
             <SortableContext items={columns?.map((c) => c._id)} strategy={horizontalListSortingStrategy}>
                 <Box
                     sx={{
-                        background: "inherit",
+                        background: (theme) => theme.trello.colorDustyCloud,
                         width: "100%",
                         height: "100%",
                         display: "flex",
                         overflowX: "auto",
                         overflowY: "hidden",
+                        borderRadius: "8px",
+                        p: 2,
+                        pl: 0,
+                        boxShadow: (theme) => theme.trello.boxShadowBulletin,
                         "&::-webkit-scrollbar-track": { m: 2 },
                     }}
                 >
@@ -105,7 +109,6 @@ const BoardColumns = ({ columns }) => {
                             sx={{
                                 minWidth: "250px",
                                 maxWidth: "250px",
-                                bgcolor: "#ffffff3d",
                                 ml: 2,
                                 height: "fit-content",
                                 borderRadius: "6px",
@@ -118,9 +121,14 @@ const BoardColumns = ({ columns }) => {
                                     pl: 2,
                                     width: "100%",
                                     justifyContent: "flex-start",
+                                    bgcolor: (theme) => theme.trello.colorPaleSky,
                                     color: (theme) => theme.trello.colorFogWhiteBlue,
                                     border: (theme) => `1px solid ${theme.trello.colorFrostGray}`,
                                     boxShadow: (theme) => theme.trello.boxShadowPrimary,
+                                    transition: "all ease 0.3s",
+                                    "&:hover": {
+                                        bgcolor: (theme) => theme.trello.colorIronBlue,
+                                    },
                                 }}
                             >
                                 Add new column
@@ -135,7 +143,7 @@ const BoardColumns = ({ columns }) => {
                                 p: 1,
                                 height: "fit-content",
                                 borderRadius: "6px",
-                                bgcolor: "#ffffff3d",
+                                bgcolor: (theme) => theme.trello.colorSnowGray,
                                 display: "flex",
                                 flexDirection: "column",
                                 gap: 1,
@@ -153,23 +161,23 @@ const BoardColumns = ({ columns }) => {
                                 onChange={(e) => setNewNameColumn(e.target.value)}
                                 sx={{
                                     "& label": {
-                                        color: (theme) => theme.trello.primaryColorTextBar,
+                                        color: (theme) => theme.trello.colorSlateBlue,
                                     },
                                     "& input": {
-                                        color: (theme) => theme.trello.primaryColorTextBar,
+                                        color: (theme) => theme.trello.colorSlateBlue,
                                     },
                                     "& label.Mui-focused": {
-                                        color: (theme) => theme.trello.primaryColorTextBar,
+                                        color: (theme) => theme.trello.colorSlateBlue,
                                     },
                                     "& .MuiOutlinedInput-root": {
                                         "& fieldset": {
-                                            borderColor: (theme) => theme.trello.primaryColorTextBar,
+                                            borderColor: (theme) => theme.trello.colorSlateBlue,
                                         },
                                         "&:hover fieldset": {
-                                            borderColor: (theme) => theme.trello.primaryColorTextBar,
+                                            borderColor: (theme) => theme.trello.colorSlateBlue,
                                         },
                                         "&.Mui-focused fieldset": {
-                                            borderColor: (theme) => theme.trello.primaryColorTextBar,
+                                            borderColor: (theme) => theme.trello.colorSlateBlue,
                                         },
                                     },
                                 }}

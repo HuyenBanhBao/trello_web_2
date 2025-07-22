@@ -1,11 +1,13 @@
-/* eslint-disable no-unused-vars */
+import { useState } from "react";
 import { Box } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import { useDispatch, useSelector } from "react-redux";
 import Typography from "@mui/material/Typography";
+import Collapse from "@mui/material/Collapse";
 // --------------------- COMPONENTS ---------------------------
 import BSBPriceService from "./BSBPriceService";
 import BSBDeleteCol from "./BSBDeleteCol";
+import BSBShowProfit from "./BSBShowProfit";
 import SendBulletinToAll from "~/components/Modal/Other/SendBulletinToAll";
 import SendMessToAll from "~/components/Modal/Other/SendMessToAll";
 import { selectCurrentActiveColumn } from "~/redux/aciveColumn/activeColumnSlice";
@@ -14,6 +16,7 @@ import { updateColumnInBoard } from "~/redux/activeBoard/activeBoardSlice";
 import { updateColumnDetailsAPI } from "~/apis";
 import ManageAccountsOutlinedIcon from "@mui/icons-material/ManageAccountsOutlined";
 import { updateCardInBoard } from "~/redux/activeBoard/activeBoardSlice";
+import { toast } from "react-toastify";
 
 // ========================================================================================
 const BoardSlideBar = () => {
@@ -23,10 +26,14 @@ const BoardSlideBar = () => {
 
     // ======================== FUNC TỔNG GỌI API UPDATE ========================
     const callAPIUpdateColumn = async (updateData) => {
-        const updatedColumn = await updateColumnDetailsAPI(activeColumn._id, updateData);
-        dispatch(updateCurrentActiveColumn(updatedColumn));
-        dispatch(updateColumnInBoard(updatedColumn));
-        return updatedColumn;
+        if (activeColumn) {
+            const updatedColumn = await updateColumnDetailsAPI(activeColumn._id, updateData);
+            dispatch(updateCurrentActiveColumn(updatedColumn));
+            dispatch(updateColumnInBoard(updatedColumn));
+            return updatedColumn;
+        } else {
+            toast.warning("Bạn hãy chọn 1 đối tượng để sử dụng chức năng");
+        }
     };
     // ======================== FUNCTIONS ========================
     const onHandleupdateSercolumn = (updatePriceServiceColumn) => {
@@ -51,27 +58,25 @@ const BoardSlideBar = () => {
         await callAPIUpdateCardInColumn({ bulletinToAdd });
     };
 
+    // ---------------- OPEN CLOSE ITEMS OF SLIDEBAR -------------------------
+    const [openManage, setOpenManage] = useState(false);
+    const toggleManage = () => {
+        setOpenManage((prev) => !prev);
+    };
+
     // ===========================================================
     return (
         <>
-            <Box sx={{ height: "100%", borderRight: `3px solid ${theme.trello.colorCloudySteel}` }}>
+            <Box sx={{ height: "100%" }}>
                 <Box
                     sx={{
                         p: 1,
                         mx: 1,
-                        bgcolor: theme.trello.colorMossGreen,
                         height: "100%",
                         borderRadius: "8px",
-                        boxShadow: theme.trello.boxShadowBulletin,
                         overflowY: "auto",
-                        "&::-webkit-scrollbar-thumb": {
-                            background: (theme) =>
-                                theme.palette.mode === "dark" ? "rgba(78, 78, 78, 0.5)" : "rgba(189, 195, 199, 0.5)",
-                            borderRadius: "99px",
-                        },
-                        "&::-webkit-scrollbar-thumb:hover": {
-                            background: (theme) =>
-                                theme.palette.mode === "dark" ? "rgba(78, 78, 78, 0.8)" : "rgba(189, 195, 199, 0.8)",
+                        "&::-webkit-scrollbar": {
+                            width: "0px", // Chrome
                         },
                     }}
                 >
@@ -82,7 +87,7 @@ const BoardSlideBar = () => {
                             p: 2,
                             height: "60px",
                             mb: 1.5,
-                            bgcolor: theme.trello.colorArmyGreen,
+                            bgcolor: theme.trello.colorSlateBlue,
                             boxShadow: theme.trello.boxShadowBtn,
                             color: theme.trello.colorFogWhiteBlue,
                             borderRadius: "4px",
@@ -95,9 +100,6 @@ const BoardSlideBar = () => {
                         {activeColumn ? activeColumn.title : "Chọn một cột"}
                     </Box>
 
-                    {/* --------------------- PRICE SERVICE COLUM --------------------- */}
-                    <BSBPriceService onHandleupdateSercolumn={onHandleupdateSercolumn} />
-
                     {/* --------------------- MANAGER CAOLUMN --------------------- */}
                     <Box
                         sx={{
@@ -105,47 +107,55 @@ const BoardSlideBar = () => {
                             p: 1,
                             color: theme.trello.colorFogWhiteBlue,
                             borderRadius: "4px",
-                            backgroundColor: theme.trello.colorKhakiGreen,
+                            backgroundColor: theme.trello.colorAshGray,
                             boxShadow: theme.trello.boxShadowBtn,
                         }}
                     >
-                        <Box
-                            sx={{
-                                width: "100%",
-                                display: "flex",
-                                alignItems: "center",
-                                gap: 1.5,
-                                color: theme.trello.colorDarkNavyGray,
-                                mb: 2,
-                            }}
-                        >
-                            <ManageAccountsOutlinedIcon />
-                            <Typography
-                                variant="span"
+                        <Collapse in={openManage} collapsedSize={30}>
+                            <Box
                                 sx={{
-                                    fontWeight: "600",
-                                    fontSize: "16px",
-                                    userSelect: "none",
-                                    mr: "auto",
+                                    width: "100%",
+                                    display: "flex",
+                                    alignItems: "center",
+                                    gap: 1.5,
+                                    color: theme.trello.colorDarkNavyGray,
+                                    mb: 2,
+                                    cursor: "pointer",
                                 }}
                             >
-                                QUẢN LÝ
-                            </Typography>
-                        </Box>
-                        {/* --------------------- DELETE COLUM --------------------- */}
-                        <SendMessToAll onAddComentToAllCard={onAddComentToAllCard} activeColumn={activeColumn} />
-                        {/* --------------------- DELETE COLUM --------------------- */}
-                        <SendBulletinToAll
-                            onAddBulletinToAllCard={onAddBulletinToAllCard}
-                            activeColumn={activeColumn}
-                        />
-                        {/* --------------------- DELETE COLUM --------------------- */}
-                        {/* --------------------- DELETE COLUM --------------------- */}
-                        <BSBDeleteCol />
+                                <ManageAccountsOutlinedIcon />
+                                <Typography
+                                    onClick={toggleManage}
+                                    variant="span"
+                                    sx={{
+                                        fontWeight: "600",
+                                        fontSize: "16px",
+                                        userSelect: "none",
+                                        mr: "auto",
+                                    }}
+                                >
+                                    QUẢN LÝ
+                                </Typography>
+                            </Box>
+                            {/* --- Content toggle --- */}
+                            {/* --------------------- DELETE COLUM --------------------- */}
+                            <SendMessToAll onAddComentToAllCard={onAddComentToAllCard} activeColumn={activeColumn} />
+                            {/* --------------------- DELETE COLUM --------------------- */}
+                            <SendBulletinToAll
+                                onAddBulletinToAllCard={onAddBulletinToAllCard}
+                                activeColumn={activeColumn}
+                            />
+                            {/* --------------------- DELETE COLUM --------------------- */}
+                            {/* --------------------- DELETE COLUM --------------------- */}
+                            <BSBDeleteCol />
+                        </Collapse>
                     </Box>
-                    {/* --------------------- PRICE SERVICE COLUM --------------------- */}
 
-                    {/* ------------------------------------------------------------------------- */}
+                    {/* --------------------- PRICE SERVICE COLUM --------------------- */}
+                    <BSBPriceService onHandleupdateSercolumn={onHandleupdateSercolumn} />
+                    {/* --------------------- SHOW PROFIT --------------------- */}
+                    <BSBShowProfit />
+                    {/* -------------------------------- SHOW CHI PHÍ --------------------------------- */}
                 </Box>
             </Box>
         </>
