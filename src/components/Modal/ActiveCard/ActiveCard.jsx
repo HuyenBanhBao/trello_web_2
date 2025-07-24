@@ -6,6 +6,7 @@ import Modal from "@mui/material/Modal";
 import Divider from "@mui/material/Divider";
 import { styled } from "@mui/material/styles";
 import Grid from "@mui/material/Unstable_Grid2";
+import { useTheme } from "@mui/material/styles";
 import { useConfirm } from "material-ui-confirm";
 import Typography from "@mui/material/Typography";
 import CancelIcon from "@mui/icons-material/Cancel";
@@ -26,9 +27,9 @@ import {
     selectIsShowModalActiveCard,
 } from "~/redux/activeCard/activeCardSlice";
 import { clearAndHideCurrentActiveColumn } from "~/redux/aciveColumn/activeColumnSlice";
-import CardUserGroup from "./CardUserGroup";
 import CardBulletinBoard from "./CardBulletinBoard";
 import CardActivitySection from "./CardActivitySection";
+import AddMenbers from "./AddMenbers";
 import { CARD_MEMBER_ACTIONS } from "~/utils/constants";
 import { singleFileValidator } from "~/utils/validators";
 import { selectCurrentUser } from "~/redux/user/userSlice";
@@ -71,11 +72,13 @@ const SidebarItem = styled(Box)(({ theme }) => ({
  * nhưng sẽ sử dụng Modal để dễ linh hoạt tùy biến giao diện từ con số 0 cho phù hợp với mọi nhu cầu nhé.
  */
 function ActiveCard() {
+    const theme = useTheme();
     const dispatch = useDispatch();
     const board = useSelector(selectCurrentActiveBoard);
     const activeCard = useSelector(selectCurrentActiveCard);
-    // useListenCardReloaded();
     const currentUser = useSelector(selectCurrentUser);
+    const isAdmin = board?.ownerIds.includes(currentUser._id);
+
     const isShowModalActiveCard = useSelector(selectIsShowModalActiveCard);
     // --------------------- useState -------------------------
     const [serviceFormCardData, setServiceFormCardData] = useState({});
@@ -117,7 +120,11 @@ function ActiveCard() {
 
     // ------------------ RENAME CARD TITLE ------------------
     const onUpdateCardTitle = (newTitle) => {
-        callAPIUpdateCard({ title: newTitle.trim() }); // Call Api
+        if (isAdmin) {
+            callAPIUpdateCard({ title: newTitle.trim() }); // Call Api
+        } else {
+            toast.warning("You are not admin, can't edit NUMBER ROOM");
+        }
     };
 
     // ------------------ UPLOAD IMAGE ------------------
@@ -184,10 +191,10 @@ function ActiveCard() {
     };
 
     //  ------------------ UPDATE MEMBERS ------------------
-    const onUpdateCardMembers = (incomingMemberInfo) => {
-        // Gọi API update cardMembers
-        callAPIUpdateCard({ incomingMemberInfo });
-    };
+    // const onUpdateCardMembers = (incomingMemberInfo) => {
+    //     // Gọi API update cardMembers
+    //     callAPIUpdateCard({ incomingMemberInfo });
+    // };
 
     // ------------------- UPDATE INFO SERVICE CARD -------------------
     const handleSaveInfoServiceRoom = () => {
@@ -223,7 +230,7 @@ function ActiveCard() {
                     outline: "none",
                     overflow: "hidden",
                     margin: "50px auto",
-                    backgroundColor: (theme) => (theme.palette.mode === "dark" ? "#1A2027" : theme.trello.colorPaleSky),
+                    backgroundColor: theme.trello.colorPaleSky,
                 }}
             >
                 {/* ----------------------- BUTTON CLOSE ----------------------- */}
@@ -234,14 +241,14 @@ function ActiveCard() {
                         top: "12px",
                         right: "10px",
                         cursor: "pointer",
-                        border: (theme) => `1px solid ${theme.trello.colorSnowGray}`,
+                        border: `1px solid ${theme.trello.colorSnowGray}`,
                         borderRadius: "50%",
                     }}
                 >
                     <CancelIcon
                         color="error"
                         sx={{
-                            color: (theme) => theme.trello.colorSnowGray,
+                            color: theme.trello.colorSnowGray,
                             "&:hover": { color: "rgba(254, 246, 199, 0.8)" },
                         }}
                         onClick={handleCloseModal}
@@ -256,10 +263,9 @@ function ActiveCard() {
                         display: "inline-flex",
                         alignItems: "center",
                         gap: 1,
-                        color: (theme) => theme.trello.colorSnowGray,
-                        borderBottom: (theme) => `1px solid ${theme.trello.colorSnowGray}`,
-                        backgroundColor: (theme) =>
-                            theme.palette.mode === "dark" ? "#1A2027" : theme.trello.colorSlateBlue,
+                        color: theme.trello.colorSnowGray,
+                        borderBottom: `1px solid ${theme.trello.colorSnowGray}`,
+                        backgroundColor: theme.trello.colorSlateBlue,
                     }}
                 >
                     <CreditCardIcon />
@@ -270,7 +276,6 @@ function ActiveCard() {
                         inputFontSize="22px"
                         value={activeCard?.title}
                         onChangedValue={onUpdateCardTitle}
-                        // onKeyDown={onUpdateCardTitle}
                     />
                 </Box>
 
@@ -279,9 +284,11 @@ function ActiveCard() {
                     sx={{
                         overflowY: "auto",
                         padding: "0 2px 0 8px",
-                        color: (theme) => theme.trello.colorSnowGray,
-                        backgroundColor: (theme) =>
-                            theme.palette.mode === "dark" ? "#1A2027" : theme.trello.colorSlateBlue,
+                        color: theme.trello.colorSnowGray,
+                        backgroundColor: theme.trello.colorSlateBlue,
+                        "&::-webkit-scrollbar": {
+                            width: "0px", // Chrome
+                        },
                     }}
                 >
                     {/* -------------------- Card cover images -------------------- */}
@@ -295,7 +302,7 @@ function ActiveCard() {
                                     height: "320px",
                                     borderRadius: "6px",
                                     objectFit: "cover",
-                                    border: (theme) => `1px solid ${theme.trello.colorSnowGray}`,
+                                    border: `1px solid ${theme.trello.colorSnowGray}`,
                                 }}
                                 src={activeCard?.cover}
                                 alt="card-cover"
@@ -312,6 +319,7 @@ function ActiveCard() {
                                 cardBulletin={activeCard?.bulletins}
                                 onAddCardBulletin={onAddCardBulletin}
                                 onDeleteCardBulletin={onDeleteCardBulletin}
+                                isAdmin={isAdmin}
                             />
                             {/* ------------------ ERROR ----------------- */}
                             <ShowNotifiError onDeleteCardReport={onDeleteCardReport} />
@@ -329,110 +337,103 @@ function ActiveCard() {
 
                         {/* ---------------------- Right side ---------------------- */}
                         <Grid xs={12} sm={4}>
-                            {/* ---------------------- Members ---------------------- */}
-                            <Box
-                                sx={{
-                                    mb: 2,
-                                    p: 1,
-                                    // border: (theme) => `1px solid ${theme.trello.colorSnowGray}`,
-                                    borderRadius: "4px",
-                                    backgroundColor: (theme) =>
-                                        theme.palette.mode === "dark" ? "#1A2027" : theme.trello.colorAshGray,
-                                    boxShadow: (theme) => theme.trello.boxShadowBtn,
-                                }}
-                            >
-                                <Typography sx={{ fontWeight: "600", mb: 1 }}>Members</Typography>
+                            {/* ---------------------- ADD Members ---------------------- */}
+                            <AddMenbers isAdmin={isAdmin} />
 
-                                {/* Feature 02: Xử lý các thành viên của Card */}
-                                <CardUserGroup
-                                    //
-                                    cardMemberIds={activeCard?.memberIds}
-                                    onUpdateCardMembers={onUpdateCardMembers}
-                                />
-                            </Box>
-
-                            {/* ---------------------- INFO ---------------------- */}
-                            {/* ---------------------- INFO ---------------------- */}
+                            {/* ---------------------- PRICE ROOM ---------------------- */}
                             <CardEditableInfo
                                 setServiceFormCardData={setServiceFormCardData}
                                 handleSaveInfoServiceRoom={handleSaveInfoServiceRoom}
+                                isAdmin={isAdmin}
                             />
                             {/* --------------------------------- BUTTONS --------------------------------- */}
                             <Box
                                 sx={{
                                     p: 1,
                                     borderRadius: "4px",
-                                    // border: (theme) => `1px solid ${theme.trello.colorSnowGray}`,
-                                    backgroundColor: (theme) =>
+                                    // border:  `1px solid ${theme.trello.colorSnowGray}`,
+                                    backgroundColor:
                                         theme.palette.mode === "dark" ? "#1A2027" : theme.trello.colorAshGray,
-                                    boxShadow: (theme) => theme.trello.boxShadowBtn,
+                                    boxShadow: theme.trello.boxShadowBtn,
                                 }}
                             >
-                                {/* ------------------------------ ADD TO CARD -------------------------------- */}
-                                <Typography sx={{ fontWeight: "600", mb: 1, userSelect: "none" }}>
-                                    Add To Card
-                                </Typography>
-                                <Stack direction="column" spacing={1}>
-                                    {/* Feature 05: Xử lý hành động bản thân user tự join vào card */}
-                                    {/* Nếu user hiện tại đang đăng nhập chưa thuộc mảng memberIds của card thì mới cho hiện nút Join ra */}
-                                    {/* Khi Click vào Join thì nó sẽ luôn là hành động ADD */}
-                                    {!activeCard?.memberIds?.includes(currentUser._id) && (
-                                        <SidebarItem
-                                            onClick={() =>
-                                                onUpdateCardMembers({
-                                                    userId: currentUser._id,
-                                                    action: CARD_MEMBER_ACTIONS.ADD,
-                                                })
-                                            }
-                                            className="active"
-                                        >
-                                            <PersonOutlineOutlinedIcon fontSize="small" />
-                                            Join
-                                        </SidebarItem>
-                                    )}
-                                    {/* Feature 06: Xử lý hành động cập nhật ảnh Cover của Card */}
-                                    {!activeCard?.cover && (
-                                        <SidebarItem className="active" component="label">
-                                            <ImageOutlinedIcon fontSize="small" />
-                                            Add Image
-                                            <VisuallyHiddenInput type="file" onChange={onUploadCardCover} />
-                                        </SidebarItem>
-                                    )}
-                                    {activeCard?.cover && (
-                                        <SidebarItem onClick={onDeleteCover}>
-                                            <DeleteOutlinedIcon fontSize="small" />
-                                            Delete Image
-                                        </SidebarItem>
-                                    )}
-                                </Stack>
+                                {isAdmin && (
+                                    <>
+                                        {/* ------------------------------ ADD TO CARD -------------------------------- */}
+                                        <Typography sx={{ fontWeight: "600", mb: 1, userSelect: "none" }}>
+                                            Add To Card
+                                        </Typography>
+                                        <Stack direction="column" spacing={1}>
+                                            {/* Feature 05: Xử lý hành động bản thân user tự join vào card */}
+                                            {/* Nếu user hiện tại đang đăng nhập chưa thuộc mảng memberIds của card thì mới cho hiện nút Join ra */}
+                                            {/* Khi Click vào Join thì nó sẽ luôn là hành động ADD */}
+                                            {/* {!activeCard?.memberIds?.includes(currentUser._id) && (
+                                            <SidebarItem
+                                                onClick={() =>
+                                                    onUpdateCardMembers({
+                                                        userId: currentUser._id,
+                                                        action: CARD_MEMBER_ACTIONS.ADD,
+                                                    })
+                                                }
+                                                className="active"
+                                            >
+                                                <PersonOutlineOutlinedIcon fontSize="small" />
+                                                Join
+                                            </SidebarItem>
+                                        )} */}
+                                            {/* Feature 06: Xử lý hành động cập nhật ảnh Cover của Card */}
+                                            {!activeCard?.cover && (
+                                                <SidebarItem className="active" component="label">
+                                                    <ImageOutlinedIcon fontSize="small" />
+                                                    Add Image
+                                                    <VisuallyHiddenInput type="file" onChange={onUploadCardCover} />
+                                                </SidebarItem>
+                                            )}
+                                            {activeCard?.cover && (
+                                                <SidebarItem onClick={onDeleteCover}>
+                                                    <DeleteOutlinedIcon fontSize="small" />
+                                                    Delete Image
+                                                </SidebarItem>
+                                            )}
+                                        </Stack>
+                                        <Divider sx={{ my: 2 }} />
+                                    </>
+                                )}
 
-                                <Divider sx={{ my: 2 }} />
                                 {/* ------------------------------ NOTIFI ERROR -------------------------------- */}
                                 <NotifiError callAPIUpdateReportCard={callAPIUpdateReportCard} />
-                                <Divider sx={{ my: 2 }} />
-                                {/* -------------------------------------------------------------- */}
-                                <Typography sx={{ fontWeight: "600", mb: 1, userSelect: "none" }}>Move</Typography>
-                                <Stack direction="column" spacing={1}>
-                                    <SidebarItem
-                                        // onClick={handleDeleteCard}
-                                        onClick={onDeleteCard}
-                                        sx={{
-                                            justifyContent: "center",
-                                            color: (theme) => theme.trello.colorDustyCloud,
-                                            backgroundColor: (theme) => theme.trello.colorSlateBlue,
-                                            boxShadow: (theme) => theme.trello.boxShadowBtn,
-                                            transition: "all 0.25s ease-in-out",
 
-                                            "&:hover": {
-                                                boxShadow: (theme) => theme.trello.boxShadowBtnHover,
-                                                backgroundColor: (theme) => theme.trello.colorSlateBlue,
-                                            },
-                                        }}
-                                    >
-                                        <DeleteOutlinedIcon fontSize="small" />
-                                        DELETE CARD
-                                    </SidebarItem>
-                                </Stack>
+                                {isAdmin && (
+                                    <>
+                                        <Divider sx={{ my: 2 }} />
+                                        {/* -------------------------------------------------------------- */}
+                                        <Typography sx={{ fontWeight: "600", mb: 1, userSelect: "none" }}>
+                                            Move
+                                        </Typography>
+                                        <Stack direction="column" spacing={1}>
+                                            <SidebarItem
+                                                // onClick={handleDeleteCard}
+                                                onClick={onDeleteCard}
+                                                sx={{
+                                                    borderColor: "transparent",
+                                                    justifyContent: "center",
+                                                    color: theme.trello.colorDustyCloud,
+                                                    backgroundColor: theme.trello.colorSlateBlue,
+                                                    boxShadow: theme.trello.boxShadowBtn,
+                                                    transition: "all 0.25s ease-in-out",
+
+                                                    "&:hover": {
+                                                        boxShadow: theme.trello.boxShadowBtnHover,
+                                                        backgroundColor: theme.trello.colorSlateBlue,
+                                                    },
+                                                }}
+                                            >
+                                                <DeleteOutlinedIcon fontSize="small" />
+                                                DELETE CARD
+                                            </SidebarItem>
+                                        </Stack>
+                                    </>
+                                )}
                                 {/* ----------------------------------------------------------------- */}
                             </Box>
                         </Grid>

@@ -32,8 +32,8 @@ const theme = extendTheme({
         primarySuccessColor: "#097109",
 
         // 9F8467, EAE2E0, 75805E, 819B80, CD9E72 // Bộ 1 ------------------------------------------------------------------
-        colorSoftMocha: "#9F8467", // Nâu mocha dịu
-        colorBlushPink: "#EAE2E0", // Hồng phấn nhẹ
+        colorOliveLight: "#6C7A3D", // Xanh rêu sáng
+        colorOliveGreen: "#556B2F", // Xanh rêu
         colorOliveMoss: "#75805E", // Rêu ô-liu
         colorSageGreen: "#819B80", // Xanh xô thơm
         colorArmyGreen: "#4B5320", // Xanh quân đội
@@ -87,16 +87,32 @@ const theme = extendTheme({
         colorMutedTaupe: "#736E6E", // Nâu xám dịu
 
         // Card color
-        colorOliveGreenDark: "#395F18", //Xanh ô-liu đậm
-        colorLemonChiffon: "#FEF6C7", // Kem nhạt
         colorLeafGreen: "#456D2D", // Xanh lá đậm
 
         // ERROR color
-        colorErrorElec: "#fed1d0",
         colorErrorWater: "#81d0ff",
         // colorErrorOther: "#f8da8b",
 
+        colorLemonChiffon: "#FEF6C7", // Kem nhạt text
+        colorOliveGreen50: "#D8E4C2", // Xanh ô-liu rất nhạt
+        colorOliveGreen100: "#A3B18A", // Xanh ô-liu nhạt
+        colorOliveGreen200: "#6B8F3E", // Xanh ô-liu vừa
+        colorOliveGreen300: "#556B2F", // Xanh ô-liu cổ điển
+        colorOliveGreenDark: "#395F18", // Xanh ô-liu đậm (gốc bạn dùng)
+        colorOliveGreen500: "#2E4611", // Xanh ô-liu rất đậm
+        colorOliveGreen600: "#1F2D0E", // Xanh ô-liu đen (gần như đen)
+
+        // ERROR COLOR
+        colorRedDark: "#8B2C2C", // Đỏ tối
+        colorRedClay: "#B04C4A", // Đỏ đất sét
+        colorErrorElecLighter: "#fff0ef", // Rất nhạt – nền background
+        colorErrorElecLight: "#fddcdc", // Nhạt – hover hoặc thẻ phụ
+        colorErrorElec: "#fed1d0", // Màu chính
+        colorErrorElecDark: "#f8a3a0", // Tối hơn – border / icon
+        colorErrorElecDarker: "#d26d6a", // Rất tối – tiêu đề / chữ cảnh báo
+
         // WARNING COLOR
+        colorErrorText: "#0b4a3b",
         colorErrorOtherWarm: "#f6c46b", // Cam dịu – cảnh báo nhẹ
         colorErrorOtherWarmer: "#f4b15a", // Cam trung tính – nút CTA
         colorErrorOtherStrong: "#ef9f43", // Cam mạnh – trạng thái cảnh báo rõ ràng
@@ -125,10 +141,8 @@ const theme = extendTheme({
         btnPrimary: {
             color: (theme) => theme.trello.colorDustyCloud,
             backgroundColor: (theme) => theme.trello.colorSlateBlue,
-
             boxShadow: (theme) => theme.trello.boxShadowBtn,
             transition: "all 0.25s ease-in-out",
-
             "&:hover": {
                 borderColor: "white",
                 boxShadow: (theme) => theme.trello.boxShadowBtnHover,
@@ -189,8 +203,8 @@ const theme = extendTheme({
             gap: 1,
             p: "8px 10px",
             color: (theme) => theme.trello.colorLemonChiffon,
-            boxShadow: (theme) => theme.trello.boxShadowPrimary,
-            backgroundColor: (theme) => theme.trello.colorOliveGreenDark,
+            boxShadow: (theme) => theme.trello.boxShadowBulletin,
+            backgroundColor: (theme) => theme.trello.colorSageGreen,
             borderRadius: "8px",
         },
 

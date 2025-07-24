@@ -32,6 +32,7 @@ function ToggleFocusInput({
             fullWidth
             variant="outlined"
             size="small"
+            spellCheck={false} // 👈 Tắt kiểm tra chính tả
             autoComplete="off"
             value={inputValue}
             onChange={(event) => {

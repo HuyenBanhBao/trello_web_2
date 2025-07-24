@@ -57,7 +57,7 @@ const NotifiError = ({ callAPIUpdateReportCard }) => {
             key: "electric",
             label: "Điện",
             icon: <PowerOffOutlinedIcon fontSize="small" />,
-            bgcolor: theme.trello.colorErrorElec,
+            bgcolor: theme.trello.colorErrorElecDark,
         },
         {
             key: "water",
@@ -69,7 +69,7 @@ const NotifiError = ({ callAPIUpdateReportCard }) => {
             key: "other",
             label: "Vấn đề khác",
             icon: <ReportOutlinedIcon fontSize="small" />,
-            bgcolor: theme.trello.colorErrorOther,
+            bgcolor: theme.trello.colorErrorOtherWarm,
         },
     ];
 
@@ -160,7 +160,20 @@ const NotifiError = ({ callAPIUpdateReportCard }) => {
     // ===============================================================================================
     return (
         <>
-            <Typography sx={{ fontWeight: "600", mb: 1, userSelect: "none" }}>Warning!!!</Typography>
+            <Typography
+                variant="span"
+                sx={{
+                    display: "Flex",
+                    alignItems: "center",
+                    fontWeight: "600",
+                    fontSize: "16px",
+                    gap: 2,
+                    mb: 1,
+                    userSelect: "none",
+                }}
+            >
+                Warning!!! <Typography sx={{ fontStyle: "italic" }}>(Gửi cho Admin)</Typography>
+            </Typography>
             <Stack direction="column" spacing={1}>
                 {items.map((item) => (
                     <SidebarItem

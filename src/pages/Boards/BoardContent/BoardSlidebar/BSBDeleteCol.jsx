@@ -5,7 +5,11 @@ import { useTheme } from "@mui/material/styles";
 import { useDispatch, useSelector } from "react-redux";
 import { useConfirm } from "material-ui-confirm";
 import { selectCurrentActiveColumn } from "~/redux/aciveColumn/activeColumnSlice";
-import { updateCurrentActiveBoard, selectCurrentActiveBoard } from "~/redux/activeBoard/activeBoardSlice";
+import {
+    updateCurrentActiveBoard,
+    setOriginalBoard,
+    selectCurrentActiveBoard,
+} from "~/redux/activeBoard/activeBoardSlice";
 import { deleteColumnDetailsAPI } from "~/apis";
 import { toast } from "react-toastify";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
@@ -54,6 +58,7 @@ const BSBDeleteCol = () => {
             newBoard.columnOrderIds = newBoard.columnOrderIds.filter((id) => id !== activeColumn._id);
             //  Cập nhật lại board hiện tại trên Redux store (sau khi xóa column)
             dispatch(updateCurrentActiveBoard(newBoard));
+            dispatch(setOriginalBoard(newBoard));
             //  Gọi API xóa column khỏi database (backend)
             deleteColumnDetailsAPI(activeColumn._id).then((res) => {
                 toast.success(res?.deleteResult);

@@ -63,7 +63,7 @@ const ShowNotifiError = ({ onDeleteCardReport }) => {
                 borderRadius: "4px",
                 color: theme.trello.colorSlateBlue,
                 // border:  `1px solid ${theme.trello.colorSnowGray}`,
-                backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : theme.trello.colorErrorOther,
+                backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : theme.trello.colorErrorOtherWarmer,
                 boxShadow: theme.trello.boxShadowBtn,
             }}
         >

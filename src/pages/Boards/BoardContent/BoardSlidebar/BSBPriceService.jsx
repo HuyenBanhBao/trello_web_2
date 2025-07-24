@@ -16,7 +16,7 @@ import {
     DeleteOutlined as TrashIcon,
     LocalLaundryServiceOutlined as WasherIcon,
 } from "@mui/icons-material";
-
+import KeyboardArrowRightOutlinedIcon from "@mui/icons-material/KeyboardArrowRightOutlined";
 // ==================================================================================
 const BSBPriceService = ({ onHandleupdateSercolumn }) => {
     const theme = useTheme();
@@ -53,9 +53,11 @@ const BSBPriceService = ({ onHandleupdateSercolumn }) => {
     };
 
     // ---------------- OPEN CLOSE ITEMS OF SLIDEBAR -------------------------
+    const [isOpen, setIsOpen] = useState(false);
     const [openManage, setOpenManage] = useState(false);
     const toggleManage = () => {
         setOpenManage((prev) => !prev);
+        setIsOpen((prev) => !prev);
     };
     // ===============================================================================
     const fields = [
@@ -110,19 +112,20 @@ const BSBPriceService = ({ onHandleupdateSercolumn }) => {
             }}
         >
             <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 1.5 }}>
-                <Collapse in={openManage} collapsedSize={38}>
+                <Collapse in={openManage} collapsedSize={30}>
                     <Box
+                        onClick={toggleManage}
                         sx={{
                             width: "100%",
                             display: "flex",
                             alignItems: "center",
+                            mt: "2px",
                             gap: 1.5,
                             color: theme.trello.colorDarkNavyGray,
                         }}
                     >
                         <PaidOutlinedIcon />
                         <Typography
-                            onClick={toggleManage}
                             variant="span"
                             sx={{
                                 fontWeight: "600",
@@ -133,20 +136,12 @@ const BSBPriceService = ({ onHandleupdateSercolumn }) => {
                         >
                             PHÍ DỊCH VỤ
                         </Typography>
-                        <Button
+                        <KeyboardArrowRightOutlinedIcon
                             sx={{
-                                ...theme.trello.btnPrimary,
-                                fontWeight: "600",
-                                bgcolor: theme.trello.colorSlateBlue,
-                                "&:hover": {
-                                    boxShadow: theme.trello.boxShadowBtnHover,
-                                    bgcolor: theme.trello.colorSlateBlue,
-                                },
+                                transition: "transform 0.3s ease",
+                                transform: isOpen ? "rotate(90deg)" : "rotate(0deg)",
                             }}
-                            onClick={handleSaveInfoServiceRoom}
-                        >
-                            SAVE
-                        </Button>
+                        />
                     </Box>
                     {/* -------- */}
                     <Box>
@@ -169,6 +164,22 @@ const BSBPriceService = ({ onHandleupdateSercolumn }) => {
                                 {item.icon}
                             </Box>
                         ))}
+                        <Button
+                            sx={{
+                                ...theme.trello.btnPrimary,
+                                display: "block",
+                                fontWeight: "600",
+                                m: "8px 2px 8px auto",
+                                bgcolor: theme.trello.colorSlateBlue,
+                                "&:hover": {
+                                    boxShadow: theme.trello.boxShadowBtnHover,
+                                    bgcolor: theme.trello.colorSlateBlue,
+                                },
+                            }}
+                            onClick={handleSaveInfoServiceRoom}
+                        >
+                            SAVE
+                        </Button>
                     </Box>
                 </Collapse>
             </Box>

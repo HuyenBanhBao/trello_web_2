@@ -10,7 +10,11 @@ import { createNewColumnAPI } from "~/apis";
 import { generatePlaceholder } from "~/utils/formatters";
 import { cloneDeep } from "lodash";
 import { useDispatch, useSelector } from "react-redux";
-import { updateCurrentActiveBoard, selectCurrentActiveBoard } from "~/redux/activeBoard/activeBoardSlice";
+import {
+    updateCurrentActiveBoard,
+    setOriginalBoard,
+    selectCurrentActiveBoard,
+} from "~/redux/activeBoard/activeBoardSlice";
 // --------------------- DND KIT ---------------------
 import { SortableContext, horizontalListSortingStrategy } from "@dnd-kit/sortable";
 // ---------------------------------- MAIN COMPONENT ---------------------
@@ -74,6 +78,7 @@ const BoardColumns = ({ columns }) => {
         // });
         // Gán giá trị newBoard vào thì chính là "action" trong redux
         dispatch(updateCurrentActiveBoard(newBoard)); // Cập nhật lại board trong redux
+        dispatch(setOriginalBoard(newBoard));
         // ============================ ket thuc gọi API tạo mới 1 column và làm lại dữ liệu State Board ============================
         // Reset form
         toggleFormAddColumn();

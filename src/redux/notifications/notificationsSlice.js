@@ -11,6 +11,7 @@ const initialState = {
 // https://redux-toolkit.js.org/api/createAsyncThunk
 export const fetchInvitationsAPI = createAsyncThunk("notifications/fetchInvitationsAPI", async () => {
     const response = await authorizedAxiosInstance.get(`${API_ROOT}/v1/invitations`);
+
     // Lưu ý: axios sẽ trả kết quả về qua property của nó là data
     return response.data;
 });
@@ -19,6 +20,16 @@ export const updateBoardInvitationAPI = createAsyncThunk(
     "notifications/updateBoardInvitationAPI",
     async ({ status, invitationId }) => {
         const response = await authorizedAxiosInstance.put(`${API_ROOT}/v1/invitations/board/${invitationId}`, {
+            status,
+        });
+        return response.data;
+    }
+);
+// ===================================================================================================================================
+export const updateCardInvitationAPI = createAsyncThunk(
+    "notifications/updateCardInvitationAPI",
+    async ({ status, invitationId }) => {
+        const response = await authorizedAxiosInstance.put(`${API_ROOT}/v1/invitations/card/${invitationId}`, {
             status,
         });
         return response.data;
@@ -55,9 +66,19 @@ export const notificationsSlice = createSlice({
         });
         builder.addCase(updateBoardInvitationAPI.fulfilled, (state, action) => {
             const incomingInvitation = action.payload;
+            // console.log("🚀 ~ builder.addCase ~ incomingInvitation:", incomingInvitation);
             // Cập nhật lại dữ liệu boardInvitation (bên trong nó sẽ có Status mới sau khi update)
             const getInvitation = state.currentNotifications.find((i) => i._id === incomingInvitation._id);
+            // console.log("🚀 ~ builder.addCase ~ getInvitation:", getInvitation);
             getInvitation.boardInvitation = incomingInvitation.boardInvitation;
+        });
+        builder.addCase(updateCardInvitationAPI.fulfilled, (state, action) => {
+            const incomingInvitation = action.payload;
+            // console.log("🚀 ~ builder.addCase ~ incomingInvitation:", incomingInvitation);
+            // Cập nhật lại dữ liệu cardInvitation (bên trong nó sẽ có Status mới sau khi update)
+            const getInvitation = state.currentNotifications.find((i) => i._id === incomingInvitation._id);
+            // console.log(getInvitation);
+            getInvitation.cardInvitation = incomingInvitation.cardInvitation;
         });
     },
 });

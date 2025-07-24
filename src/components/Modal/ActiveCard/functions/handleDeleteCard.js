@@ -1,5 +1,5 @@
 // src/utils/handleDeleteCard.js
-import { updateCurrentActiveBoard } from "~/redux/activeBoard/activeBoardSlice";
+import { updateCurrentActiveBoard, setOriginalBoard } from "~/redux/activeBoard/activeBoardSlice";
 import { deleteCardDetailsAPI } from "~/apis";
 import { toast } from "react-toastify";
 
@@ -45,6 +45,7 @@ export const handleDeleteCard = async ({ board, activeCard, dispatch, confirmDel
     newBoard.columns = newBoard.columns.map((col) => (col._id === updatedColumn._id ? updatedColumn : col));
     //  Cập nhật lại board hiện tại trên Redux store (sau khi xóa card)
     dispatch(updateCurrentActiveBoard(newBoard));
+    dispatch(setOriginalBoard(newBoard));
     //  Gọi API xóa column khỏi database (backend)
     const res = await deleteCardDetailsAPI(activeCard._id);
     toast.success(res?.deleteResult);
