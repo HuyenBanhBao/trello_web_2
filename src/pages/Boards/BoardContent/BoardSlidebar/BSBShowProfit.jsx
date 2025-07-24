@@ -13,7 +13,7 @@ import ElectricMeterOutlinedIcon from "@mui/icons-material/ElectricMeterOutlined
 import Collapse from "@mui/material/Collapse";
 // -------------------------------------------------------------------------
 import { selectCurrentActiveColumn } from "~/redux/aciveColumn/activeColumnSlice";
-
+import KeyboardArrowRightOutlinedIcon from "@mui/icons-material/KeyboardArrowRightOutlined";
 // ==================== Utils ====================
 const formatCurrency = (value) => (value ? Number(value).toLocaleString("vi-VN") + ".000 đ" : "0 đ");
 
@@ -28,10 +28,12 @@ const calculatePrices = (col, totalUser, totalElec, totalRoomUse, totalPriceRoom
 const BSBShowProfit = () => {
     const theme = useTheme();
     const activeColumn = useSelector(selectCurrentActiveColumn);
-    const totalCards = activeColumn?.cards.length || 0;
+    // console.log(activeColumn);
+
+    const totalCards = activeColumn?.cards?.length || 0;
 
     const { totalUserRoom, totalElecRoom, totalPriceRoom, totalRoomUse } =
-        activeColumn?.cards.reduce(
+        activeColumn?.cards?.reduce(
             (acc, card) => {
                 acc.totalUserRoom += Number(card.userRoom || 0);
                 acc.totalElecRoom += Number(card.numElec || 0);
@@ -56,13 +58,21 @@ const BSBShowProfit = () => {
     );
 
     // Common styles
-    const titleStyle = { display: "block", fontSize: "12px", fontWeight: "600" };
+    const titleStyle = {
+        display: "block",
+        fontSize: "12px",
+        fontWeight: "400",
+        fontStyle: "italic",
+        color: theme.trello.colorLemonChiffon,
+    };
     const fieldStyle = theme.trello.textFieldShowProfit;
 
     // ---------------- OPEN CLOSE ITEMS OF SLIDEBAR -------------------------
+    const [isOpen, setIsOpen] = useState(false);
     const [openManage, setOpenManage] = useState(false);
     const toggleManage = () => {
         setOpenManage((prev) => !prev);
+        setIsOpen((prev) => !prev);
     };
 
     // ============================================================================================
@@ -83,6 +93,7 @@ const BSBShowProfit = () => {
                 <Collapse in={openManage} collapsedSize={30}>
                     {/* Header */}
                     <Box
+                        onClick={toggleManage}
                         sx={{
                             width: "100%",
                             display: "flex",
@@ -93,29 +104,31 @@ const BSBShowProfit = () => {
                     >
                         <PaidOutlinedIcon />
                         <Typography
-                            onClick={toggleManage}
                             variant="span"
                             sx={{ fontWeight: 600, fontSize: "16px", userSelect: "none", mr: "auto" }}
                         >
                             DOANH THU
                         </Typography>
+                        <KeyboardArrowRightOutlinedIcon
+                            sx={{
+                                transition: "transform 0.3s ease",
+                                transform: isOpen ? "rotate(90deg)" : "rotate(0deg)",
+                            }}
+                        />
                     </Box>
 
                     {/* Thống kê phòng */}
                     <Box sx={{ flexGrow: 1, mt: 1, width: "100%" }}>
                         <Box
                             sx={{
-                                bgcolor: theme.trello.colorSageGreen,
                                 p: 1,
-                                mb: 2,
                                 borderRadius: 1,
-                                boxShadow: theme.trello.boxShadowBulletin,
                             }}
                         >
                             <Grid container spacing={1}>
                                 <Grid item xs={7}>
                                     <Typography variant="span" sx={titleStyle}>
-                                        ALL ROOM
+                                        All room:
                                     </Typography>
                                     <Box sx={fieldStyle}>
                                         <HomeOutlinedIcon />
@@ -124,7 +137,7 @@ const BSBShowProfit = () => {
                                 </Grid>
                                 <Grid item xs={5}>
                                     <Typography variant="span" sx={titleStyle}>
-                                        ALL USER
+                                        All user:
                                     </Typography>
                                     <Box sx={fieldStyle}>
                                         <GroupOutlinedIcon />
@@ -133,7 +146,7 @@ const BSBShowProfit = () => {
                                 </Grid>
                                 <Grid item xs={6}>
                                     <Typography variant="span" sx={titleStyle}>
-                                        ROOM KÍN
+                                        Room kín:
                                     </Typography>
                                     <Box sx={fieldStyle}>
                                         <MeetingRoomOutlinedIcon />
@@ -142,16 +155,16 @@ const BSBShowProfit = () => {
                                 </Grid>
                                 <Grid item xs={6}>
                                     <Typography variant="span" sx={titleStyle}>
-                                        ROOM TRỐNG
+                                        Room trống:
                                     </Typography>
                                     <Box sx={fieldStyle}>
                                         <NoMeetingRoomOutlinedIcon />
-                                        {totalCards - totalRoomUse} Phòng
+                                        {totalCards - totalRoomUse || 0} Phòng
                                     </Box>
                                 </Grid>
                                 <Grid item xs={12}>
                                     <Typography variant="span" sx={titleStyle}>
-                                        TỔNG SỐ ĐIỆN
+                                        Tổng số điện:
                                     </Typography>
                                     <Box sx={fieldStyle}>
                                         <ElectricMeterOutlinedIcon />
@@ -164,38 +177,36 @@ const BSBShowProfit = () => {
                         {/* Tiền */}
                         <Box
                             sx={{
-                                bgcolor: theme.trello.colorSageGreen,
                                 p: 1,
                                 mb: 1,
                                 borderRadius: 1,
-                                boxShadow: theme.trello.boxShadowBulletin,
                             }}
                         >
                             <Grid container spacing={1}>
                                 <Grid item xs={12}>
                                     <Typography variant="span" sx={titleStyle}>
-                                        TIỀN ĐIỆN THU
+                                        Tiền điện thu:
                                     </Typography>
                                     <Box sx={fieldStyle}>
-                                        <ElectricMeterOutlinedIcon />
+                                        <PaidOutlinedIcon />
                                         {formatCurrency(elec)}
                                     </Box>
                                 </Grid>
                                 <Grid item xs={12}>
                                     <Typography variant="span" sx={titleStyle}>
-                                        TIỀN NƯỚC VÀ CHI PHÍ SINH HOẠT KHÁC
+                                        Tiền nước và chi phí khác:
                                     </Typography>
                                     <Box sx={fieldStyle}>
-                                        <ElectricMeterOutlinedIcon />
+                                        <PaidOutlinedIcon />
                                         {formatCurrency(service)}
                                     </Box>
                                 </Grid>
                                 <Grid item xs={12}>
                                     <Typography variant="span" sx={titleStyle}>
-                                        TỔNG TIỀN PHÒNG CẢ DÃY (PHÒNG KÍN)
+                                        Tổng tiền phòng cả dãy (phòng kín):
                                     </Typography>
                                     <Box sx={fieldStyle}>
-                                        <ElectricMeterOutlinedIcon />
+                                        <PaidOutlinedIcon />
                                         {formatCurrency(totalPriceRoom)}
                                     </Box>
                                 </Grid>
@@ -208,9 +219,15 @@ const BSBShowProfit = () => {
                                 <Grid item xs={12}>
                                     <Typography
                                         variant="span"
-                                        sx={{ display: "block", fontSize: "16px", fontWeight: "600" }}
+                                        sx={{
+                                            display: "block",
+                                            fontSize: "16px",
+                                            fontWeight: "600",
+                                            color: theme.trello.colorLemonChiffon,
+                                            fontStyle: "italic",
+                                        }}
                                     >
-                                        TỔNG DOANH THU CỦA DÃY
+                                        TỔNG DOANH THU CỦA DÃY:
                                     </Typography>
                                     <Box
                                         sx={{
@@ -220,7 +237,7 @@ const BSBShowProfit = () => {
                                             fontWeight: "600",
                                         }}
                                     >
-                                        <ElectricMeterOutlinedIcon />
+                                        <PaidOutlinedIcon />
                                         {formatCurrency(total)}
                                     </Box>
                                 </Grid>

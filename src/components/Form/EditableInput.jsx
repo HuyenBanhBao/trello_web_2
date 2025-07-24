@@ -28,6 +28,7 @@ function EditableInput({ value, onChangedValue, inputFontSize = "16px", ...props
             id="editable-input-controlled"
             fullWidth
             variant="outlined"
+            spellCheck={false} // 👈 Tắt kiểm tra chính tả
             size="small"
             autoComplete="off"
             value={inputValue}

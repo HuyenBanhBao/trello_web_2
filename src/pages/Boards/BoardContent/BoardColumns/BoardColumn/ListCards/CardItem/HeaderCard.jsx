@@ -1,7 +1,11 @@
 import Box from "@mui/material/Box";
 import DragIndicatorOutlinedIcon from "@mui/icons-material/DragIndicatorOutlined";
 // --------------------- REDUX ---------------------
-import { updateCurrentActiveBoard, selectCurrentActiveBoard } from "~/redux/activeBoard/activeBoardSlice";
+import {
+    updateCurrentActiveBoard,
+    setOriginalBoard,
+    selectCurrentActiveBoard,
+} from "~/redux/activeBoard/activeBoardSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { updateColumnDetailsAPI } from "~/apis";
 import ToggleFocusInput from "~/components/Form/ToggleFocusInput";
@@ -16,6 +20,12 @@ const HeaderCard = ({ column, attributes, listeners }) => {
         updateColumnDetailsAPI(column._id, { title: newTitle }).then(() => {
             dispatch(
                 updateCurrentActiveBoard({
+                    ...board,
+                    columns: board.columns.map((c) => (c._id === column._id ? { ...c, title: newTitle } : c)),
+                })
+            );
+            dispatch(
+                setOriginalBoard({
                     ...board,
                     columns: board.columns.map((c) => (c._id === column._id ? { ...c, title: newTitle } : c)),
                 })

@@ -3,42 +3,50 @@ import { Box } from "@mui/material";
 import Card from "@mui/material/Card";
 import CardActions from "@mui/material/CardActions";
 import CardContent from "@mui/material/CardContent";
-import CardMedia from "@mui/material/CardMedia";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import { useTheme } from "@mui/material/styles";
 // -------------------------- ICONS --------------------------
 import NewspaperIcon from "@mui/icons-material/Newspaper";
-import GroupIcon from "@mui/icons-material/Group";
 import ForumIcon from "@mui/icons-material/Forum";
-import MeetingRoomOutlinedIcon from "@mui/icons-material/MeetingRoomOutlined";
+import PermIdentityOutlinedIcon from "@mui/icons-material/PermIdentityOutlined";
+import PersonOffOutlinedIcon from "@mui/icons-material/PersonOffOutlined";
 // --------------------- DND KIT ---------------------
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 // --------------------------------------------------------------------
-import { useDispatch } from "react-redux";
-import { updateCurrentActiveCard, showModalActiveCard } from "~/redux/activeCard/activeCardSlice";
+import { useSelector, useDispatch } from "react-redux";
+import { selectCurrentUser } from "~/redux/user/userSlice";
 import { updateCurrentActiveColumn } from "~/redux/aciveColumn/activeColumnSlice";
-
+import { updateCurrentActiveCard, showModalActiveCard } from "~/redux/activeCard/activeCardSlice";
+import { selectCurrentActiveBoard } from "~/redux/activeBoard/activeBoardSlice";
 // =================================================== MAIN COMPONENT ===================================================
 const CardMain = ({ card, column }) => {
     // console.log(card);
     const theme = useTheme();
     const dispatch = useDispatch();
-    const isUserInRoom = Boolean(card.userRoom);
+    // ckeck use is member or admin or not
+    const activeBoard = useSelector(selectCurrentActiveBoard);
+    const activeUser = useSelector(selectCurrentUser);
+    const isMember = card?.memberIds?.includes(activeUser._id);
+    const isAdmin = activeBoard?.ownerIds.includes(activeUser._id);
 
+    // ckeck use in ROOM or not
+    const isUserInRoom = card.userRoom && card.userRoom !== "0";
+    // Report key
     const keysReport = card.reportCard?.map((report) => {
         const keys = Object.keys(report.reportContent);
         return keys[0];
     });
-
+    //
     const isElec = keysReport?.includes("electric");
     const isWater = keysReport?.includes("water");
     const isOther = keysReport?.includes("other");
     // -------------------------- FUNCTION --------------------------
     // --------------------------- KIEM TRA CÓ THONG TIN THI SẼ HIEN ---------------------------
     const showCardAction = () => {
-        return !!card?.memberIds?.length || !!card?.comments?.length || !!card?.bulletins?.length;
+        // return !!card?.memberIds?.length || !!card?.comments?.length || !!card?.bulletins?.length;
+        return !!card?.comments?.length || !!card?.bulletins?.length;
     };
 
     const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
@@ -61,6 +69,9 @@ const CardMain = ({ card, column }) => {
         dispatch(showModalActiveCard()); // Hiện modal active card lên
     };
     // -------------------------- RETURN --------------------------
+    if (!isMember && !isAdmin) {
+        return;
+    }
     return (
         <>
             <Card
@@ -75,10 +86,11 @@ const CardMain = ({ card, column }) => {
                     cursor: "grab",
                     overflow: "unset",
                     borderRadius: "8px",
-                    boxShadow: (theme) => theme.trello.boxShadowBulletin,
+                    boxShadow: theme.trello.boxShadowBulletin,
                 }}
             >
-                {card?.cover && <CardMedia sx={{ height: 140 }} image={card?.cover} />}
+                {/* Nếu cần hiện image card thì mở ra */}
+                {/* {card?.cover && <CardMedia sx={{ height: 140 }} image={card?.cover} />} */}
                 <CardContent
                     sx={{
                         display: "flex",
@@ -97,16 +109,18 @@ const CardMain = ({ card, column }) => {
                                     display: "flex",
                                     gap: 1,
                                     mb: 1.5,
-                                    fontSize: "9px",
-                                    fontWeight: "500",
+                                    fontSize: "10px",
+                                    fontWeight: "600",
+                                    lineHeight: "24px",
+                                    color: theme.trello.colorSlateBlue,
                                 }}
                             >
                                 {isElec && (
                                     <Box
                                         sx={{
-                                            p: "3px 10px",
+                                            px: "8px",
                                             borderRadius: "6px",
-                                            bgcolor: theme.trello.colorErrorElec,
+                                            bgcolor: theme.trello.colorErrorElecDark,
                                             boxShadow: theme.trello.boxShadowPrimary,
                                             //
                                         }}
@@ -117,7 +131,7 @@ const CardMain = ({ card, column }) => {
                                 {isWater && (
                                     <Box
                                         sx={{
-                                            p: "3px 10px",
+                                            px: "8px",
                                             borderRadius: "6px",
                                             bgcolor: theme.trello.colorErrorWater,
                                             boxShadow: theme.trello.boxShadowPrimary,
@@ -130,9 +144,9 @@ const CardMain = ({ card, column }) => {
                                 {isOther && (
                                     <Box
                                         sx={{
-                                            p: "3px 10px",
+                                            px: "8px",
                                             borderRadius: "6px",
-                                            bgcolor: theme.trello.colorErrorOther,
+                                            bgcolor: theme.trello.colorErrorOtherWarmer,
                                             boxShadow: theme.trello.boxShadowPrimary,
                                             //
                                         }}
@@ -140,7 +154,7 @@ const CardMain = ({ card, column }) => {
                                         Other
                                     </Box>
                                 )}
-                                {isUserInRoom && (
+                                {isUserInRoom ? (
                                     <Box
                                         sx={{
                                             position: "relative",
@@ -152,11 +166,38 @@ const CardMain = ({ card, column }) => {
                                             width: "24px",
                                             height: "24px",
                                             color: theme.trello.colorSnowGray,
-                                            bgcolor: theme.trello.colorSageGreen,
+                                            bgcolor: theme.trello.colorSlateBlue,
                                             boxShadow: theme.trello.boxShadowPrimary,
                                         }}
                                     >
-                                        <MeetingRoomOutlinedIcon
+                                        <PermIdentityOutlinedIcon
+                                            fontSize="small"
+                                            sx={{
+                                                position: "absolute",
+                                                transform: "translateY(-52%) translateX(-50%)",
+                                                top: "50%",
+                                                left: "50%",
+                                                //
+                                            }}
+                                        />
+                                    </Box>
+                                ) : (
+                                    <Box
+                                        sx={{
+                                            position: "relative",
+                                            ml: "auto",
+                                            display: "flex",
+                                            alignItems: "center",
+                                            justifyContent: "center",
+                                            borderRadius: "99px",
+                                            width: "24px",
+                                            height: "24px",
+                                            color: theme.trello.colorSnowGray,
+                                            bgcolor: theme.trello.colorRedClay,
+                                            boxShadow: theme.trello.boxShadowPrimary,
+                                        }}
+                                    >
+                                        <PersonOffOutlinedIcon
                                             fontSize="small"
                                             sx={{
                                                 position: "absolute",
@@ -177,7 +218,7 @@ const CardMain = ({ card, column }) => {
                                     gap: 1,
                                     flex: 1,
                                     fontWeight: "600",
-                                    color: (theme) => theme.trello.colorDarkNavyGray,
+                                    color: theme.trello.colorDarkNavyGray,
                                 }}
                             >
                                 PHÒNG
@@ -187,10 +228,9 @@ const CardMain = ({ card, column }) => {
                                         p: "5px 10px",
                                         fontWeight: "600",
                                         borderRadius: "6px",
-                                        border: (theme) => `1px solid ${theme.trello.colorFrostGray}`,
-                                        color: (theme) => theme.trello.colorSnowGray,
-                                        bgcolor: (theme) => theme.trello.colorSageGreen,
-                                        boxShadow: (theme) => theme.trello.boxShadowPrimary,
+                                        color: theme.trello.colorSnowGray,
+                                        bgcolor: isUserInRoom ? theme.trello.colorSlateBlue : theme.trello.colorRedClay,
+                                        boxShadow: theme.trello.boxShadowPrimary,
                                     }}
                                 >
                                     {card?.title}
@@ -203,27 +243,19 @@ const CardMain = ({ card, column }) => {
                 {/* --------------------------------------- */}
                 {showCardAction() && (
                     <CardActions sx={{ p: "0 4px 8px 4px", display: "flex" }}>
-                        {!!card?.memberIds?.length && (
-                            <Button
-                                sx={{ color: (theme) => theme.trello.colorSageGreen }}
-                                startIcon={<GroupIcon />}
-                                size="small"
-                            >
+                        {/* {!!card?.memberIds?.length && (
+                            <Button sx={{ color: theme.trello.colorSlateBlue }} startIcon={<GroupIcon />} size="small">
                                 {card?.memberIds?.length}
                             </Button>
-                        )}
+                        )} */}
                         {!!card?.comments?.length && (
-                            <Button
-                                sx={{ color: (theme) => theme.trello.colorSageGreen }}
-                                startIcon={<ForumIcon />}
-                                size="small"
-                            >
+                            <Button sx={{ color: theme.trello.colorSlateBlue }} startIcon={<ForumIcon />} size="small">
                                 {card?.comments?.length}
                             </Button>
                         )}
                         {!!card?.bulletins?.length && (
                             <Button
-                                sx={{ color: (theme) => theme.trello.colorSageGreen }}
+                                sx={{ color: theme.trello.colorSlateBlue }}
                                 startIcon={<NewspaperIcon />}
                                 size="small"
                             >

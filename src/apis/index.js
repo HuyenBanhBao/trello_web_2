@@ -99,6 +99,7 @@ export const refreshTokenAPI = async () => {
 };
 
 export const fetchBoardsAPI = async (searchPath) => {
+    // console.log(searchPath);
     const response = await authorizedAxiosInstance.get(`${API_ROOT}/v1/boards${searchPath}`);
     return response.data;
 };
@@ -106,5 +107,10 @@ export const fetchBoardsAPI = async (searchPath) => {
 export const inviteUserToBoardAPI = async (data) => {
     const response = await authorizedAxiosInstance.post(`${API_ROOT}/v1/invitations/board`, data);
     toast.success("User invited to board successfully!");
+    return response.data;
+};
+export const inviteUserToCardAPI = async (data) => {
+    const response = await authorizedAxiosInstance.post(`${API_ROOT}/v1/invitations/card`, data);
+    toast.success("User invited to room successfully!");
     return response.data;
 };

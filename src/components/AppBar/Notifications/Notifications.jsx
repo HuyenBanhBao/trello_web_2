@@ -22,9 +22,16 @@ import {
     fetchInvitationsAPI,
     selectCurrentNotifications,
     updateBoardInvitationAPI,
+    updateCardInvitationAPI,
 } from "~/redux/notifications/notificationsSlice";
 
 const BOARD_INVITATION_STATUS = {
+    // Thống nhất với BE
+    PENDING: "PENDING",
+    ACCEPTED: "ACCEPTED",
+    REJECTED: "REJECTED",
+};
+const CARD_INVITATION_STATUS = {
     // Thống nhất với BE
     PENDING: "PENDING",
     ACCEPTED: "ACCEPTED",
@@ -86,6 +93,32 @@ function Notifications() {
             }
         });
     };
+    //  Cập nhâtj trạng thái của 1 lời mời join card
+    const updateCardInvitation = (status, invitationId) => {
+        // console.log("status: ", status);
+        // console.log("invitationId: ", invitationId);
+        dispatch(updateCardInvitationAPI({ status, invitationId })).then((res) => {
+            console.log(res);
+            if (res.payload.cardInvitation.status === CARD_INVITATION_STATUS.ACCEPTED) {
+                navigate(`/boards/${res.payload.cardInvitation.boardId}`);
+            }
+        });
+    };
+
+    const handleInvitationAccepted = (notification) => {
+        if (notification?.boardInvitation?.status === BOARD_INVITATION_STATUS.PENDING) {
+            updateBoardInvitation(BOARD_INVITATION_STATUS.ACCEPTED, notification._id);
+        } else if (notification?.cardInvitation?.status === CARD_INVITATION_STATUS.PENDING) {
+            updateCardInvitation(CARD_INVITATION_STATUS.ACCEPTED, notification._id);
+        }
+    };
+    const handleInvitationRejected = (notification) => {
+        if (notification?.boardInvitation?.status === BOARD_INVITATION_STATUS.PENDING) {
+            updateBoardInvitation(BOARD_INVITATION_STATUS.REJECTED, notification._id);
+        } else if (notification?.cardInvitation?.status === CARD_INVITATION_STATUS.PENDING) {
+            updateCardInvitation(CARD_INVITATION_STATUS.REJECTED, notification._id);
+        }
+    };
 
     // =============================================================================================================
     return (
@@ -123,38 +156,83 @@ function Notifications() {
                 {(!notifications || notifications.length === 0) && (
                     <MenuItem sx={{ minWidth: 200 }}>You do not have any new notifications.</MenuItem>
                 )}
-                {notifications?.map((notification, index) => (
-                    <Box key={index}>
-                        <MenuItem
-                            sx={{
-                                minWidth: 200,
-                                maxWidth: 360,
-                                overflowY: "auto",
-                            }}
-                        >
-                            <Box
+                {notifications?.map((notification, index) => {
+                    const isPending =
+                        notification?.boardInvitation?.status === BOARD_INVITATION_STATUS.PENDING ||
+                        notification?.cardInvitation?.status === CARD_INVITATION_STATUS.PENDING;
+
+                    const isAccepted =
+                        notification?.boardInvitation?.status === BOARD_INVITATION_STATUS.ACCEPTED ||
+                        notification?.cardInvitation?.status === CARD_INVITATION_STATUS.ACCEPTED;
+
+                    const isRejected =
+                        notification?.boardInvitation?.status === BOARD_INVITATION_STATUS.REJECTED ||
+                        notification?.cardInvitation?.status === CARD_INVITATION_STATUS.REJECTED;
+                    return (
+                        <Box key={index}>
+                            <MenuItem
                                 sx={{
-                                    maxWidth: "100%",
-                                    wordBreak: "break-word",
-                                    whiteSpace: "pre-wrap",
-                                    display: "flex",
-                                    flexDirection: "column",
-                                    gap: 1,
+                                    minWidth: 200,
+                                    maxWidth: 360,
+                                    overflowY: "auto",
                                 }}
                             >
-                                {/* Nội dung của thông báo */}
-                                <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                                    <Box>
-                                        <GroupAddIcon fontSize="small" />
+                                <Box
+                                    sx={{
+                                        maxWidth: "100%",
+                                        wordBreak: "break-word",
+                                        whiteSpace: "pre-wrap",
+                                        display: "flex",
+                                        flexDirection: "column",
+                                        gap: 1,
+                                    }}
+                                >
+                                    {/* Nội dung của thông báo */}
+                                    <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                                        <Box>
+                                            <GroupAddIcon fontSize="small" />
+                                        </Box>
+                                        <Box>
+                                            <strong>{notification.inviter?.displayName}</strong>
+                                            {" had invited you to join the "}
+                                            <strong>{notification.board?.title || notification.card?.title}</strong>
+                                        </Box>
                                     </Box>
-                                    <Box>
-                                        <strong>{notification.inviter?.displayName}</strong> had invited you to join the
-                                        board <strong>{notification.board?.title}</strong>
-                                    </Box>
-                                </Box>
 
-                                {/* Khi Status của thông báo này là PENDING thì sẽ hiện 2 Button */}
-                                {notification.boardInvitation.status === BOARD_INVITATION_STATUS.PENDING && (
+                                    {/* Khi Status của thông báo này là PENDING thì sẽ hiện 2 Button */}
+                                    {isPending && (
+                                        <Box
+                                            sx={{
+                                                display: "flex",
+                                                alignItems: "center",
+                                                gap: 1,
+                                                justifyContent: "flex-end",
+                                            }}
+                                        >
+                                            <Button
+                                                className="interceptor-loading"
+                                                type="submit"
+                                                variant="contained"
+                                                color="success"
+                                                size="small"
+                                                onClick={() => handleInvitationAccepted(notification)}
+                                            >
+                                                Accept
+                                            </Button>
+                                            <Button
+                                                className="interceptor-loading"
+                                                type="submit"
+                                                variant="contained"
+                                                color="secondary"
+                                                size="small"
+                                                onClick={() => handleInvitationRejected(notification)}
+                                            >
+                                                Reject
+                                            </Button>
+                                        </Box>
+                                    )}
+
+                                    {/* Khi Status của thông báo này là ACCEPTED hoặc REJECTED thì sẽ hiện thông tin đó lên */}
                                     <Box
                                         sx={{
                                             display: "flex",
@@ -163,61 +241,27 @@ function Notifications() {
                                             justifyContent: "flex-end",
                                         }}
                                     >
-                                        <Button
-                                            className="interceptor-loading"
-                                            type="submit"
-                                            variant="contained"
-                                            color="success"
-                                            size="small"
-                                            onClick={() =>
-                                                updateBoardInvitation(
-                                                    BOARD_INVITATION_STATUS.ACCEPTED,
-                                                    notification._id
-                                                )
-                                            }
-                                        >
-                                            Accept
-                                        </Button>
-                                        <Button
-                                            className="interceptor-loading"
-                                            type="submit"
-                                            variant="contained"
-                                            color="secondary"
-                                            size="small"
-                                            onClick={() =>
-                                                updateBoardInvitation(
-                                                    BOARD_INVITATION_STATUS.REJECTED,
-                                                    notification._id
-                                                )
-                                            }
-                                        >
-                                            Reject
-                                        </Button>
+                                        {isAccepted && (
+                                            <Chip icon={<DoneIcon />} label="Accepted" color="success" size="small" />
+                                        )}
+                                        {isRejected && (
+                                            <Chip icon={<NotInterestedIcon />} label="Rejected" size="small" />
+                                        )}
                                     </Box>
-                                )}
 
-                                {/* Khi Status của thông báo này là ACCEPTED hoặc REJECTED thì sẽ hiện thông tin đó lên */}
-                                <Box sx={{ display: "flex", alignItems: "center", gap: 1, justifyContent: "flex-end" }}>
-                                    {notification.boardInvitation.status === BOARD_INVITATION_STATUS.ACCEPTED && (
-                                        <Chip icon={<DoneIcon />} label="Accepted" color="success" size="small" />
-                                    )}
-                                    {notification.boardInvitation.status === BOARD_INVITATION_STATUS.REJECTED && (
-                                        <Chip icon={<NotInterestedIcon />} label="Rejected" size="small" />
-                                    )}
+                                    {/* Thời gian của thông báo */}
+                                    <Box sx={{ textAlign: "right" }}>
+                                        <Typography variant="span" sx={{ fontSize: "13px" }}>
+                                            {moment(notification.createdAt).format("llll")}
+                                        </Typography>
+                                    </Box>
                                 </Box>
-
-                                {/* Thời gian của thông báo */}
-                                <Box sx={{ textAlign: "right" }}>
-                                    <Typography variant="span" sx={{ fontSize: "13px" }}>
-                                        {moment(notification.createdAt).format("llll")}
-                                    </Typography>
-                                </Box>
-                            </Box>
-                        </MenuItem>
-                        {/* Cái đường kẻ Divider sẽ không cho hiện nếu là phần tử cuối */}
-                        {index !== notifications?.length - 1 && <Divider />}
-                    </Box>
-                ))}
+                            </MenuItem>
+                            {/* Cái đường kẻ Divider sẽ không cho hiện nếu là phần tử cuối */}
+                            {index !== notifications?.length - 1 && <Divider />}
+                        </Box>
+                    );
+                })}
             </Menu>
         </Box>
     );

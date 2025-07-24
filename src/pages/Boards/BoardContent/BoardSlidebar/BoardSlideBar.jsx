@@ -8,6 +8,7 @@ import Collapse from "@mui/material/Collapse";
 import BSBPriceService from "./BSBPriceService";
 import BSBDeleteCol from "./BSBDeleteCol";
 import BSBShowProfit from "./BSBShowProfit";
+import BSBCost from "./BSBCost";
 import SendBulletinToAll from "~/components/Modal/Other/SendBulletinToAll";
 import SendMessToAll from "~/components/Modal/Other/SendMessToAll";
 import { selectCurrentActiveColumn } from "~/redux/aciveColumn/activeColumnSlice";
@@ -17,12 +18,17 @@ import { updateColumnDetailsAPI } from "~/apis";
 import ManageAccountsOutlinedIcon from "@mui/icons-material/ManageAccountsOutlined";
 import { updateCardInBoard } from "~/redux/activeBoard/activeBoardSlice";
 import { toast } from "react-toastify";
-
+import { selectCurrentActiveBoard } from "~/redux/activeBoard/activeBoardSlice";
+import { selectCurrentUser } from "~/redux/user/userSlice";
+import KeyboardArrowRightOutlinedIcon from "@mui/icons-material/KeyboardArrowRightOutlined";
 // ========================================================================================
 const BoardSlideBar = () => {
     const theme = useTheme();
     const dispatch = useDispatch();
     const activeColumn = useSelector(selectCurrentActiveColumn);
+    const activeBoard = useSelector(selectCurrentActiveBoard);
+    const activeUser = useSelector(selectCurrentUser);
+    const isAdmin = activeBoard?.ownerIds.includes(activeUser._id);
 
     // ======================== FUNC TỔNG GỌI API UPDATE ========================
     const callAPIUpdateColumn = async (updateData) => {
@@ -59,9 +65,11 @@ const BoardSlideBar = () => {
     };
 
     // ---------------- OPEN CLOSE ITEMS OF SLIDEBAR -------------------------
+    const [isOpen, setIsOpen] = useState(false);
     const [openManage, setOpenManage] = useState(false);
     const toggleManage = () => {
         setOpenManage((prev) => !prev);
+        setIsOpen((prev) => !prev);
     };
 
     // ===========================================================
@@ -94,68 +102,86 @@ const BoardSlideBar = () => {
                             fontSize: "20px",
                             fontWeight: "600",
                             textAlign: "center",
+                            userSelect: "none",
                             //
                         }}
                     >
-                        {activeColumn ? activeColumn.title : "Chọn một cột"}
+                        {activeColumn ? activeColumn.title : "QUẢN LÝ DÃY TRỌ"}
                     </Box>
 
-                    {/* --------------------- MANAGER CAOLUMN --------------------- */}
-                    <Box
-                        sx={{
-                            mb: 2,
-                            p: 1,
-                            color: theme.trello.colorFogWhiteBlue,
-                            borderRadius: "4px",
-                            backgroundColor: theme.trello.colorAshGray,
-                            boxShadow: theme.trello.boxShadowBtn,
-                        }}
-                    >
-                        <Collapse in={openManage} collapsedSize={30}>
+                    {!isAdmin && <Box>Them mo ta ve chu nha</Box>}
+
+                    {activeColumn && isAdmin && (
+                        <>
+                            {/* --------------------- MANAGER CAOLUMN --------------------- */}
                             <Box
                                 sx={{
-                                    width: "100%",
-                                    display: "flex",
-                                    alignItems: "center",
-                                    gap: 1.5,
-                                    color: theme.trello.colorDarkNavyGray,
                                     mb: 2,
-                                    cursor: "pointer",
+                                    p: 1,
+                                    color: theme.trello.colorFogWhiteBlue,
+                                    borderRadius: "4px",
+                                    backgroundColor: theme.trello.colorAshGray,
+                                    boxShadow: theme.trello.boxShadowBtn,
                                 }}
                             >
-                                <ManageAccountsOutlinedIcon />
-                                <Typography
-                                    onClick={toggleManage}
-                                    variant="span"
-                                    sx={{
-                                        fontWeight: "600",
-                                        fontSize: "16px",
-                                        userSelect: "none",
-                                        mr: "auto",
-                                    }}
-                                >
-                                    QUẢN LÝ
-                                </Typography>
+                                <Collapse in={openManage} collapsedSize={30}>
+                                    <Box
+                                        onClick={toggleManage}
+                                        sx={{
+                                            width: "100%",
+                                            display: "flex",
+                                            alignItems: "center",
+                                            gap: 1.5,
+                                            color: theme.trello.colorDarkNavyGray,
+                                            mt: "4px",
+                                            mb: 2,
+                                            cursor: "pointer",
+                                        }}
+                                    >
+                                        <ManageAccountsOutlinedIcon />
+                                        <Typography
+                                            variant="span"
+                                            sx={{
+                                                fontWeight: "600",
+                                                fontSize: "16px",
+                                                userSelect: "none",
+                                                mr: "auto",
+                                            }}
+                                        >
+                                            QUẢN LÝ
+                                        </Typography>
+                                        <KeyboardArrowRightOutlinedIcon
+                                            sx={{
+                                                transition: "transform 0.3s ease",
+                                                transform: isOpen ? "rotate(90deg)" : "rotate(0deg)",
+                                            }}
+                                        />
+                                    </Box>
+                                    {/* --- Content toggle --- */}
+                                    {/* --------------------- DELETE COLUM --------------------- */}
+                                    <SendMessToAll
+                                        onAddComentToAllCard={onAddComentToAllCard}
+                                        activeColumn={activeColumn}
+                                    />
+                                    {/* --------------------- DELETE COLUM --------------------- */}
+                                    <SendBulletinToAll
+                                        onAddBulletinToAllCard={onAddBulletinToAllCard}
+                                        activeColumn={activeColumn}
+                                    />
+                                    {/* --------------------- DELETE COLUM --------------------- */}
+                                    {/* --------------------- DELETE COLUM --------------------- */}
+                                    <BSBDeleteCol />
+                                </Collapse>
                             </Box>
-                            {/* --- Content toggle --- */}
-                            {/* --------------------- DELETE COLUM --------------------- */}
-                            <SendMessToAll onAddComentToAllCard={onAddComentToAllCard} activeColumn={activeColumn} />
-                            {/* --------------------- DELETE COLUM --------------------- */}
-                            <SendBulletinToAll
-                                onAddBulletinToAllCard={onAddBulletinToAllCard}
-                                activeColumn={activeColumn}
-                            />
-                            {/* --------------------- DELETE COLUM --------------------- */}
-                            {/* --------------------- DELETE COLUM --------------------- */}
-                            <BSBDeleteCol />
-                        </Collapse>
-                    </Box>
 
-                    {/* --------------------- PRICE SERVICE COLUM --------------------- */}
-                    <BSBPriceService onHandleupdateSercolumn={onHandleupdateSercolumn} />
-                    {/* --------------------- SHOW PROFIT --------------------- */}
-                    <BSBShowProfit />
-                    {/* -------------------------------- SHOW CHI PHÍ --------------------------------- */}
+                            {/* --------------------- PRICE SERVICE COLUM --------------------- */}
+                            <BSBPriceService onHandleupdateSercolumn={onHandleupdateSercolumn} />
+                            {/* --------------------- SHOW PROFIT --------------------- */}
+                            <BSBShowProfit />
+                            {/* -------------------------------- SHOW CHI PHÍ --------------------------------- */}
+                            <BSBCost />
+                        </>
+                    )}
                 </Box>
             </Box>
         </>

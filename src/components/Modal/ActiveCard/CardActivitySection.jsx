@@ -104,7 +104,7 @@ function CardActivitySection({ cardComments = [], onAddCardComment, onDeleteCard
                 <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 2 }}>
                     <Avatar
                         sx={{ width: 36, height: 36, cursor: "pointer" }}
-                        alt="trungquandev"
+                        alt={currentUser?.displayName}
                         src={currentUser?.avatar}
                     />
                     <TextField
@@ -127,6 +127,7 @@ function CardActivitySection({ cardComments = [], onAddCardComment, onDeleteCard
                                 },
                             },
                             "& .MuiOutlinedInput-input": {
+                                cursor: "pointer",
                                 padding: 0, // padding đã có ở `.MuiOutlinedInput-root` rồi
                                 wordBreak: "break-word",
                                 color: (theme) => theme.trello.colorSnowGray,

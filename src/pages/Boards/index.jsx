@@ -25,8 +25,8 @@ import { fetchBoardsAPI } from "~/apis";
 import { DEFAULT_ITEMS_PER_PAGE, DEFAULT_PAGE } from "~/utils/constants";
 import { clearAndHideCurrentActiveBoard } from "~/redux/activeBoard/activeBoardSlice";
 import { styled } from "@mui/material/styles";
-import { useDispatch } from "react-redux";
-
+import { useDispatch, useSelector } from "react-redux";
+import { selectCurrentUser } from "~/redux/user/userSlice";
 // ============================================================================================================
 // Styles của mấy cái Sidebar item menu, anh gom lại ra đây cho gọn.
 const SidebarItem = styled(Box)(({ theme }) => ({
@@ -80,14 +80,15 @@ function Boards() {
         // console.log("location.search: ", location.search);
         // Gọi API lấy danh sách boards ở đây...
         fetchBoardsAPI(location.search).then(updateStateData);
-    }, [location.search]);
-
+    }, [dispatch, location.search]);
     // ------------------------ Hàm gọi API sau khi tạo Board ------------------------
     const afterCreateNewBoard = () => {
         // Gọi API lấy danh sách boards ở đây...
         fetchBoardsAPI(location.search).then(updateStateData);
     };
-
+    // ------------- ADMIN --------------------
+    const activeUser = useSelector(selectCurrentUser);
+    const isAdminFake = activeUser.email === "ngoctung2307@gmail.com";
     // ============================================================================================================
     // Lúc chưa tồn tại boards > đang chờ gọi api thì hiện loading
     if (!boards) {
@@ -114,23 +115,29 @@ function Boards() {
                         }}
                     >
                         <Stack direction="column" spacing={1}>
-                            <SidebarItem>
-                                <HomeIcon fontSize="small" />
-                                Home
-                            </SidebarItem>
+                            {isAdminFake && (
+                                <SidebarItem>
+                                    <HomeIcon fontSize="small" />
+                                    Home
+                                </SidebarItem>
+                            )}
                             <SidebarItem className="active">
                                 <SpaceDashboardIcon fontSize="small" />
                                 Boards
                             </SidebarItem>
-                            <SidebarItem>
-                                <ListAltIcon fontSize="small" />
-                                Templates
-                            </SidebarItem>
+                            {isAdminFake && (
+                                <SidebarItem>
+                                    <ListAltIcon fontSize="small" />
+                                    Templates
+                                </SidebarItem>
+                            )}
                         </Stack>
                         <Divider sx={{ my: 1, height: "1px", backgroundColor: theme.trello.primaryColorTextBar }} />
-                        <Stack direction="column" spacing={1}>
-                            <SidebarCreateBoardModal afterCreateNewBoard={afterCreateNewBoard} />
-                        </Stack>
+                        {isAdminFake && (
+                            <Stack direction="column" spacing={1}>
+                                <SidebarCreateBoardModal afterCreateNewBoard={afterCreateNewBoard} />
+                            </Stack>
+                        )}
                     </Grid>
 
                     {/* ---------------------- List board ---------------------- */}
@@ -146,7 +153,7 @@ function Boards() {
                         }}
                     >
                         <Typography variant="h4" sx={{ fontWeight: "bold", mb: 3 }}>
-                            Your boards:
+                            QUẢN LÝ:
                         </Typography>
 
                         {/* Trường hợp gọi API nhưng không tồn tại cái board nào trong Database trả về */}

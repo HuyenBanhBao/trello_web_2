@@ -13,6 +13,7 @@ import PageLoadingSpinner from "~/components/Loading/PageLoadingSpinner";
 import {
     fetchBoardDetailsAPI,
     updateCurrentActiveBoard,
+    setOriginalBoard,
     selectCurrentActiveBoard,
 } from "~/redux/activeBoard/activeBoardSlice";
 import { useDispatch, useSelector } from "react-redux";
@@ -61,6 +62,7 @@ const Board = () => {
         newBoard.columnOrderIds = dndOrderedColumnsIds;
         // setBoard(newBoard);
         dispatch(updateCurrentActiveBoard(newBoard));
+        dispatch(setOriginalBoard(newBoard));
 
         // Gọi API move columns
         updateBoardDetailsAPI(newBoard._id, {
@@ -88,6 +90,7 @@ const Board = () => {
         });
         // setBoard(newBoard);
         dispatch(updateCurrentActiveBoard(newBoard));
+        dispatch(setOriginalBoard(newBoard));
         // const newColumn = newBoard.columns.find((column) => column._id === columnId);
         // if (newColumn) {
         //     newColumn.cards = dndOrderedCard; // Thêm card mới vào mảng columns
@@ -123,6 +126,7 @@ const Board = () => {
         newBoard.columnOrderIds = dndOrderedColumnsIds;
         // setBoard(newBoard);
         dispatch(updateCurrentActiveBoard(newBoard));
+        dispatch(setOriginalBoard(newBoard));
         // Gọi API move columns
         let prevCardOrderIds = newBoard.columns.find((column) => column._id === prevColumnId).cardOrderIds;
         // Xử lý khi kéo thẻ cuối cùng ra khỏi column (Nhớ lại video)

@@ -1,5 +1,6 @@
 import React from "react";
 import Box from "@mui/material/Box";
+import { useSelector } from "react-redux";
 // --------------------- IMPORT COMPONENTS ---------------------
 import HeaderCard from "./ListCards/CardItem/HeaderCard";
 import ListCards from "./ListCards/ListCards";
@@ -7,9 +8,16 @@ import FooterCard from "./ListCards/CardItem/FooterCard";
 // --------------------- DND KIT ---------------------
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
+import { selectCurrentUser } from "~/redux/user/userSlice";
+import { selectCurrentActiveBoard } from "~/redux/activeBoard/activeBoardSlice";
+
 // ----------------------------------------------------------
 // --------------------- MAIN COMPONENT ---------------------
 const BoardColumn = ({ column }) => {
+    const activeBoard = useSelector(selectCurrentActiveBoard);
+    const activeUser = useSelector(selectCurrentUser);
+    const isMember = column?.memberIds.includes(activeUser._id);
+    const isAdmin = activeBoard?.ownerIds.includes(activeUser._id);
     // --------------------- FUNCTION ---------------------
     // Cards đã được sắp xếp ở column cha (video 71)
     const orderedCards = column.cards;
@@ -29,6 +37,9 @@ const BoardColumn = ({ column }) => {
     };
 
     // --------------------- RETURN ---------------------
+    if (!isMember && !isAdmin) {
+        return;
+    }
 
     return (
         <div ref={setNodeRef} style={dndKitColumnStyles}>

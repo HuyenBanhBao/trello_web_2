@@ -13,7 +13,11 @@ import DragHandleIcon from "@mui/icons-material/DragHandle";
 import CloseIcon from "@mui/icons-material/Close";
 import { createNewCardAPI } from "~/apis";
 // --------------------- REDUX ---------------------
-import { updateCurrentActiveBoard, selectCurrentActiveBoard } from "~/redux/activeBoard/activeBoardSlice";
+import {
+    updateCurrentActiveBoard,
+    setOriginalBoard,
+    selectCurrentActiveBoard,
+} from "~/redux/activeBoard/activeBoardSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { updateCurrentActiveColumn } from "~/redux/aciveColumn/activeColumnSlice";
 // import { selectCurrentUser } from "~/redux/user/userSlice";
@@ -78,6 +82,7 @@ const FooterCard = ({ column }) => {
         // console.log("🚀 ~ createNewCard ~ newColumn:", newColumn);
         // setBoard(newBoard);
         dispatch(updateCurrentActiveBoard(newBoard));
+        dispatch(setOriginalBoard(newBoard));
         //===================== kết thúc gọi API tạo mới 1 card và làm lại dữ liệu State Board =====================
 
         // Reset form
@@ -133,6 +138,9 @@ const FooterCard = ({ column }) => {
                         sx={{
                             "& label": {
                                 color: (theme) => theme.trello.colorDarkNavyGray,
+                            },
+                            "& label.MuiInputLabel-shrink:not(.Mui-focused)": {
+                                color: "transparent",
                             },
                             "& input": {
                                 color: (theme) => theme.palette.primary.main,

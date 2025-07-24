@@ -83,7 +83,7 @@ function LoginForm() {
                             color: (theme) => theme.palette.grey[500],
                         }}
                     >
-                        Author: TrungQuanDev
+                        Author: Má Bánh Bao
                     </Box>
                     <Box
                         sx={{

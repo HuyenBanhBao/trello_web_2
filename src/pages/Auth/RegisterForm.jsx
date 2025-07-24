@@ -1,4 +1,3 @@
-// TrungQuanDev: https://youtube.com/@trungquandev
 // MUI -------------------------------------------
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
@@ -76,7 +75,7 @@ function RegisterForm() {
                             color: (theme) => theme.palette.grey[500],
                         }}
                     >
-                        Author: TrungQuanDev
+                        Author: Má Bánh Bao
                     </Box>
                     <Box sx={{ padding: "0 1em 1em 1em" }}>
                         <Box sx={{ marginTop: "1em" }}>

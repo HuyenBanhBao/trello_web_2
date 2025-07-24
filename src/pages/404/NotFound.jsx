@@ -1,4 +1,3 @@
-// TrungQuanDev: https://youtube.com/@trungquandev
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
@@ -70,7 +69,7 @@ function NotFound() {
                     </Typography>
                     &nbsp;
                     <Typography variant="span" sx={{ color: "#fdba26", fontWeight: 500 }}>
-                        TrungQuanDev
+                        TunDev
                     </Typography>
                     ?<br />
                     Hmm, looks like that page doesn&apos;t exist.

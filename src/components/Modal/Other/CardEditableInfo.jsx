@@ -9,6 +9,7 @@ import { selectCurrentActiveColumn } from "~/redux/aciveColumn/activeColumnSlice
 import TextField from "@mui/material/TextField";
 import PaidOutlinedIcon from "@mui/icons-material/PaidOutlined";
 import { Button } from "@mui/material";
+import Collapse from "@mui/material/Collapse";
 // ----------------------------------------------- ICON -----------------------------------------------
 import {
     ElectricalServicesOutlined as ElectricIcon,
@@ -23,7 +24,7 @@ import {
 } from "@mui/icons-material";
 
 // ================================================ MAIN ================================================
-const CardEditableInfo = ({ setServiceFormCardData, handleSaveInfoServiceRoom }) => {
+const CardEditableInfo = ({ setServiceFormCardData, handleSaveInfoServiceRoom, isAdmin }) => {
     const theme = useTheme();
     const activeCard = useSelector(selectCurrentActiveCard);
     const activeColumn = useSelector(selectCurrentActiveColumn);
@@ -53,7 +54,6 @@ const CardEditableInfo = ({ setServiceFormCardData, handleSaveInfoServiceRoom })
             contract: formValues.contract,
             numElec: formValues.numElec,
         };
-
         setServiceFormCardData(updateServiceCard);
     }, [formValues]);
 
@@ -146,9 +146,11 @@ const CardEditableInfo = ({ setServiceFormCardData, handleSaveInfoServiceRoom })
         },
     ];
 
+    // =============================================================================================
     return (
         <Box
             sx={{
+                position: isAdmin ? "initial" : "relative",
                 flex: 3,
                 mb: 2,
                 p: 1,
@@ -159,18 +161,10 @@ const CardEditableInfo = ({ setServiceFormCardData, handleSaveInfoServiceRoom })
             }}
         >
             <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
-                <PaidOutlinedIcon />
-                <Typography variant="span" sx={{ fontWeight: "600", fontSize: "20px", userSelect: "none", mr: "auto" }}>
+                <PaidOutlinedIcon fontSize="small" />
+                <Typography variant="span" sx={{ fontWeight: "600", userSelect: "none", mr: "auto", my: 0.5 }}>
                     Phí dịch vụ
                 </Typography>
-
-                <Button
-                    //
-                    sx={theme.trello.btnPrimary}
-                    onClick={handleSaveInfoServiceRoom}
-                >
-                    SAVE
-                </Button>
             </Box>
             <Box sx={{ flexGrow: 1, mt: 1 }}>
                 <Grid container spacing={1}>
@@ -194,6 +188,17 @@ const CardEditableInfo = ({ setServiceFormCardData, handleSaveInfoServiceRoom })
                             </Box>
                         </Grid>
                     ))}
+                    {isAdmin && (
+                        <Grid item xs={12}>
+                            <Button
+                                //
+                                sx={{ ...theme.trello.btnPrimary, display: "block", width: "100%", mb: 2 }}
+                                onClick={handleSaveInfoServiceRoom}
+                            >
+                                SAVE
+                            </Button>
+                        </Grid>
+                    )}
                     {fieldsColumn.map((item, index) => (
                         <Grid item xs={item.size} key={index}>
                             <Box
@@ -252,6 +257,7 @@ const CardEditableInfo = ({ setServiceFormCardData, handleSaveInfoServiceRoom })
                                 display: "flex",
                                 alignItems: "center",
                                 gap: 1,
+                                mt: 1,
                                 fontSize: "16px",
                                 fontWeight: "600",
                                 color: (theme) => theme.trello.colorLemonChiffon,
@@ -288,6 +294,14 @@ const CardEditableInfo = ({ setServiceFormCardData, handleSaveInfoServiceRoom })
                     </Grid>
                 </Grid>
             </Box>
+            {!isAdmin && (
+                <Box
+                    position="absolute"
+                    sx={{ top: 0, left: 0, bgcolor: "#000", width: "100%", height: "100%", opacity: 0 }}
+                >
+                    lauout
+                </Box>
+            )}
         </Box>
     );
 };
