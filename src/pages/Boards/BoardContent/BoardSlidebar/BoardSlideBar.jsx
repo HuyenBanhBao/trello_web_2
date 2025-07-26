@@ -158,17 +158,16 @@ const BoardSlideBar = () => {
                                         />
                                     </Box>
                                     {/* --- Content toggle --- */}
-                                    {/* --------------------- DELETE COLUM --------------------- */}
+                                    {/* --------------------- SEND MESS COLUM --------------------- */}
                                     <SendMessToAll
                                         onAddComentToAllCard={onAddComentToAllCard}
                                         activeColumn={activeColumn}
                                     />
-                                    {/* --------------------- DELETE COLUM --------------------- */}
+                                    {/* --------------------- SEND BULLETIN COLUM --------------------- */}
                                     <SendBulletinToAll
                                         onAddBulletinToAllCard={onAddBulletinToAllCard}
                                         activeColumn={activeColumn}
                                     />
-                                    {/* --------------------- DELETE COLUM --------------------- */}
                                     {/* --------------------- DELETE COLUM --------------------- */}
                                     <BSBDeleteCol />
                                 </Collapse>

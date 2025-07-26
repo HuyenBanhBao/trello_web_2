@@ -264,12 +264,11 @@ const BoardBar = ({ board }) => {
             {/* -------------- BOARD BAR RIGHT ------------------ */}
             <Box sx={MENU_ITEMS}>
                 {isAdmin && <DeleteBoard />}
-                {isAdmin && (
+                {/* {isAdmin && (
                     <Box sx={{ display: { xs: "none", sm: "flex" } }}>
-                        {/* <InviteBoardUser board={board} /> */}
-                        {/*  */}
+                        <InviteBoardUser board={board} />
                     </Box>
-                )}
+                )} */}
                 {isAdmin && <BoardUserGroup boardUsers={board?.FE_allUsers} board={board} />}
             </Box>
         </Box>

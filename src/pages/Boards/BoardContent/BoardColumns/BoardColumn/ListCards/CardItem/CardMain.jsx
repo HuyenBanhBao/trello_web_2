@@ -11,6 +11,7 @@ import NewspaperIcon from "@mui/icons-material/Newspaper";
 import ForumIcon from "@mui/icons-material/Forum";
 import PermIdentityOutlinedIcon from "@mui/icons-material/PermIdentityOutlined";
 import PersonOffOutlinedIcon from "@mui/icons-material/PersonOffOutlined";
+import GroupOutlinedIcon from "@mui/icons-material/GroupOutlined";
 // --------------------- DND KIT ---------------------
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
@@ -45,8 +46,8 @@ const CardMain = ({ card, column }) => {
     // -------------------------- FUNCTION --------------------------
     // --------------------------- KIEM TRA CÓ THONG TIN THI SẼ HIEN ---------------------------
     const showCardAction = () => {
-        // return !!card?.memberIds?.length || !!card?.comments?.length || !!card?.bulletins?.length;
-        return !!card?.comments?.length || !!card?.bulletins?.length;
+        return !!card?.userRoom || !!card?.comments?.length || !!card?.bulletins?.length;
+        // return !!card?.comments?.length || !!card?.bulletins?.length;
     };
 
     const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
@@ -118,41 +119,41 @@ const CardMain = ({ card, column }) => {
                                 {isElec && (
                                     <Box
                                         sx={{
-                                            px: "8px",
-                                            borderRadius: "6px",
-                                            bgcolor: theme.trello.colorErrorElecDark,
-                                            boxShadow: theme.trello.boxShadowPrimary,
-                                            //
+                                            ...theme.trello.dotOtherStyle(
+                                                theme.trello.colorErrorElecDarker,
+                                                theme.trello.colorRedClay
+                                            ),
+                                            width: "16px",
+                                            height: "16px",
+                                            borderRadius: "50%",
                                         }}
-                                    >
-                                        Elec
-                                    </Box>
+                                    ></Box>
                                 )}
                                 {isWater && (
                                     <Box
                                         sx={{
-                                            px: "8px",
-                                            borderRadius: "6px",
-                                            bgcolor: theme.trello.colorErrorWater,
-                                            boxShadow: theme.trello.boxShadowPrimary,
-                                            //
+                                            ...theme.trello.dotOtherStyle(
+                                                theme.trello.colorDotBlueLight,
+                                                theme.trello.colorDotBlueBase
+                                            ),
+                                            width: "16px",
+                                            height: "16px",
+                                            borderRadius: "50%",
                                         }}
-                                    >
-                                        Water
-                                    </Box>
+                                    ></Box>
                                 )}
                                 {isOther && (
                                     <Box
                                         sx={{
-                                            px: "8px",
-                                            borderRadius: "6px",
-                                            bgcolor: theme.trello.colorErrorOtherWarmer,
-                                            boxShadow: theme.trello.boxShadowPrimary,
-                                            //
+                                            ...theme.trello.dotOtherStyle(
+                                                theme.trello.colorErrorOtherStart,
+                                                theme.trello.colorErrorOtherStrong
+                                            ),
+                                            width: "16px",
+                                            height: "16px",
+                                            borderRadius: "50%",
                                         }}
-                                    >
-                                        Other
-                                    </Box>
+                                    ></Box>
                                 )}
                                 {isUserInRoom ? (
                                     <Box
@@ -243,16 +244,6 @@ const CardMain = ({ card, column }) => {
                 {/* --------------------------------------- */}
                 {showCardAction() && (
                     <CardActions sx={{ p: "0 4px 8px 4px", display: "flex" }}>
-                        {/* {!!card?.memberIds?.length && (
-                            <Button sx={{ color: theme.trello.colorSlateBlue }} startIcon={<GroupIcon />} size="small">
-                                {card?.memberIds?.length}
-                            </Button>
-                        )} */}
-                        {!!card?.comments?.length && (
-                            <Button sx={{ color: theme.trello.colorSlateBlue }} startIcon={<ForumIcon />} size="small">
-                                {card?.comments?.length}
-                            </Button>
-                        )}
                         {!!card?.bulletins?.length && (
                             <Button
                                 sx={{ color: theme.trello.colorSlateBlue }}
@@ -260,6 +251,20 @@ const CardMain = ({ card, column }) => {
                                 size="small"
                             >
                                 {card?.bulletins?.length}
+                            </Button>
+                        )}
+                        {!!card?.comments?.length && (
+                            <Button sx={{ color: theme.trello.colorSlateBlue }} startIcon={<ForumIcon />} size="small">
+                                {card?.comments?.length}
+                            </Button>
+                        )}
+                        {Number(card?.userRoom) > 0 && (
+                            <Button
+                                sx={{ color: theme.trello.colorSlateBlue }}
+                                startIcon={<GroupOutlinedIcon />}
+                                size="small"
+                            >
+                                {card?.userRoom}
                             </Button>
                         )}
                     </CardActions>

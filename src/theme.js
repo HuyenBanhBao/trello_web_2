@@ -6,6 +6,8 @@ import { experimental_extendTheme as extendTheme } from "@mui/material/styles";
 const APP_BAR_HEIGHT = "58px";
 const BOARD_BAR_HEIGHT = "60px";
 const BOARDS_HEIGHT = `calc(100vh - ${APP_BAR_HEIGHT})`;
+const LIST_BOARDS_HEIGHT = `calc(${BOARDS_HEIGHT} - ${APP_BAR_HEIGHT} - 38px)`;
+const LIST_BOARDS = `calc(${LIST_BOARDS_HEIGHT} - 92px)`;
 const BOARD_CONTENT_HEIGHT = `calc(100vh - ${APP_BAR_HEIGHT} - ${BOARD_BAR_HEIGHT})`;
 const COLUMN_HEADER_HEIGHT = "50px";
 const COLUMN_FOOTER_HEIGHT = "58px";
@@ -23,6 +25,8 @@ const theme = extendTheme({
         boardBarHeight: BOARD_BAR_HEIGHT,
         boardsHeight: BOARDS_HEIGHT,
         boardContentHeight: BOARD_CONTENT_HEIGHT,
+        listBoardHeight: LIST_BOARDS_HEIGHT,
+        listBoards: LIST_BOARDS,
         // CARDS
         columnHeaderHeight: COLUMN_HEADER_HEIGHT,
         columnFooterHeight: COLUMN_FOOTER_HEIGHT,
@@ -91,6 +95,8 @@ const theme = extendTheme({
 
         // ERROR color
         colorErrorWater: "#81d0ff",
+        colorDotBlueLight: "#b1e5fc", // xanh dương highlight
+        colorDotBlueBase: "#2196f3", // xanh dương nền
         // colorErrorOther: "#f8da8b",
 
         colorLemonChiffon: "#FEF6C7", // Kem nhạt text
@@ -113,6 +119,7 @@ const theme = extendTheme({
 
         // WARNING COLOR
         colorErrorText: "#0b4a3b",
+        colorErrorOtherStart: "#ffd59f", // boxShadow
         colorErrorOtherWarm: "#f6c46b", // Cam dịu – cảnh báo nhẹ
         colorErrorOtherWarmer: "#f4b15a", // Cam trung tính – nút CTA
         colorErrorOtherStrong: "#ef9f43", // Cam mạnh – trạng thái cảnh báo rõ ràng
@@ -131,6 +138,8 @@ const theme = extendTheme({
         boxShadowBtnHover:
             "rgba(0, 0, 0, 0.3) 0px 2px 4px, rgba(0, 0, 0, 0.2) 0px 5px 10px -2px, rgba(0, 0, 0, 0.15) 0px -2px 0px inset",
         boxShadowBulletin: "rgb(76 76 76) 3px 3px 6px 0px inset, rgb(255 255 255 / 50%) -3px -3px 6px 1px inset",
+        boxShadowDots:
+            "0 6px 12px rgba(0, 0, 0, 0.25), 0 -2px 4px rgba(255, 255, 255, 0.6), inset 0 1px 1px rgba(255, 255, 255, 0.3)",
 
         // GRADIENT BG
         gradientBlueToViolet: GRADIENT_BLUE_TO_VIOLET,
@@ -162,6 +171,26 @@ const theme = extendTheme({
                 backgroundColor: (theme) => theme.trello.colorGoldenSand,
             },
         },
+        dotOtherStyle: (startColor, endColor) => ({
+            position: "relative",
+            background: `radial-gradient(circle at 30% 30%, ${startColor}, ${endColor})`,
+            boxShadow: `0 8px 15px rgba(0, 0, 0, 0.3), 
+            0 -2px 4px rgba(255, 255, 255, 0.5),
+            inset 2px 2px 6px rgba(255, 255, 255, 0.4),
+            inset -2px -2px 4px rgba(0, 0, 0, 0.1)
+            `,
+            "&::after": {
+                content: '""',
+                position: "absolute",
+                top: "15%",
+                left: "15%",
+                width: "20%",
+                height: "20%",
+                background: "rgba(255, 255, 255, 0.7)",
+                borderRadius: "50%",
+                boxShadow: "0 0 6px rgba(255, 255, 255, 0.5)",
+            },
+        }),
 
         btnSidebar: {
             p: 1,

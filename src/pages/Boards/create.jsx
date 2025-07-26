@@ -48,7 +48,7 @@ const BOARD_TYPES = {
  * Note: Modal là một low-component mà bọn MUI sử dụng bên trong những thứ như Dialog, Drawer, Menu, Popover. Ở đây dĩ nhiên chúng ta có thể sử dụng Dialog cũng không thành vấn đề gì, nhưng sẽ sử dụng Modal để dễ linh hoạt tùy biến giao diện từ con số 0 cho phù hợp với mọi nhu cầu nhé.
  */
 function SidebarCreateBoardModal({ afterCreateNewBoard }) {
-    const themeTrello = useTheme();
+    const theme = useTheme();
     const {
         // control,
         register,
@@ -75,7 +75,7 @@ function SidebarCreateBoardModal({ afterCreateNewBoard }) {
 
     return (
         <>
-            <SidebarItem onClick={handleOpenModal}>
+            <SidebarItem onClick={handleOpenModal} sx={theme.trello.btnPrimary}>
                 <LibraryAddIcon fontSize="small" />
                 Create a new board
             </SidebarItem>
@@ -99,7 +99,7 @@ function SidebarCreateBoardModal({ afterCreateNewBoard }) {
                         border: "none",
                         outline: 0,
                         padding: "20px 30px",
-                        backgroundColor: (theme) => (theme.palette.mode === "dark" ? "#1A2027" : "white"),
+                        backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "white",
                     }}
                 >
                     <Box
@@ -113,8 +113,8 @@ function SidebarCreateBoardModal({ afterCreateNewBoard }) {
                         <CancelIcon
                             color="standard"
                             sx={{
-                                color: (theme) => theme.trello.colorSlateBlue,
-                                "&:hover": { color: (theme) => theme.trello.colorDeepNavy },
+                                color: theme.trello.colorSlateBlue,
+                                "&:hover": { color: theme.trello.colorDeepNavy },
                             }}
                             onClick={handleCloseModal}
                         />
@@ -198,9 +198,9 @@ function SidebarCreateBoardModal({ afterCreateNewBoard }) {
                                                     <Radio
                                                         size="small"
                                                         sx={{
-                                                            color: (theme) => theme.trello.colorSlateBlue, // màu viền khi chưa chọn
+                                                            color: theme.trello.colorSlateBlue, // màu viền khi chưa chọn
                                                             "&.Mui-checked": {
-                                                                color: (theme) => theme.trello.colorDeepNavy, // màu khi được chọn
+                                                                color: theme.trello.colorDeepNavy, // màu khi được chọn
                                                             },
                                                         }}
                                                     />
@@ -214,9 +214,9 @@ function SidebarCreateBoardModal({ afterCreateNewBoard }) {
                                                     <Radio
                                                         size="small"
                                                         sx={{
-                                                            color: (theme) => theme.trello.colorSlateBlue, // màu viền khi chưa chọn
+                                                            color: theme.trello.colorSlateBlue, // màu viền khi chưa chọn
                                                             "&.Mui-checked": {
-                                                                color: (theme) => theme.trello.colorDeepNavy, // màu khi được chọn
+                                                                color: theme.trello.colorDeepNavy, // màu khi được chọn
                                                             },
                                                         }}
                                                     />
@@ -234,7 +234,7 @@ function SidebarCreateBoardModal({ afterCreateNewBoard }) {
                                         className="interceptor-loading"
                                         type="submit"
                                         variant="contained"
-                                        sx={themeTrello.trello.btnPrimary}
+                                        sx={theme.trello.btnPrimary}
                                     >
                                         Create
                                     </Button>

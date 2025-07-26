@@ -56,12 +56,13 @@ const BSBDeleteCol = () => {
             const newBoard = { ...board };
             newBoard.columns = newBoard.columns.filter((c) => c._id !== activeColumn._id);
             newBoard.columnOrderIds = newBoard.columnOrderIds.filter((id) => id !== activeColumn._id);
-            //  Cập nhật lại board hiện tại trên Redux store (sau khi xóa column)
-            dispatch(updateCurrentActiveBoard(newBoard));
-            dispatch(setOriginalBoard(newBoard));
+
             //  Gọi API xóa column khỏi database (backend)
             deleteColumnDetailsAPI(activeColumn._id).then((res) => {
                 toast.success(res?.deleteResult);
+                //  Cập nhật lại board hiện tại trên Redux store (sau khi xóa column)
+                dispatch(updateCurrentActiveBoard(newBoard));
+                dispatch(setOriginalBoard(newBoard));
             });
         }
         // console.log(reason);

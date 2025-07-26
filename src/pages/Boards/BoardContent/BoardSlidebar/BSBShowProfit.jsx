@@ -28,17 +28,26 @@ const calculatePrices = (col, totalUser, totalElec, totalRoomUse, totalPriceRoom
 const BSBShowProfit = () => {
     const theme = useTheme();
     const activeColumn = useSelector(selectCurrentActiveColumn);
-    // console.log(activeColumn);
-
     const totalCards = activeColumn?.cards?.length || 0;
 
     const { totalUserRoom, totalElecRoom, totalPriceRoom, totalRoomUse } =
         activeColumn?.cards?.reduce(
             (acc, card) => {
-                acc.totalUserRoom += Number(card.userRoom || 0);
-                acc.totalElecRoom += Number(card.numElec || 0);
-                acc.totalPriceRoom += Number(card.priceRoom || 0);
-                if (card.userRoom) acc.totalRoomUse += 1;
+                const userRoom = Number(card.userRoom);
+                // Chỉ tính các khoản nếu phòng có người ở
+                const isOccupied = !isNaN(userRoom) && userRoom > 0;
+                if (isOccupied) {
+                    const numElec = Number(card.numElec);
+                    const priceRoom = Number(card.priceRoom);
+                    acc.totalUserRoom += userRoom;
+                    acc.totalRoomUse += 1;
+                    if (!isNaN(numElec)) {
+                        acc.totalElecRoom += numElec;
+                    }
+                    if (!isNaN(priceRoom)) {
+                        acc.totalPriceRoom += priceRoom;
+                    }
+                }
                 return acc;
             },
             {

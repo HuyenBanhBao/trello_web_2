@@ -17,6 +17,11 @@ import { toast } from "react-toastify";
 //     // console.log(response);
 //     return response.data;
 // };
+export const fetchBoardsAPI = async (searchPath) => {
+    // console.log(searchPath);
+    const response = await authorizedAxiosInstance.get(`${API_ROOT}/v1/boards${searchPath}`);
+    return response.data;
+};
 export const createNewBoardAPI = async (newBoardData) => {
     const response = await authorizedAxiosInstance.post(`${API_ROOT}/v1/boards`, newBoardData);
     toast.success("Boards created successfully");
@@ -40,6 +45,11 @@ export const moveCardToDifferentColumnsAPI = async (updateData) => {
 };
 
 // ==================================================== API Columns ====================================================
+// export const fetchColumnsAPI = async () => {
+//     // console.log(searchPath);
+//     const response = await authorizedAxiosInstance.get(`${API_ROOT}/v1/columns`);
+//     return response.data;
+// };
 export const createNewColumnAPI = async (newColumnData) => {
     const response = await authorizedAxiosInstance.post(`${API_ROOT}/v1/columns`, newColumnData); //
     return response.data;
@@ -95,12 +105,6 @@ export const verifyUserAPI = async (data) => {
 
 export const refreshTokenAPI = async () => {
     const response = await authorizedAxiosInstance.get(`${API_ROOT}/v1/users/refresh_token`);
-    return response.data;
-};
-
-export const fetchBoardsAPI = async (searchPath) => {
-    // console.log(searchPath);
-    const response = await authorizedAxiosInstance.get(`${API_ROOT}/v1/boards${searchPath}`);
     return response.data;
 };
 
