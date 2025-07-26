@@ -276,8 +276,7 @@ const BoardContent = ({ board, moveColumns, moveCardInTheSameColumn, moveCardToD
                         width: "100%",
 
                         height: (theme) => theme.trello.boardContentHeight,
-                        background: (theme) =>
-                            theme.palette.mode === "dark" ? theme.trello.gradientBgDark : theme.trello.colorPaleSky,
+                        background: (theme) => theme.trello.colorPaleSky,
                     }}
                 >
                     <Grid container sx={{ width: "100%" }}>

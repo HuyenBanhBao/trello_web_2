@@ -47,7 +47,7 @@ const BoardColumn = ({ column }) => {
                 sx={{
                     minWidth: "300px",
                     maxWidth: "300px",
-                    bgcolor: (theme) => (theme.palette.mode === "dark" ? "#333643" : theme.trello.colorIronBlue),
+                    bgcolor: (theme) => theme.trello.colorIronBlue,
                     border: (theme) => `1px solid ${theme.trello.colorAshGray}`,
                     boxShadow: (theme) => theme.trello.boxShadowPrimary,
                     ml: 2,

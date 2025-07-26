@@ -13,7 +13,7 @@ import CancelIcon from "@mui/icons-material/Cancel";
 import CreditCardIcon from "@mui/icons-material/CreditCard";
 import ImageOutlinedIcon from "@mui/icons-material/ImageOutlined";
 import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined";
-import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined";
+import PaymentOutlinedIcon from "@mui/icons-material/PaymentOutlined";
 // -------------- REACT --------------
 import { toast } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
@@ -30,18 +30,17 @@ import { clearAndHideCurrentActiveColumn } from "~/redux/aciveColumn/activeColum
 import CardBulletinBoard from "./CardBulletinBoard";
 import CardActivitySection from "./CardActivitySection";
 import AddMenbers from "./AddMenbers";
-import { CARD_MEMBER_ACTIONS } from "~/utils/constants";
-import { singleFileValidator } from "~/utils/validators";
+// import { singleFileValidator } from "~/utils/validators";
 import { selectCurrentUser } from "~/redux/user/userSlice";
 import ToggleFocusInput from "~/components/Form/ToggleFocusInput";
 import { updateCardDetailsAPI, updateCardDetailsReportAPI } from "~/apis";
-import VisuallyHiddenInput from "~/components/Form/VisuallyHiddenInput";
+// import VisuallyHiddenInput from "~/components/Form/VisuallyHiddenInput";
 import CardEditableInfo from "../Other/CardEditableInfo";
 import NotifiError from "./notifiError/NotifiError";
 import ShowNotifiError from "./notifiError/ShowNotifiError";
 // --------------- IMPORT FUNCTIONS --------------------
 import { handleDeleteCard } from "./functions/handleDeleteCard";
-import { handleDeleteCover } from "./functions/handleDeleteCover";
+// import { handleDeleteCover } from "./functions/handleDeleteCover";
 // import useListenCardReloaded from "~/customHook/socket/useListenCardReloaded";
 // ==================================================================================
 // --------------------------------- Function ---------------------------------------
@@ -128,30 +127,30 @@ function ActiveCard() {
     };
 
     // ------------------ UPLOAD IMAGE ------------------
-    const onUploadCardCover = (event) => {
-        // console.log(event.target?.files[0]);
-        const error = singleFileValidator(event.target?.files[0]);
-        if (error) {
-            toast.error(error);
-            return;
-        }
-        let reqData = new FormData();
-        reqData.append("cardCover", event.target?.files[0]);
-        console.log(reqData);
-        // Gọi API...
-        toast.promise(
-            callAPIUpdateCard(reqData).finally(() => (event.target.value = "")),
-            {
-                pending: "Uploading...",
-            }
-        );
-    };
+    // const onUploadCardCover = (event) => {
+    //     // console.log(event.target?.files[0]);
+    //     const error = singleFileValidator(event.target?.files[0]);
+    //     if (error) {
+    //         toast.error(error);
+    //         return;
+    //     }
+    //     let reqData = new FormData();
+    //     reqData.append("cardCover", event.target?.files[0]);
+    //     console.log(reqData);
+    //     // Gọi API...
+    //     toast.promise(
+    //         callAPIUpdateCard(reqData).finally(() => (event.target.value = "")),
+    //         {
+    //             pending: "Uploading...",
+    //         }
+    //     );
+    // };
 
     // ------------------------------------- DELETE IMAGE -------------------------------------
-    const confirmDeleteCol = useConfirm();
-    const onDeleteCover = () => {
-        handleDeleteCover({ confirmDeleteCol, callAPIUpdateCard });
-    };
+    // const confirmDeleteCol = useConfirm();
+    // const onDeleteCover = () => {
+    //     handleDeleteCover({ confirmDeleteCol, callAPIUpdateCard });
+    // };
     // ------------------------------------- Delete card -------------------------------------
     const confirmDeleteCard = useConfirm();
     const onDeleteCard = () => {
@@ -346,42 +345,86 @@ function ActiveCard() {
                                 handleSaveInfoServiceRoom={handleSaveInfoServiceRoom}
                                 isAdmin={isAdmin}
                             />
+                            {/* --------------------------------- QR code --------------------------------- */}
+                            <Box
+                                sx={{
+                                    p: 1,
+                                    mb: 2,
+                                    borderRadius: "4px",
+                                    backgroundColor: theme.trello.colorGunmetalBlue,
+                                    boxShadow: theme.trello.boxShadowBtn,
+                                }}
+                            >
+                                <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                                    <PaymentOutlinedIcon fontSize="small" />
+                                    <Typography
+                                        variant="span"
+                                        sx={{ fontWeight: "600", fontSize: "16px", userSelect: "none" }}
+                                    >
+                                        Thanh toán:
+                                    </Typography>
+                                </Box>
+                                <Box sx={{ display: "flex", justifyContent: "space-between", mt: 2 }}>
+                                    <Box sx={{ display: "flex", flexDirection: "column", gap: 0.5 }}>
+                                        <Typography
+                                            variant="span"
+                                            sx={{ fontWeight: "600", fontSize: "18px", userSelect: "none" }}
+                                        >
+                                            NGUYEN VAN BANG
+                                        </Typography>
+                                        <Typography
+                                            variant="span"
+                                            sx={{ fontWeight: "600", fontSize: "18px", userSelect: "none" }}
+                                        >
+                                            MB
+                                        </Typography>
+                                        <Typography variant="span" sx={{ fontSize: "14px", fontStyle: "italic" }}>
+                                            1234 5678 1234 5678
+                                        </Typography>
+                                    </Box>
+                                    <Box>
+                                        <Box
+                                            //
+                                            component="img"
+                                            sx={{ height: 120, width: 120, objectFit: "cover", mr: 1, borderRadius: 2 }}
+                                            src="https://cdn.dribbble.com/userupload/21862469/file/original-cf7461c7a75145491c8c44cd76bba490.png?resize=752x564&vertical=center"
+                                            alt="image-error"
+                                        />
+                                    </Box>
+                                </Box>
+                            </Box>
+
                             {/* --------------------------------- BUTTONS --------------------------------- */}
                             <Box
                                 sx={{
                                     p: 1,
                                     borderRadius: "4px",
                                     // border:  `1px solid ${theme.trello.colorSnowGray}`,
-                                    backgroundColor:
-                                        theme.palette.mode === "dark" ? "#1A2027" : theme.trello.colorAshGray,
+                                    backgroundColor: theme.trello.colorAshGray,
                                     boxShadow: theme.trello.boxShadowBtn,
                                 }}
                             >
-                                {isAdmin && (
+                                {/* {isAdmin && (
                                     <>
-                                        {/* ------------------------------ ADD TO CARD -------------------------------- */}
                                         <Typography sx={{ fontWeight: "600", mb: 1, userSelect: "none" }}>
                                             Add To Card
                                         </Typography>
                                         <Stack direction="column" spacing={1}>
-                                            {/* Feature 05: Xử lý hành động bản thân user tự join vào card */}
-                                            {/* Nếu user hiện tại đang đăng nhập chưa thuộc mảng memberIds của card thì mới cho hiện nút Join ra */}
-                                            {/* Khi Click vào Join thì nó sẽ luôn là hành động ADD */}
-                                            {/* {!activeCard?.memberIds?.includes(currentUser._id) && (
-                                            <SidebarItem
-                                                onClick={() =>
-                                                    onUpdateCardMembers({
-                                                        userId: currentUser._id,
-                                                        action: CARD_MEMBER_ACTIONS.ADD,
-                                                    })
-                                                }
-                                                className="active"
-                                            >
-                                                <PersonOutlineOutlinedIcon fontSize="small" />
-                                                Join
-                                            </SidebarItem>
-                                        )} */}
-                                            {/* Feature 06: Xử lý hành động cập nhật ảnh Cover của Card */}
+                                            
+                                            {!activeCard?.memberIds?.includes(currentUser._id) && (
+                                                <SidebarItem
+                                                    onClick={() =>
+                                                        onUpdateCardMembers({
+                                                            userId: currentUser._id,
+                                                            action: CARD_MEMBER_ACTIONS.ADD,
+                                                        })
+                                                    }
+                                                    className="active"
+                                                >
+                                                    <PersonOutlineOutlinedIcon fontSize="small" />
+                                                    Join
+                                                </SidebarItem>
+                                            )}
                                             {!activeCard?.cover && (
                                                 <SidebarItem className="active" component="label">
                                                     <ImageOutlinedIcon fontSize="small" />
@@ -398,7 +441,7 @@ function ActiveCard() {
                                         </Stack>
                                         <Divider sx={{ my: 2 }} />
                                     </>
-                                )}
+                                )} */}
 
                                 {/* ------------------------------ NOTIFI ERROR -------------------------------- */}
                                 <NotifiError callAPIUpdateReportCard={callAPIUpdateReportCard} />

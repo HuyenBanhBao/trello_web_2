@@ -37,13 +37,15 @@ const CardEditableInfo = ({ setServiceFormCardData, handleSaveInfoServiceRoom, i
     };
 
     const total =
-        Number(activeCard?.priceRoom || 0) +
-        Number(activeColumn?.priceWifi || 0) +
-        Number(activeCard?.userRoom || 0) *
-            (Number(activeColumn?.priceWash || 0) +
-                Number(activeColumn?.priceTrash || 0) +
-                Number(activeColumn?.priceWater || 0)) +
-        Number(activeColumn?.priceElec || 0) * Number(activeCard?.numElec || 0);
+        Number(activeCard?.userRoom) > 0
+            ? Number(activeCard?.priceRoom || 0) +
+              Number(activeColumn?.priceWifi || 0) +
+              Number(activeCard?.userRoom || 0) *
+                  (Number(activeColumn?.priceWash || 0) +
+                      Number(activeColumn?.priceTrash || 0) +
+                      Number(activeColumn?.priceWater || 0)) +
+              Number(activeColumn?.priceElec || 0) * Number(activeCard?.numElec || 0)
+            : 0;
 
     const [formValues, setFormValues] = useState(initialFormValues);
 
@@ -268,8 +270,10 @@ const CardEditableInfo = ({ setServiceFormCardData, handleSaveInfoServiceRoom, i
                                 sx={{
                                     p: "8px 15px",
                                     borderRadius: "6px",
-                                    border: (theme) => `1px solid ${theme.trello.colorFrostGray}`,
-                                    bgcolor: (theme) => theme.trello.colorOliveGreenDark,
+                                    bgcolor:
+                                        total === 0
+                                            ? (theme) => theme.trello.colorRedClay
+                                            : (theme) => theme.trello.colorOliveGreenDark,
                                     boxShadow: (theme) => theme.trello.boxShadowPrimary,
                                 }}
                             >
@@ -281,8 +285,10 @@ const CardEditableInfo = ({ setServiceFormCardData, handleSaveInfoServiceRoom, i
                                     flex: 1,
                                     py: "8px",
                                     borderRadius: "6px",
-                                    border: (theme) => `1px solid ${theme.trello.colorFrostGray}`,
-                                    bgcolor: (theme) => theme.trello.colorOliveGreenDark,
+                                    bgcolor:
+                                        total === 0
+                                            ? (theme) => theme.trello.colorRedClay
+                                            : (theme) => theme.trello.colorOliveGreenDark,
                                     boxShadow: (theme) => theme.trello.boxShadowPrimary,
                                     textAlign: "center",
                                 }}
@@ -299,7 +305,7 @@ const CardEditableInfo = ({ setServiceFormCardData, handleSaveInfoServiceRoom, i
                     position="absolute"
                     sx={{ top: 0, left: 0, bgcolor: "#000", width: "100%", height: "100%", opacity: 0 }}
                 >
-                    lauout
+                    layout
                 </Box>
             )}
         </Box>

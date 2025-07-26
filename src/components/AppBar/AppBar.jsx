@@ -19,8 +19,7 @@ const AppBar = () => {
                     overflowX: "auto",
                     borderBottom: "1px solid ",
                     borderBottomColor: (theme) => theme.trello.primaryColorTextBar,
-                    background: (theme) =>
-                        theme.palette.mode === "dark" ? theme.trello.gradientBgDark : theme.trello.colorSlateBlue,
+                    background: (theme) => theme.trello.colorDarkNavyGray,
                 }}
             >
                 {/* ------------------------- APP BAR LEFT ------------------------- */}

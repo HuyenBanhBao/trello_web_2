@@ -164,6 +164,11 @@ const AddMenbers = ({ isAdmin }) => {
                                             fontWeight: "600",
                                             color: theme.trello.colorErrorText,
                                             bgcolor: theme.trello.colorErrorOtherStrong,
+                                            "&:hover": {
+                                                color: theme.trello.colorErrorText,
+                                                bgcolor: theme.trello.colorErrorOtherStrong,
+                                                boxShadow: theme.trello.boxShadowBtnHover,
+                                            },
                                         }}
                                     >
                                         Invite
@@ -176,8 +181,9 @@ const AddMenbers = ({ isAdmin }) => {
                     <Box
                         sx={{
                             p: 1,
-                            bgcolor: theme.trello.colorOliveGreen200,
                             borderRadius: "8px",
+                            userSelect: "none",
+                            bgcolor: theme.trello.colorOliveGreen200,
                             boxShadow: theme.trello.boxShadowBulletin,
                         }}
                     >
