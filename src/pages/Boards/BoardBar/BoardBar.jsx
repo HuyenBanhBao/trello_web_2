@@ -6,7 +6,7 @@ import { Typography } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { useTheme } from "@mui/material/styles";
 import { toast } from "react-toastify";
-
+import { alpha } from "@mui/material/styles";
 // --------------------- IMPORT ICON ------------------------
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import MeetingRoomOutlinedIcon from "@mui/icons-material/MeetingRoomOutlined";
@@ -42,7 +42,12 @@ const MENU_STYLES = {
     px: 1,
     borderRadius: "4px",
     boxShadow: (theme) => theme.trello.boxShadowBtn,
+    bgcolor: (theme) => theme.trello.colorMidnightBlue,
+    color: (theme) => theme.trello.colorSnowGray,
 
+    "&:hover": {
+        boxShadow: (theme) => theme.trello.boxShadowBtnHover,
+    },
     // "& .MuiSvgIcon-root": {
     //     color: (theme) => theme.trello.primaryColorTextBar,
     // },
@@ -106,9 +111,8 @@ const BoardBar = ({ board }) => {
                 justifyContent: "space-between",
                 gap: 2,
                 overflowX: "auto",
-                borderBottom: "1px solid",
-                borderBottomColor: (theme) => theme.trello.primaryColorTextBar,
-                bgcolor: (theme) => (theme.palette.mode === "dark" ? "#34495e" : theme.trello.colorAshGray),
+                borderBottom: (theme) => `1px solid ${alpha(theme.trello.colorErrorOtherStart, 0.5)}`,
+                bgcolor: theme.trello.colorDarkNavyGray,
             }}
         >
             {/* -------------- BOARD BAR LEFT ------------------ */}
@@ -118,33 +122,38 @@ const BoardBar = ({ board }) => {
                     sx={{
                         display: "flex",
                         alignItems: "center",
+                        width: "400px",
                         px: 1,
                         gap: 1,
                         borderRadius: "8px",
-                        color: theme.trello.colorSnowGray,
-                        bgcolor: theme.trello.colorDarkNavyGray,
+                        color: theme.trello.colorErrorText,
+                        bgcolor: theme.trello.colorErrorOtherStrong,
                         boxShadow: theme.trello.boxShadowBtn,
                     }}
                 >
                     <DashboardIcon />
                     <ToggleFocusInput
+                        inputColor={(theme) => theme.trello.colorErrorText}
                         className="board-title-modal"
                         inputFontSize="20px"
                         value={board?.title}
                         onChangedValue={onUpdateBoardTitle}
                     />
                 </Box>
+            </Box>
 
+            {/* -------------- BOARD BAR RIGHT ------------------ */}
+            <Box sx={MENU_ITEMS}>
                 {/* -------------------- BOARD FILTER -------------------- */}
                 <Box
                     sx={{
                         display: "flex",
                         alignItems: "center",
-                        p: "7px 10px",
+                        p: "0 20px",
                         gap: 2,
                         ml: "30px",
-                        borderRadius: "8px",
-                        color: theme.trello.colorDarkNavyGray,
+                        borderRight: `2px solid ${alpha(theme.trello.colorErrorOtherWarm, 0.5)}`,
+                        color: theme.trello.colorIronBlue,
                     }}
                 >
                     <Typography variant="span" sx={{ fontSize: "14px", fontStyle: "italic", fontWeight: "600" }}>
@@ -190,14 +199,8 @@ const BoardBar = ({ board }) => {
                         onClick={() => handleFilter("elec")}
                         sx={{
                             ...MENU_STYLES,
-                            bgcolor: theme.trello.colorRedClay,
-                            color: theme.trello.colorSnowGray,
                             "& .MuiSvgIcon-root": {
-                                color: theme.trello.colorSnowGray,
-                            },
-                            "&:hover": {
-                                bgcolor: theme.trello.colorRedClay,
-                                boxShadow: theme.trello.boxShadowBtnHover,
+                                color: theme.trello.colorRedClay,
                             },
                         }}
                         icon={<ErrorOutlineOutlinedIcon fontSize="small" />}
@@ -208,14 +211,8 @@ const BoardBar = ({ board }) => {
                         onClick={() => handleFilter("water")}
                         sx={{
                             ...MENU_STYLES,
-                            bgcolor: theme.trello.colorErrorWater,
-                            color: theme.trello.colorSlateBlue,
                             "& .MuiSvgIcon-root": {
-                                color: theme.trello.colorSlateBlue,
-                            },
-                            "&:hover": {
-                                bgcolor: theme.trello.colorErrorWater,
-                                boxShadow: theme.trello.boxShadowBtnHover,
+                                color: theme.trello.colorDotBlueBase,
                             },
                         }}
                         icon={<ErrorOutlineOutlinedIcon fontSize="small" />}
@@ -226,14 +223,8 @@ const BoardBar = ({ board }) => {
                         onClick={() => handleFilter("other")}
                         sx={{
                             ...MENU_STYLES,
-                            bgcolor: theme.trello.colorErrorOtherStrong,
-                            color: theme.trello.colorErrorText,
                             "& .MuiSvgIcon-root": {
-                                color: theme.trello.colorErrorText,
-                            },
-                            "&:hover": {
-                                bgcolor: theme.trello.colorErrorOtherStrong,
-                                boxShadow: theme.trello.boxShadowBtnHover,
+                                color: theme.trello.colorErrorOtherStrong,
                             },
                         }}
                         icon={<ErrorOutlineOutlinedIcon fontSize="small" />}
@@ -259,10 +250,6 @@ const BoardBar = ({ board }) => {
                         clickable
                     />
                 </Box>
-            </Box>
-
-            {/* -------------- BOARD BAR RIGHT ------------------ */}
-            <Box sx={MENU_ITEMS}>
                 {isAdmin && <DeleteBoard />}
                 {/* {isAdmin && (
                     <Box sx={{ display: { xs: "none", sm: "flex" } }}>

@@ -274,13 +274,20 @@ const BoardContent = ({ board, moveColumns, moveCardInTheSameColumn, moveCardToD
                     sx={{
                         display: "flex",
                         width: "100%",
-
                         height: (theme) => theme.trello.boardContentHeight,
-                        background: (theme) => theme.trello.colorPaleSky,
+                        background: (theme) => theme.trello.colorGunmetalBlue,
                     }}
                 >
                     <Grid container sx={{ width: "100%" }}>
-                        <Grid sx={{ width: "350px", p: "10px 0", height: (theme) => theme.trello.boardContentHeight }}>
+                        <Grid
+                            sx={{
+                                display: "flex",
+                                flexDirection: "column",
+                                width: "350px",
+                                p: "10px 0",
+                                height: (theme) => theme.trello.boardContentHeight,
+                            }}
+                        >
                             <BoardSlideBar />
                         </Grid>
                         {/* --------------------- BOX COLUMNS ---------------------- */}

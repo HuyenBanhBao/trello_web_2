@@ -92,6 +92,10 @@ export const registerUserAPI = async (data) => {
     });
     return response.data;
 };
+export const updateUserDetailsAPI = async (userId, updateData) => {
+    const response = await authorizedAxiosInstance.put(`${API_ROOT}/v1/users/${userId}`, updateData);
+    return response.data;
+};
 
 export const verifyUserAPI = async (data) => {
     const response = await authorizedAxiosInstance.put(`${API_ROOT}/v1/users/verify`, data);

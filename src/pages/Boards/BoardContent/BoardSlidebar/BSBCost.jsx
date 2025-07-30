@@ -183,6 +183,7 @@ const BSBCost = () => {
                             >
                                 <PaidOutlinedIcon />
                                 <EditableInput
+                                    inputColor={(theme) => theme.trello.colorOliveGreenDark}
                                     value={formValues?.priceContract}
                                     onChangedValue={handleChangeContract}
                                 />
@@ -205,7 +206,11 @@ const BSBCost = () => {
                                         alignItems: "center",
                                     }}
                                 >
-                                    <EditableInput value={formValues?.sumNumElec} onChangedValue={handleChangeElec} />
+                                    <EditableInput
+                                        inputColor={(theme) => theme.trello.colorOliveGreenDark}
+                                        value={formValues?.sumNumElec}
+                                        onChangedValue={handleChangeElec}
+                                    />
                                     {"KWh"}
                                 </Box>
                             </Grid>
@@ -223,7 +228,11 @@ const BSBCost = () => {
                                         alignItems: "center",
                                     }}
                                 >
-                                    <EditableInput value={formValues?.sumNumWater} onChangedValue={handleChangeWater} />
+                                    <EditableInput
+                                        inputColor={(theme) => theme.trello.colorOliveGreenDark}
+                                        value={formValues?.sumNumWater}
+                                        onChangedValue={handleChangeWater}
+                                    />
                                     {"Khối"}
                                 </Box>
                             </Grid>

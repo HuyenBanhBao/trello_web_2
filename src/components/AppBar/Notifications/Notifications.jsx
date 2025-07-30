@@ -252,7 +252,7 @@ function Notifications() {
                                     {/* Thời gian của thông báo */}
                                     <Box sx={{ textAlign: "right" }}>
                                         <Typography variant="span" sx={{ fontSize: "13px" }}>
-                                            {moment(notification.createdAt).format("llll")}
+                                            {moment(notification.createdAt).format("DD/MM/YYYY")}
                                         </Typography>
                                     </Box>
                                 </Box>

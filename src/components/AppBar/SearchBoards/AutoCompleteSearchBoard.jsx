@@ -63,7 +63,7 @@ function AutoCompleteSearchBoard() {
 
     return (
         <Autocomplete
-            sx={{ width: { xs: "100%", sm: "200px" } }}
+            sx={{ width: "400px" }}
             id="asynchronous-search-board"
             // Cái text này hiện ra khi boards là null hoặc sau khi đã fetch boards nhưng rỗng - không có kết quả
             noOptionsText={!boards ? "Type to search board..." : "No board found!"}

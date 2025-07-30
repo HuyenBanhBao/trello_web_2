@@ -11,6 +11,7 @@ import MeetingRoomOutlinedIcon from "@mui/icons-material/MeetingRoomOutlined";
 import NoMeetingRoomOutlinedIcon from "@mui/icons-material/NoMeetingRoomOutlined";
 import ElectricMeterOutlinedIcon from "@mui/icons-material/ElectricMeterOutlined";
 import Collapse from "@mui/material/Collapse";
+import { alpha } from "@mui/material/styles";
 // -------------------------------------------------------------------------
 import { selectCurrentActiveColumn } from "~/redux/aciveColumn/activeColumnSlice";
 import KeyboardArrowRightOutlinedIcon from "@mui/icons-material/KeyboardArrowRightOutlined";
@@ -37,7 +38,7 @@ const BSBShowProfit = () => {
                 // Chỉ tính các khoản nếu phòng có người ở
                 const isOccupied = !isNaN(userRoom) && userRoom > 0;
                 if (isOccupied) {
-                    const numElec = Number(card.numElec);
+                    const numElec = Number(card.numElecNew) - Number(card.numElec);
                     const priceRoom = Number(card.priceRoom);
                     acc.totalUserRoom += userRoom;
                     acc.totalRoomUse += 1;
@@ -92,10 +93,9 @@ const BSBShowProfit = () => {
                 mb: 2,
                 p: 1,
                 pt: 1.5,
-                color: theme.trello.colorFogWhiteBlue,
-                borderRadius: "4px",
-                backgroundColor: theme.trello.colorOliveGreenDark,
-                boxShadow: theme.trello.boxShadowBtn,
+                borderRadius: "8px",
+                backgroundColor: theme.trello.colorObsidianSlate,
+                border: `1px solid ${alpha(theme.trello.colorRevenueGreen, 0.5)}`,
             }}
         >
             <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 1.5 }}>
@@ -108,7 +108,7 @@ const BSBShowProfit = () => {
                             display: "flex",
                             alignItems: "center",
                             gap: 1.5,
-                            color: theme.trello.colorLemonChiffon,
+                            color: theme.trello.colorRevenueGreen,
                         }}
                     >
                         <PaidOutlinedIcon />
@@ -150,7 +150,7 @@ const BSBShowProfit = () => {
                                     </Typography>
                                     <Box sx={fieldStyle}>
                                         <GroupOutlinedIcon />
-                                        {totalUserRoom} người
+                                        {totalUserRoom}
                                     </Box>
                                 </Grid>
                                 <Grid item xs={6}>
@@ -244,6 +244,7 @@ const BSBShowProfit = () => {
                                             boxShadow: "none",
                                             fontSize: "18px",
                                             fontWeight: "600",
+                                            bgcolor: theme.trello.colorOliveGreenDark,
                                         }}
                                     >
                                         <PaidOutlinedIcon />

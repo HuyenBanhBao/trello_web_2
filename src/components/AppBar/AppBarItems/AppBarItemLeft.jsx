@@ -2,7 +2,7 @@ import React from "react";
 import Box from "@mui/material/Box";
 // --------------------- IMPORT COMPONENTS -------------------------
 import AvatarApp from "./AppBarItemsLeft/AvatarApp";
-import AppBarNav from "./AppBarItemsLeft/AppBarNav";
+// import AppBarNav from "./AppBarItemsLeft/AppBarNav";
 import Navbar from "~/components/AppBar/Menus/Navbar";
 // --------------------- MAIN COMPONENT -------------------------
 const AppBarItemLeft = () => {
@@ -23,7 +23,7 @@ const AppBarItemLeft = () => {
                 {/* ------------------------- AVATAR ------------------------- */}
                 <AvatarApp />
                 {/* ------------------------- NAV ------------------------- */}
-                <AppBarNav />
+                {/* <AppBarNav /> */}
             </Box>
         </>
     );

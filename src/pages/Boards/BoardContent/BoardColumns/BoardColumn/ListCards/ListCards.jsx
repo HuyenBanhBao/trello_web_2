@@ -1,5 +1,6 @@
 // import { useState, useEffect } from "react";
 import Box from "@mui/material/Box";
+import { alpha } from "@mui/material/styles";
 // --------------------- IMPORT COMPONENTS ---------------------
 import CardsMain from "./CardItem/CardMain";
 // --------------------- DND KIT ---------------------
@@ -20,15 +21,16 @@ const ListCards = ({ cards, column }) => {
                         rowGap: 1.5,
                         overflowX: "hidden",
                         overflowY: "auto",
-                        maxHeight: (theme) => `calc(${theme.trello.cardsHeight} - ${theme.spacing(5)})`,
+                        maxHeight: (theme) => `calc(${theme.trello.cardsHeight} - ${theme.spacing(5)} - 20px)`,
+                        "&::-webkit-scrollbar": {
+                            width: "5px",
+                        },
                         "&::-webkit-scrollbar-thumb": {
-                            background: (theme) =>
-                                theme.palette.mode === "dark" ? "rgba(78, 78, 78, 0.5)" : "rgba(189, 195, 199, 0.5)",
+                            background: (theme) => alpha(theme.trello.colorErrorOtherWarm, 0.2),
                             borderRadius: "99px",
                         },
                         "&::-webkit-scrollbar-thumb:hover": {
-                            background: (theme) =>
-                                theme.palette.mode === "dark" ? "rgba(78, 78, 78, 0.8)" : "rgba(189, 195, 199, 0.8)",
+                            background: (theme) => alpha(theme.trello.colorErrorOtherWarm, 0.5),
                         },
                     }}
                 >

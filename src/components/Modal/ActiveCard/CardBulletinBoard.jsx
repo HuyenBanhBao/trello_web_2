@@ -9,9 +9,13 @@ import Typography from "@mui/material/Typography";
 import NewspaperIcon from "@mui/icons-material/Newspaper";
 import { selectCurrentUser } from "~/redux/user/userSlice";
 import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined";
+import { alpha } from "@mui/material/styles";
+import { useTheme } from "@mui/material/styles";
+import NotificationsActiveOutlinedIcon from "@mui/icons-material/NotificationsActiveOutlined";
 
 // ========================================================================================
 function CardBulletinBoard({ cardBulletin = [], onAddCardBulletin, onDeleteCardBulletin, isAdmin }) {
+    const theme = useTheme();
     const currentUser = useSelector(selectCurrentUser);
 
     // -------------------------------------- Add Card Comment --------------------------------------
@@ -53,16 +57,16 @@ function CardBulletinBoard({ cardBulletin = [], onAddCardBulletin, onDeleteCardB
             confirmationButtonProps: {
                 variant: "contained",
                 sx: {
-                    color: (theme) => theme.trello.colorDustyCloud,
-                    backgroundColor: (theme) => theme.trello.colorSlateBlue,
+                    color: theme.trello.colorDustyCloud,
+                    backgroundColor: theme.trello.colorSlateBlue,
 
-                    boxShadow: (theme) => theme.trello.boxShadowBtn,
+                    boxShadow: theme.trello.boxShadowBtn,
                     transition: "all 0.25s ease-in-out",
 
                     "&:hover": {
                         borderColor: "white",
-                        boxShadow: (theme) => theme.trello.boxShadowBtnHover,
-                        backgroundColor: (theme) => theme.trello.colorSlateBlue,
+                        boxShadow: theme.trello.boxShadowBtnHover,
+                        backgroundColor: theme.trello.colorSlateBlue,
                     },
                 },
             },
@@ -81,13 +85,23 @@ function CardBulletinBoard({ cardBulletin = [], onAddCardBulletin, onDeleteCardB
             sx={{
                 mb: 2,
                 p: 1,
-                borderRadius: "4px",
-                // border: (theme) => `1px solid ${theme.trello.colorSnowGray}`,
-                backgroundColor: (theme) => (theme.palette.mode === "dark" ? "#1A2027" : theme.trello.colorAshGray),
-                boxShadow: (theme) => theme.trello.boxShadowBtn,
+                borderRadius: "8px",
+                border: `1px solid ${alpha(theme.trello.colorErrorOtherStart, 0.5)}`,
+                backgroundColor: theme.trello.colorMidnightBlue,
             }}
         >
-            <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
+            <Box
+                sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 1.5,
+                    bgcolor: theme.trello.colorErrorOtherStrong,
+                    borderRadius: "8px",
+                    px: 1,
+                    py: 0.5,
+                    color: theme.trello.colorMidnightBlue,
+                }}
+            >
                 <NewspaperIcon />
                 <Typography variant="span" sx={{ fontWeight: "600", fontSize: "20px", userSelect: "none" }}>
                     Bảng tin
@@ -108,11 +122,11 @@ function CardBulletinBoard({ cardBulletin = [], onAddCardBulletin, onDeleteCardB
                             sx={{
                                 mt: "4px",
                                 "& .MuiOutlinedInput-root": {
-                                    bgcolor: (theme) => theme.trello.colorDarkNavyGray,
+                                    bgcolor: theme.trello.colorDarkNavyGray,
                                     padding: "8px 12px",
-                                    border: (theme) => `1px solid ${theme.trello.colorPaleSky}`,
+                                    border: `1px solid ${theme.trello.colorPaleSky}`,
                                     borderRadius: "4px",
-                                    boxShadow: (theme) => theme.trello.boxShadowBtn,
+                                    boxShadow: theme.trello.boxShadowBtn,
                                     "& fieldset": {
                                         border: "none", // ẩn border mặc định
                                     },
@@ -126,10 +140,10 @@ function CardBulletinBoard({ cardBulletin = [], onAddCardBulletin, onDeleteCardB
                                 "& .MuiOutlinedInput-input": {
                                     padding: 0, // padding đã có ở `.MuiOutlinedInput-root` rồi
                                     wordBreak: "break-word",
-                                    color: (theme) => theme.trello.colorSnowGray,
-                                    caretColor: (theme) => theme.trello.colorSnowGray,
+                                    color: theme.trello.colorSnowGray,
+                                    caretColor: theme.trello.colorSnowGray,
                                     "&::placeholder": {
-                                        color: (theme) => theme.trello.colorSnowGray,
+                                        color: theme.trello.colorSnowGray,
                                         opacity: 0.5,
                                     },
                                 },
@@ -147,75 +161,82 @@ function CardBulletinBoard({ cardBulletin = [], onAddCardBulletin, onDeleteCardB
                 {/* Hiển thị danh sách các comments */}
                 <Box
                     sx={{
-                        py: 1.5,
                         pl: 2,
-                        border: (theme) => `2px solid ${theme.trello.colorIronBlue}`,
+                        py: 1.5,
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: "center",
                         borderRadius: 1.5,
-                        backgroundColor: (theme) => theme.trello.colorPaleSky,
-                        boxShadow: (theme) => theme.trello.boxShadowBulletin,
                         maxHeight: "300px",
                         overflowY: "auto",
-                        //
+                        gap: 1.5,
+                        // border: `1px solid ${alpha(theme.trello.colorErrorOtherStart, 0.5)}`,
+                        // backgroundColor: theme.trello.colorPaleSky,
                     }}
                 >
                     {cardBulletin.map((bulletin, index) => (
-                        <Box sx={{ display: "flex", gap: 1, width: "100%" }} key={index}>
-                            <Box sx={{ width: "inherit" }}>
+                        <Box sx={{ display: "flex", gap: 1, width: "85%" }} key={index}>
+                            <Box sx={{ display: "flex", alignItems: "center", width: "100%" }}>
                                 {/* -------------- DATE -------------- */}
-                                <Typography
-                                    variant="span"
-                                    sx={{
-                                        fontSize: "11px",
-                                        userSelect: "none",
-                                        color: (theme) => theme.trello.colorIronBlue,
-                                    }}
-                                >
-                                    {/* Format ngày tháng */}
-                                    {/* {moment(comment.commentedAt).format("llll")} */}
-                                    {moment(bulletin.bulletinedAt).format("llll")}
-                                </Typography>
 
-                                <Box sx={{ display: "flex", alignItems: "center" }}>
+                                <Box sx={{ flex: 1, display: "flex", justifyContent: "center" }}>
                                     {/* -------------- INFO -------------- */}
-                                    <Box
-                                        sx={{
-                                            flex: 1,
-                                            mr: 1,
-                                            display: "block",
-                                            bgcolor: (theme) =>
-                                                theme.palette.mode === "dark"
-                                                    ? "#33485D"
-                                                    : theme.trello.colorDarkNavyGray,
-                                            p: "8px 12px",
-                                            // border: (theme) => `1px solid ${theme.trello.colorPaleSky}`,
-                                            borderRadius: "4px",
-                                            wordBreak: "break-word",
-                                            userSelect: "none",
-                                            boxShadow: (theme) => theme.trello.boxShadowBtn,
-                                        }}
-                                    >
-                                        {bulletin.bulletin}
+                                    <Box>
+                                        <Typography
+                                            variant="span"
+                                            sx={{
+                                                fontSize: "9px",
+                                                fontStyle: "italic",
+                                                userSelect: "none",
+                                                color: theme.trello.colorIronBlue,
+                                            }}
+                                        >
+                                            {/* Format ngày tháng */}
+                                            {/* {moment(comment.commentedAt).format("llll")} */}
+                                            {moment(bulletin.bulletinedAt).format("DD/MM/YYYY")}
+                                        </Typography>
+                                        <Box
+                                            sx={{
+                                                flex: 1,
+                                                mr: 1,
+                                                display: "flex",
+                                                alignItems: "center",
+                                                gap: 2,
+                                                p: "16px 24px",
+                                                userSelect: "none",
+                                                width: "max-content",
+                                                borderRadius: "50px",
+                                                wordBreak: "break-word",
+                                                // bgcolor: theme.trello.colorErrorOtherWarmer,
+                                                border: `1px solid ${alpha(theme.trello.colorErrorOtherStart, 0.5)}`,
+                                            }}
+                                        >
+                                            <NotificationsActiveOutlinedIcon />
+                                            <Box sx={{ flex: 1, display: "flex", flexDirection: "column" }}>
+                                                {bulletin.bulletin}
+                                            </Box>
+                                        </Box>
                                     </Box>
-                                    {/* -------------- BTN DELETE -------------- */}
-                                    <Typography variant="span" sx={{ userSelect: "none" }}>
-                                        {isAdmin && (
-                                            <DeleteOutlinedIcon
-                                                onClick={() => handleDeleteCardComment(bulletin)}
-                                                fontSize="small"
-                                                sx={{
-                                                    p: "4px",
-                                                    width: "30px",
-                                                    height: "30px",
-                                                    color: (theme) => theme.trello.colorDarkNavyGray,
-                                                    "&:hover": {
-                                                        color: (theme) => theme.trello.colorSkyMist,
-                                                        cursor: "pointer",
-                                                    },
-                                                }}
-                                            />
-                                        )}
-                                    </Typography>
                                 </Box>
+                                {/* -------------- BTN DELETE -------------- */}
+                                <Typography variant="span" sx={{ userSelect: "none" }}>
+                                    {isAdmin && (
+                                        <DeleteOutlinedIcon
+                                            onClick={() => handleDeleteCardComment(bulletin)}
+                                            fontSize="small"
+                                            sx={{
+                                                p: "4px",
+                                                width: "30px",
+                                                height: "30px",
+                                                color: theme.trello.colorSnowGray,
+                                                "&:hover": {
+                                                    color: theme.trello.colorSkyMist,
+                                                    cursor: "pointer",
+                                                },
+                                            }}
+                                        />
+                                    )}
+                                </Typography>
                             </Box>
                         </Box>
                     ))}

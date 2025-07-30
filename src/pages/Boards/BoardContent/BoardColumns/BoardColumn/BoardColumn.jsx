@@ -1,6 +1,7 @@
 import React from "react";
 import Box from "@mui/material/Box";
 import { useSelector } from "react-redux";
+import { alpha } from "@mui/material/styles";
 // --------------------- IMPORT COMPONENTS ---------------------
 import HeaderCard from "./ListCards/CardItem/HeaderCard";
 import ListCards from "./ListCards/ListCards";
@@ -45,11 +46,10 @@ const BoardColumn = ({ column }) => {
         <div ref={setNodeRef} style={dndKitColumnStyles}>
             <Box
                 sx={{
-                    minWidth: "300px",
-                    maxWidth: "300px",
-                    bgcolor: (theme) => theme.trello.colorIronBlue,
-                    border: (theme) => `1px solid ${theme.trello.colorAshGray}`,
-                    boxShadow: (theme) => theme.trello.boxShadowPrimary,
+                    minWidth: "350px",
+                    maxWidth: "350px",
+                    bgcolor: (theme) => theme.trello.colorMidnightBlue,
+                    border: (theme) => `1px solid ${alpha(theme.trello.colorErrorOtherStart, 0.5)}`,
                     ml: 2,
                     borderRadius: "6px",
                     height: "fit-content",

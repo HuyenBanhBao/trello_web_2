@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { toast } from "react-toastify";
 import Box from "@mui/material/Box";
+import { alpha } from "@mui/material/styles";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import BoardColumn from "./BoardColumn/BoardColumn";
@@ -90,7 +91,8 @@ const BoardColumns = ({ columns }) => {
             <SortableContext items={columns?.map((c) => c._id)} strategy={horizontalListSortingStrategy}>
                 <Box
                     sx={{
-                        background: (theme) => theme.trello.colorDustyCloud,
+                        background: (theme) => theme.trello.colorObsidianSlate,
+                        border: (theme) => `1px solid ${alpha(theme.trello.colorErrorOtherStart, 0.4)}`,
                         width: "100%",
                         height: "100%",
                         display: "flex",
@@ -99,8 +101,15 @@ const BoardColumns = ({ columns }) => {
                         borderRadius: "8px",
                         p: 2,
                         pl: 0,
-                        boxShadow: (theme) => theme.trello.boxShadowBulletin,
+                        // boxShadow: (theme) => theme.trello.boxShadowBulletin,
                         "&::-webkit-scrollbar-track": { m: 2 },
+                        "&::-webkit-scrollbar-thumb": {
+                            background: (theme) => alpha(theme.trello.colorErrorOtherWarm, 0.2),
+                            borderRadius: "99px",
+                        },
+                        "&::-webkit-scrollbar-thumb:hover": {
+                            background: (theme) => alpha(theme.trello.colorErrorOtherWarm, 0.5),
+                        },
                     }}
                 >
                     {columns?.map((column) => (

@@ -14,6 +14,8 @@ import { useSelector } from "react-redux";
 import ReportOutlinedIcon from "@mui/icons-material/ReportOutlined";
 import PowerOffOutlinedIcon from "@mui/icons-material/PowerOffOutlined";
 import FormatColorResetOutlinedIcon from "@mui/icons-material/FormatColorResetOutlined";
+import { alpha } from "@mui/material/styles";
+import ErrorOutlineOutlinedIcon from "@mui/icons-material/ErrorOutlineOutlined";
 // ==================================== COMPONENT =======================================
 import { singleFileValidator } from "~/utils/validators";
 import VisuallyHiddenInput from "~/components/Form/VisuallyHiddenInput";
@@ -26,8 +28,8 @@ const SidebarItem = styled(Box)(({ theme }) => ({
     cursor: "pointer",
     fontSize: "14px",
     fontWeight: "600",
-    padding: "10px",
-    borderRadius: "4px",
+    padding: "10px 20px",
+    borderRadius: "50px",
     userSelect: "none",
     transition: "all 0.3s ease",
     boxShadow: theme.trello.boxShadowBtn,
@@ -57,19 +59,19 @@ const NotifiError = ({ callAPIUpdateReportCard }) => {
             key: "electric",
             label: "Điện",
             icon: <PowerOffOutlinedIcon fontSize="small" />,
-            bgcolor: theme.trello.colorErrorElecDark,
+            bgcolor: theme.trello.colorRedClay,
         },
         {
             key: "water",
             label: "Nước",
             icon: <FormatColorResetOutlinedIcon fontSize="small" />,
-            bgcolor: theme.trello.colorErrorWater,
+            bgcolor: theme.trello.colorDotBlueBase,
         },
         {
             key: "other",
             label: "Vấn đề khác",
             icon: <ReportOutlinedIcon fontSize="small" />,
-            bgcolor: theme.trello.colorErrorOtherWarm,
+            bgcolor: theme.trello.colorErrorOtherStrong,
         },
     ];
 
@@ -122,11 +124,11 @@ const NotifiError = ({ callAPIUpdateReportCard }) => {
         const hasImage = !!fileImage;
         const hasContent = Object.keys(changedValuesWarn).length > 0;
         if (!hasImage) {
-            toast.error("Bạn cần mô tả vấn đề !");
+            toast.error("Bạn cần gửi thêm 1 ảnh !");
             return;
         }
         if (!hasContent) {
-            toast.error("Bạn cần gửi thêm 1 ảnh !");
+            toast.error("Bạn cần mô tả vấn đề !");
             return;
         }
         if (hasImage) {
@@ -160,32 +162,40 @@ const NotifiError = ({ callAPIUpdateReportCard }) => {
     // ===============================================================================================
     return (
         <>
-            <Typography
-                variant="span"
+            <Box
                 sx={{
                     display: "Flex",
                     alignItems: "center",
                     fontWeight: "600",
                     fontSize: "16px",
                     gap: 2,
-                    mb: 1,
+                    m: 1,
+                    px: 1,
+                    py: 0.5,
                     userSelect: "none",
+                    bgcolor: theme.trello.colorErrorOtherStrong,
+                    borderRadius: "8px",
+                    color: theme.trello.colorMidnightBlue,
                 }}
             >
-                Warning!!! <Typography sx={{ fontStyle: "italic" }}>(Gửi cho Admin)</Typography>
-            </Typography>
-            <Stack direction="column" spacing={1}>
+                <ErrorOutlineOutlinedIcon />
+                <Typography variant="span">Warning!!!</Typography>
+                <Typography variant="span" sx={{ fontStyle: "italic", fontSize: "12px", fontWeight: "400" }}>
+                    (Gửi cho Admin)
+                </Typography>
+            </Box>
+            <Box sx={{ display: "flex", gap: 1, p: 1, pb: 2, flexWrap: "wrap" }}>
                 {items.map((item) => (
                     <SidebarItem
                         key={item.key}
-                        sx={{ bgcolor: item.bgcolor }}
+                        sx={{ bgcolor: item.bgcolor, color: theme.trello.colorSnowGray }}
                         onClick={() => handleOpenModal(item.key)}
                     >
                         {item.icon}
                         {item.label}
                     </SidebarItem>
                 ))}
-            </Stack>
+            </Box>
 
             <Modal open={isOpen} aria-labelledby="modal-send-warn" aria-describedby="modal-send-warn-desc">
                 <Box

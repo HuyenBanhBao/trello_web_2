@@ -10,6 +10,7 @@ import TextField from "@mui/material/TextField";
 import PaidOutlinedIcon from "@mui/icons-material/PaidOutlined";
 import { Button } from "@mui/material";
 import Collapse from "@mui/material/Collapse";
+import { alpha } from "@mui/material/styles";
 // ----------------------------------------------- ICON -----------------------------------------------
 import {
     ElectricalServicesOutlined as ElectricIcon,
@@ -34,6 +35,7 @@ const CardEditableInfo = ({ setServiceFormCardData, handleSaveInfoServiceRoom, i
         userRoom: activeCard?.userRoom || "",
         contract: activeCard?.contract || "",
         numElec: activeCard?.numElec || "",
+        numElecNew: activeCard?.numElecNew || "",
     };
 
     const total =
@@ -44,7 +46,8 @@ const CardEditableInfo = ({ setServiceFormCardData, handleSaveInfoServiceRoom, i
                   (Number(activeColumn?.priceWash || 0) +
                       Number(activeColumn?.priceTrash || 0) +
                       Number(activeColumn?.priceWater || 0)) +
-              Number(activeColumn?.priceElec || 0) * Number(activeCard?.numElec || 0)
+              Number(activeColumn?.priceElec || 0) *
+                  (Number(activeCard?.numElecNew || 0) - Number(activeCard?.numElec || 0))
             : 0;
 
     const [formValues, setFormValues] = useState(initialFormValues);
@@ -55,6 +58,7 @@ const CardEditableInfo = ({ setServiceFormCardData, handleSaveInfoServiceRoom, i
             userRoom: formValues.userRoom,
             contract: formValues.contract,
             numElec: formValues.numElec,
+            numElecNew: formValues.numElecNew,
         };
         setServiceFormCardData(updateServiceCard);
     }, [formValues]);
@@ -65,54 +69,58 @@ const CardEditableInfo = ({ setServiceFormCardData, handleSaveInfoServiceRoom, i
 
     const fieldsCard = [
         {
-            label: "Phòng",
+            label: "Giá phòng:",
             icon: <MoneyIcon />,
             valueKey: "priceRoom",
             suffix: "k /tháng",
-            bg: "#D4CFC9",
-            size: 9,
+            size: 12,
         },
         {
-            label: null,
+            label: "Người:",
             icon: <UserIcon />,
             valueKey: "userRoom",
             suffix: "",
-            bg: "#E1E4E8",
-            size: 3,
-        },
-        {
-            label: "H/Đ: ",
-            icon: <CalendarIcon />,
-            valueKey: "contract",
-            suffix: "tháng",
-            bg: "#E5E5E5",
             size: 6,
         },
         {
-            label: "Số điện:",
+            label: "H/Đ:",
+            valueKey: "contract",
+            suffix: "tháng",
+            size: 6,
+        },
+        {
+            label: "Số công tơ điện tháng trước:",
+            cl: theme.trello.colorErrorOtherStrong,
+            fw: "600",
             icon: null,
             valueKey: "numElec",
             suffix: "",
-            bg: "#DCD3C4",
-            size: 6,
+            size: 12,
+        },
+        {
+            label: "Số công tơ điện tháng này:",
+            cl: theme.trello.colorErrorOtherStrong,
+            fw: "600",
+            icon: null,
+            valueKey: "numElecNew",
+            suffix: "",
+            size: 12,
         },
     ];
     const fieldsColumn = [
         {
-            label: null,
+            label: "Điện:",
             icon: <ElectricIcon />,
             valueKey: "priceElec",
             suffix: "k /số",
-            bg: "#DCD3C4",
-            size: 5,
+            size: 12,
         },
         {
-            label: null,
+            label: "Nước:",
             icon: <WaterIcon />,
             valueKey: "priceWater",
             suffix: "k /ng",
-            bg: "#D6EAE9",
-            size: 7,
+            size: 12,
         },
         {
             label: "Máy giặt:",
@@ -120,31 +128,21 @@ const CardEditableInfo = ({ setServiceFormCardData, handleSaveInfoServiceRoom, i
             valueKey: "priceWash",
             suffix: "k /ng",
             bg: "#CED4DA",
-            size: 7,
+            size: 12,
         },
         {
-            label: null,
+            label: "Rác:",
             icon: <TrashIcon />,
             valueKey: "priceTrash",
             suffix: "k /ng",
-            bg: "#E5E5E5",
-            size: 5,
+            size: 12,
         },
         {
-            label: "Đã cọc",
-            icon: <CreditCardIcon />,
-            valueKey: "deposit",
-            suffix: "k",
-            bg: "#E5E5E5",
-            size: 6,
-        },
-        {
-            label: null,
+            label: "Wifi:",
             icon: <WifiIcon />,
             valueKey: "priceWifi",
             suffix: "k /phòng",
-            bg: "#D0E1E1",
-            size: 6,
+            size: 12,
         },
     ];
 
@@ -156,13 +154,22 @@ const CardEditableInfo = ({ setServiceFormCardData, handleSaveInfoServiceRoom, i
                 flex: 3,
                 mb: 2,
                 p: 1,
-                borderRadius: "4px",
-                // border: (theme) => `1px solid ${theme.trello.colorSnowGray}`,
-                backgroundColor: (theme) => (theme.palette.mode === "dark" ? "#1A2027" : theme.trello.colorAshGray),
-                boxShadow: (theme) => theme.trello.boxShadowBtn,
+                borderRadius: "8px",
+                backgroundColor: theme.trello.colorMidnightBlue,
+                border: `1px solid ${alpha(theme.trello.colorErrorOtherStart, 0.5)}`,
             }}
         >
-            <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
+            <Box
+                sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 1.5,
+                    bgcolor: theme.trello.colorErrorOtherStrong,
+                    borderRadius: "8px",
+                    px: 1,
+                    color: theme.trello.colorMidnightBlue,
+                }}
+            >
                 <PaidOutlinedIcon fontSize="small" />
                 <Typography variant="span" sx={{ fontWeight: "600", userSelect: "none", mr: "auto", my: 0.5 }}>
                     Phí dịch vụ
@@ -170,17 +177,31 @@ const CardEditableInfo = ({ setServiceFormCardData, handleSaveInfoServiceRoom, i
             </Box>
             <Box sx={{ flexGrow: 1, mt: 1 }}>
                 <Grid container spacing={1}>
+                    {/* ------------------------------------- */}
                     {fieldsCard.map((item, index) => (
                         <Grid item xs={item.size} key={index}>
                             <Box
                                 sx={{
-                                    ...theme.trello?.textFieldEdiable,
-                                    backgroundColor: item.bg,
+                                    p: "0 8px",
                                     display: "flex",
+                                    gap: 1,
                                     alignItems: "center",
+                                    whiteSpace: "nowrap",
+                                    borderRadius: "8px",
+                                    border: `1px solid ${alpha(theme.trello.colorErrorOtherStart, 0.5)}`,
                                 }}
                             >
-                                {item.label && <span>{item.label}</span>}
+                                {item.label && (
+                                    <Typography
+                                        variant="span"
+                                        sx={{
+                                            color: item.cl ? item.cl : "inherit",
+                                            fontWeight: item.fw ? item.fw : "inherit",
+                                        }}
+                                    >
+                                        {item.label}
+                                    </Typography>
+                                )}
                                 <EditableInput
                                     value={formValues[item.valueKey] || ""}
                                     onChangedValue={item.valueKey ? handleChange(item.valueKey) : undefined}
@@ -190,28 +211,49 @@ const CardEditableInfo = ({ setServiceFormCardData, handleSaveInfoServiceRoom, i
                             </Box>
                         </Grid>
                     ))}
+
+                    {/* ---------------- BTN ---------------- */}
                     {isAdmin && (
                         <Grid item xs={12}>
                             <Button
                                 //
-                                sx={{ ...theme.trello.btnPrimary, display: "block", width: "100%", mb: 2 }}
+                                sx={{
+                                    ...theme.trello.btnPrimary,
+                                    display: "block",
+                                    width: "100%",
+                                    fontWeight: "600",
+                                }}
                                 onClick={handleSaveInfoServiceRoom}
                             >
                                 SAVE
                             </Button>
                         </Grid>
                     )}
+                </Grid>
+                <Grid
+                    container
+                    spacing={0}
+                    sx={{ bgcolor: theme.trello.colorGunmetalBlue, p: 1, borderRadius: "8px", mt: 2 }}
+                >
+                    {/* ------------------------------------- */}
                     {fieldsColumn.map((item, index) => (
                         <Grid item xs={item.size} key={index}>
                             <Box
                                 sx={{
-                                    ...theme.trello?.textFieldEdiable,
-                                    backgroundColor: item.bg,
+                                    p: "0 8px",
                                     display: "flex",
+                                    gap: 1,
                                     alignItems: "center",
+                                    whiteSpace: "nowrap",
+                                    // borderRadius: "8px",
+                                    borderBottom: `1px solid ${alpha(theme.trello.colorErrorOtherStart, 0.5)}`,
                                 }}
                             >
-                                {item.label && <span>{item.label}</span>}
+                                {item.label && (
+                                    <Typography variant="span" sx={{ display: "block", mr: "auto" }}>
+                                        {item.label}
+                                    </Typography>
+                                )}
                                 <TextField
                                     //
                                     value={activeColumn[item.valueKey] || ""}
@@ -224,7 +266,7 @@ const CardEditableInfo = ({ setServiceFormCardData, handleSaveInfoServiceRoom, i
                                         "& label": {},
                                         "& input": { fontSize: "16px", fontWeight: "bold" },
                                         "&.card-title-modal .MuiOutlinedInput-input": {
-                                            color: (theme) => theme.trello.colorSlateBlue,
+                                            color: (theme) => theme.trello.colorSnowGray,
                                         },
                                         "& .MuiOutlinedInput-root": {
                                             backgroundColor: "transparent",
@@ -239,9 +281,11 @@ const CardEditableInfo = ({ setServiceFormCardData, handleSaveInfoServiceRoom, i
                                             "& fieldset": { borderColor: "transparent" },
                                         },
                                         "& .MuiOutlinedInput-input": {
+                                            ml: "auto",
+                                            display: "block",
                                             px: "6px",
-                                            color: (theme) => theme.trello.colorSlateBlue,
-                                            textAlign: "center",
+                                            color: (theme) => theme.trello.colorSnowGray,
+                                            textAlign: "end",
                                             overflow: "hidden",
                                             whiteSpace: "nowrap",
                                             textOverflow: "ellipsis",
@@ -253,6 +297,9 @@ const CardEditableInfo = ({ setServiceFormCardData, handleSaveInfoServiceRoom, i
                             </Box>
                         </Grid>
                     ))}
+                </Grid>
+                <Grid container spacing={1}>
+                    {/* ------------------------------------- */}
                     <Grid item xs={12}>
                         <Box
                             sx={{
@@ -262,42 +309,31 @@ const CardEditableInfo = ({ setServiceFormCardData, handleSaveInfoServiceRoom, i
                                 mt: 1,
                                 fontSize: "16px",
                                 fontWeight: "600",
-                                color: (theme) => theme.trello.colorLemonChiffon,
+                                color: (theme) => theme.trello.colorSnowGray,
                             }}
                         >
                             <Typography
                                 variant="span"
                                 sx={{
-                                    p: "8px 15px",
-                                    borderRadius: "6px",
-                                    bgcolor:
-                                        total === 0
-                                            ? (theme) => theme.trello.colorRedClay
-                                            : (theme) => theme.trello.colorOliveGreenDark,
-                                    boxShadow: (theme) => theme.trello.boxShadowPrimary,
-                                }}
-                            >
-                                Total:
-                            </Typography>
-                            <Typography
-                                variant="span"
-                                sx={{
                                     flex: 1,
                                     py: "8px",
-                                    borderRadius: "6px",
+                                    fontSize: "18px",
+                                    borderRadius: "8px",
                                     bgcolor:
                                         total === 0
                                             ? (theme) => theme.trello.colorRedClay
-                                            : (theme) => theme.trello.colorOliveGreenDark,
+                                            : (theme) => theme.trello.colorRevenueGreen,
                                     boxShadow: (theme) => theme.trello.boxShadowPrimary,
                                     textAlign: "center",
                                 }}
                             >
+                                {"Tổng: "}
                                 {total.toLocaleString("vi-VN")}
                                 {".000 đ"}
                             </Typography>
                         </Box>
                     </Grid>
+                    {/* ------------------------------------- */}
                 </Grid>
             </Box>
             {!isAdmin && (

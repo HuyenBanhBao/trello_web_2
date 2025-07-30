@@ -33,12 +33,12 @@ const AvatarApp = () => {
                         variant="span"
                         sx={{
                             display: "inline-block",
-                            fontSize: "1.2rem",
+                            fontSize: "20px",
                             fontWeight: "bold",
                             color: (theme) => theme.trello.primaryColorTextBar,
                         }}
                     >
-                        Trello
+                        Smart Bamboo
                     </Typography>
                 </Box>
             </Link>

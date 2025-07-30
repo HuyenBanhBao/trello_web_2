@@ -3,6 +3,8 @@ import Box from "@mui/material/Box";
 // --------------------- IMPORT COMPONENTS -------------------------
 import AppBarItemLeft from "./AppBarItems/AppBarItemLeft";
 import AppBarItemRight from "./AppBarItems/AppBarItemRight";
+import { Typography } from "@mui/material";
+import { alpha } from "@mui/material/styles";
 // --------------------- MAIN COMPONENTS -------------------------
 const AppBar = () => {
     return (
@@ -17,17 +19,28 @@ const AppBar = () => {
                     justifyContent: "space-between",
                     gap: 2,
                     overflowX: "auto",
-                    borderBottom: "1px solid ",
-                    borderBottomColor: (theme) => theme.trello.primaryColorTextBar,
-                    background: (theme) => theme.trello.colorDarkNavyGray,
+                    borderBottom: (theme) => `1px solid ${alpha(theme.trello.colorErrorOtherStart, 0.5)}`,
+                    background: (theme) => theme.trello.colorMidnightBlue,
                 }}
             >
                 {/* ------------------------- APP BAR LEFT ------------------------- */}
-                <Box sx={{ flex: 2, minWidth: 0 }}>
+                <Box>
                     <AppBarItemLeft />
                 </Box>
-                {/* ------------------------- MODE SELECT ------------------------- */}
-                <Box sx={{ flex: 1, minWidth: 0 }}>
+                {/* ------------------------- slogan ------------------------- */}
+                <Typography
+                    variant="span"
+                    sx={{
+                        fontSize: "18px",
+                        fontStyle: "italic",
+                        color: (theme) => theme.trello.colorCloudySteel,
+                        //
+                    }}
+                >
+                    “Quản lý trọ thông minh, an tâm mỗi ngày”
+                </Typography>
+                {/* ------------------------- APP BAR RIGHT ------------------------- */}
+                <Box>
                     <AppBarItemRight />
                 </Box>
             </Box>
