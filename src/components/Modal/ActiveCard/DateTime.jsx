@@ -2,41 +2,41 @@ import { useState } from "react";
 import { Box } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import dayjs from "dayjs";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+// import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+// import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+// import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { toast } from "react-toastify";
 import { useSelector } from "react-redux";
 import { selectCurrentActiveCard } from "~/redux/activeCard/activeCardSlice";
 
 // =================================================================================================
 const DateTime = ({ onAddDateContract }) => {
-    const theme = useTheme();
-    const activeCard = useSelector(selectCurrentActiveCard);
+    // const theme = useTheme();
+    // const activeCard = useSelector(selectCurrentActiveCard);
 
-    const initialDateValue = {
-        contractDate: typeof activeCard?.contractDate === "number" ? dayjs(activeCard.contractDate) : dayjs(),
-        expireDate: typeof activeCard?.expireDate === "number" ? dayjs(activeCard.expireDate) : dayjs(),
-    };
+    // const initialDateValue = {
+    //     contractDate: typeof activeCard?.contractDate === "number" ? dayjs(activeCard.contractDate) : dayjs(),
+    //     expireDate: typeof activeCard?.expireDate === "number" ? dayjs(activeCard.expireDate) : dayjs(),
+    // };
 
-    const [contractDateTime, setContractDateTime] = useState(initialDateValue.contractDate); // Ngày ký
-    const [expireDateTime, setExpireDateTime] = useState(initialDateValue.expireDate); // Ngày hết hạn
+    // const [contractDateTime, setContractDateTime] = useState(initialDateValue.contractDate); // Ngày ký
+    // const [expireDateTime, setExpireDateTime] = useState(initialDateValue.expireDate); // Ngày hết hạn
 
-    // ------------------------------- FUNC UPDATE DATA -------------------------------
+    // // ------------------------------- FUNC UPDATE DATA -------------------------------
 
-    const handleSave = async () => {
-        const payload = {
-            contractDate: contractDateTime?.valueOf(),
-            expireDate: expireDateTime?.valueOf(),
-        };
-        onAddDateContract(payload).then(() => {
-            toast.success("Đã lưu!!");
-        });
-    };
+    // const handleSave = async () => {
+    //     const payload = {
+    //         contractDate: contractDateTime?.valueOf(),
+    //         expireDate: expireDateTime?.valueOf(),
+    //     };
+    //     onAddDateContract(payload).then(() => {
+    //         toast.success("Đã lưu!!");
+    //     });
+    // };
     // =============================================================================================
     return (
         <Box sx={{ display: "flex", gap: 2, justifyContent: "center" }}>
-            <LocalizationProvider dateAdapter={AdapterDayjs}>
+            {/* <LocalizationProvider dateAdapter={AdapterDayjs}>
                 <DatePicker
                     label="Ngày ký hợp đồng"
                     value={contractDateTime}
@@ -144,7 +144,7 @@ const DateTime = ({ onAddDateContract }) => {
                 }}
             >
                 Lưu
-            </Box>
+            </Box> */}
         </Box>
     );
 };
