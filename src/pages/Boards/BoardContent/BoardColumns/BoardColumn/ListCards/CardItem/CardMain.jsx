@@ -6,6 +6,7 @@ import CardContent from "@mui/material/CardContent";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import { useTheme } from "@mui/material/styles";
+import { alpha } from "@mui/material/styles";
 // -------------------------- ICONS --------------------------
 import NewspaperIcon from "@mui/icons-material/Newspaper";
 import ForumIcon from "@mui/icons-material/Forum";
@@ -29,7 +30,8 @@ const CardMain = ({ card, column }) => {
     // ckeck use is member or admin or not
     const activeBoard = useSelector(selectCurrentActiveBoard);
     const activeUser = useSelector(selectCurrentUser);
-    const isMember = card?.memberIds?.includes(activeUser._id);
+    // const isMember = card?.memberIds?.includes(activeUser._id);
+    const isMember = card?.memberIds?.some((member) => member.userId.toString() === activeUser._id.toString());
     const isAdmin = activeBoard?.ownerIds.includes(activeUser._id);
 
     // ckeck use in ROOM or not
@@ -87,7 +89,13 @@ const CardMain = ({ card, column }) => {
                     cursor: "grab",
                     overflow: "unset",
                     borderRadius: "8px",
-                    boxShadow: theme.trello.boxShadowBulletin,
+                    bgcolor: theme.trello.colorGunmetalBlue,
+                    border: `1px solid ${alpha(theme.trello.colorErrorOtherStart, 0.5)}`,
+                    transition: "all ease 0.3s",
+                    "&:hover": {
+                        bgcolor: theme.trello.colorMidnightBlue,
+                    },
+                    // boxShadow: theme.trello.boxShadowBulletin,
                 }}
             >
                 {/* Nếu cần hiện image card thì mở ra */}
@@ -123,11 +131,11 @@ const CardMain = ({ card, column }) => {
                                                 theme.trello.colorErrorElecDarker,
                                                 theme.trello.colorRedClay
                                             ),
-                                            width: "16px",
-                                            height: "16px",
+                                            width: "12px",
+                                            height: "12px",
                                             borderRadius: "50%",
                                         }}
-                                    ></Box>
+                                    />
                                 )}
                                 {isWater && (
                                     <Box
@@ -136,11 +144,11 @@ const CardMain = ({ card, column }) => {
                                                 theme.trello.colorDotBlueLight,
                                                 theme.trello.colorDotBlueBase
                                             ),
-                                            width: "16px",
-                                            height: "16px",
+                                            width: "12px",
+                                            height: "12px",
                                             borderRadius: "50%",
                                         }}
-                                    ></Box>
+                                    />
                                 )}
                                 {isOther && (
                                     <Box
@@ -149,11 +157,11 @@ const CardMain = ({ card, column }) => {
                                                 theme.trello.colorErrorOtherStart,
                                                 theme.trello.colorErrorOtherStrong
                                             ),
-                                            width: "16px",
-                                            height: "16px",
+                                            width: "12px",
+                                            height: "12px",
                                             borderRadius: "50%",
                                         }}
-                                    ></Box>
+                                    />
                                 )}
                                 {isUserInRoom ? (
                                     <Box
@@ -167,7 +175,7 @@ const CardMain = ({ card, column }) => {
                                             width: "24px",
                                             height: "24px",
                                             color: theme.trello.colorSnowGray,
-                                            bgcolor: theme.trello.colorSlateBlue,
+                                            bgcolor: theme.trello.colorRevenueGreen,
                                             boxShadow: theme.trello.boxShadowPrimary,
                                         }}
                                     >
@@ -219,18 +227,21 @@ const CardMain = ({ card, column }) => {
                                     gap: 1,
                                     flex: 1,
                                     fontWeight: "600",
-                                    color: theme.trello.colorDarkNavyGray,
+                                    color: theme.trello.colorSnowGray,
                                 }}
                             >
                                 PHÒNG
                                 <Typography
+                                    variant="span"
                                     sx={{
                                         display: "block",
                                         p: "5px 10px",
+                                        fontSize: "18px",
                                         fontWeight: "600",
                                         borderRadius: "6px",
-                                        color: theme.trello.colorSnowGray,
-                                        bgcolor: isUserInRoom ? theme.trello.colorSlateBlue : theme.trello.colorRedClay,
+                                        color: theme.trello.colorMidnightBlue,
+                                        // bgcolor: isUserInRoom ? theme.trello.colorSlateBlue : theme.trello.colorRedClay,
+                                        bgcolor: theme.trello.colorErrorOtherWarmer,
                                         boxShadow: theme.trello.boxShadowPrimary,
                                     }}
                                 >
@@ -246,7 +257,7 @@ const CardMain = ({ card, column }) => {
                     <CardActions sx={{ p: "0 4px 8px 4px", display: "flex" }}>
                         {!!card?.bulletins?.length && (
                             <Button
-                                sx={{ color: theme.trello.colorSlateBlue }}
+                                sx={{ color: theme.trello.colorIronBlue }}
                                 startIcon={<NewspaperIcon />}
                                 size="small"
                             >
@@ -254,13 +265,13 @@ const CardMain = ({ card, column }) => {
                             </Button>
                         )}
                         {!!card?.comments?.length && (
-                            <Button sx={{ color: theme.trello.colorSlateBlue }} startIcon={<ForumIcon />} size="small">
+                            <Button sx={{ color: theme.trello.colorIronBlue }} startIcon={<ForumIcon />} size="small">
                                 {card?.comments?.length}
                             </Button>
                         )}
                         {Number(card?.userRoom) > 0 && (
                             <Button
-                                sx={{ color: theme.trello.colorSlateBlue }}
+                                sx={{ color: theme.trello.colorIronBlue }}
                                 startIcon={<GroupOutlinedIcon />}
                                 size="small"
                             >

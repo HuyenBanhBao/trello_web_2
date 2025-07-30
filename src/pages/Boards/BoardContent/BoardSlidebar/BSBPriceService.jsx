@@ -7,6 +7,7 @@ import Collapse from "@mui/material/Collapse";
 import { useEffect, useState } from "react";
 import { Box } from "@mui/material";
 import { useSelector } from "react-redux";
+import { alpha } from "@mui/material/styles";
 import { selectCurrentActiveColumn } from "~/redux/aciveColumn/activeColumnSlice";
 // ----------------------------------------------- ICON -----------------------------------------------
 import {
@@ -105,10 +106,9 @@ const BSBPriceService = ({ onHandleupdateSercolumn }) => {
                 flex: 3,
                 mb: 2,
                 p: 1,
-                color: theme.trello.colorFogWhiteBlue,
-                borderRadius: "4px",
-                backgroundColor: theme.trello.colorAshGray,
-                boxShadow: theme.trello.boxShadowBtn,
+                borderRadius: "8px",
+                backgroundColor: theme.trello.colorObsidianSlate,
+                border: `1px solid ${alpha(theme.trello.colorErrorOtherStart, 0.5)}`,
             }}
         >
             <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 1.5 }}>
@@ -120,8 +120,9 @@ const BSBPriceService = ({ onHandleupdateSercolumn }) => {
                             display: "flex",
                             alignItems: "center",
                             mt: "2px",
+                            mb: 1.5,
                             gap: 1.5,
-                            color: theme.trello.colorDarkNavyGray,
+                            color: theme.trello.colorErrorOtherStrong,
                         }}
                     >
                         <PaidOutlinedIcon />
@@ -149,11 +150,16 @@ const BSBPriceService = ({ onHandleupdateSercolumn }) => {
                             <Box
                                 key={index}
                                 sx={{
-                                    ...theme.trello?.textFieldEdiable,
-                                    mt: 1,
-                                    backgroundColor: item.bg,
+                                    p: "0 8px",
                                     display: "flex",
+                                    mb: 0.8,
+                                    gap: 1,
+                                    bgcolor: theme.trello.colorMidnightBlue,
                                     alignItems: "center",
+                                    whiteSpace: "nowrap",
+                                    borderRadius: "8px",
+                                    color: theme.trello.colorSnowGray,
+                                    border: `1px solid ${alpha(theme.trello.colorErrorOtherStart, 0.5)}`,
                                 }}
                             >
                                 <EditableInput
@@ -169,11 +175,11 @@ const BSBPriceService = ({ onHandleupdateSercolumn }) => {
                                 ...theme.trello.btnPrimary,
                                 display: "block",
                                 fontWeight: "600",
-                                m: "8px 2px 8px auto",
-                                bgcolor: theme.trello.colorSlateBlue,
+                                m: "8px 2px 0px auto",
+                                bgcolor: theme.trello.colorErrorOtherStrong,
                                 "&:hover": {
                                     boxShadow: theme.trello.boxShadowBtnHover,
-                                    bgcolor: theme.trello.colorSlateBlue,
+                                    bgcolor: theme.trello.colorErrorOtherStrong,
                                 },
                             }}
                             onClick={handleSaveInfoServiceRoom}

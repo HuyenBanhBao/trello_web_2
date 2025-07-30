@@ -72,6 +72,19 @@ export const activeBoardSlice = createSlice({
                 }
             }
         },
+        updateMemberInBoard: (state, action) => {
+            const incomingUser = action.payload;
+            // Tìm index của member cần cập nhật
+            const memberIndex = state.currentActiveBoard.members.findIndex((member) => member._id === incomingUser._id);
+            // Nếu tìm thấy, cập nhật thông tin
+            if (memberIndex !== -1) {
+                Object.keys(incomingUser).forEach((key) => {
+                    if (key !== "_id") {
+                        state.currentActiveBoard.members[memberIndex][key] = incomingUser[key];
+                    }
+                });
+            }
+        },
         setOriginalBoard: (state, action) => {
             state.originalBoard = action.payload;
         },
@@ -128,6 +141,7 @@ export const {
     updateCardInBoard,
     updateColumnInBoard,
     setOriginalBoard,
+    updateMemberInBoard,
 } = activeBoardSlice.actions;
 // Selectors là những hàm giúp lấy ra dữ liệu từ trong Redux Store, dành cho các components bên dưới gọi bằng hook useSelector()
 export const selectCurrentActiveBoard = (state) => {

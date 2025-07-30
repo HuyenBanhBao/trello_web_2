@@ -15,7 +15,7 @@ const AppBarItemRight = () => {
 
     return (
         <>
-            <Box sx={{ display: "flex", alignItems: "center", justifyContent: "flex-end" }}>
+            <Box sx={{ display: "flex", alignItems: "center", justifyContent: "flex-end", gap: 2 }}>
                 {isAdminFake && (
                     <Box sx={{ display: { xs: "none", sm: "flex" }, mr: 1 }}>
                         <AutoCompleteSearchBoard />

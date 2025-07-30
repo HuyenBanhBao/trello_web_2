@@ -1,6 +1,7 @@
 // import { createTheme } from "@mui/material/styles";
 // import { cyan, deepOrange, teal, orange } from "@mui/material/colors";
 import { experimental_extendTheme as extendTheme } from "@mui/material/styles";
+import { alpha } from "@mui/material/styles";
 
 // --------------------------- CONSTANTS ---------------------------
 const APP_BAR_HEIGHT = "58px";
@@ -99,6 +100,7 @@ const theme = extendTheme({
         colorDotBlueBase: "#2196f3", // xanh dương nền
         // colorErrorOther: "#f8da8b",
 
+        colorRevenueGreen: "#2E8B57",
         colorLemonChiffon: "#FEF6C7", // Kem nhạt text
         colorOliveGreen50: "#D8E4C2", // Xanh ô-liu rất nhạt
         colorOliveGreen100: "#A3B18A", // Xanh ô-liu nhạt
@@ -148,14 +150,14 @@ const theme = extendTheme({
 
         // BUTTON STYLES
         btnPrimary: {
-            color: (theme) => theme.trello.colorDustyCloud,
-            backgroundColor: (theme) => theme.trello.colorSlateBlue,
+            color: (theme) => theme.trello.colorErrorText,
+            backgroundColor: (theme) => theme.trello.colorErrorOtherStrong,
             boxShadow: (theme) => theme.trello.boxShadowBtn,
             transition: "all 0.25s ease-in-out",
             "&:hover": {
                 borderColor: "white",
                 boxShadow: (theme) => theme.trello.boxShadowBtnHover,
-                backgroundColor: (theme) => theme.trello.colorSlateBlue,
+                backgroundColor: (theme) => theme.trello.colorErrorOtherStrong,
             },
         },
         btnPrimaryCancel: {
@@ -213,27 +215,23 @@ const theme = extendTheme({
         },
 
         textFieldEdiable: {
-            display: "flex",
-            alignItems: "center",
-            fontWeight: "bold",
-            whiteSpace: "nowrap",
-            gap: 1,
             p: "0 8px",
-            color: (theme) => theme.trello.colorAshGray,
-            boxShadow: (theme) => theme.trello.boxShadowBulletin,
-            backgroundColor: (theme) => theme.trello.colorSkyMist,
+            display: "flex",
+            gap: 1,
+            alignItems: "center",
+            whiteSpace: "nowrap",
             borderRadius: "8px",
+            border: (theme) => `1px solid ${alpha(theme.trello.colorErrorOtherStart, 0.5)}`,
         },
         textFieldShowProfit: {
             display: "flex",
             alignItems: "center",
-            fontWeight: "bold",
+            fontWeight: "500",
             whiteSpace: "nowrap",
             gap: 1,
             p: "8px 10px",
             color: (theme) => theme.trello.colorLemonChiffon,
-            boxShadow: (theme) => theme.trello.boxShadowBulletin,
-            backgroundColor: (theme) => theme.trello.colorSageGreen,
+            border: (theme) => `1px solid ${alpha(theme.trello.colorRevenueGreen, 0.5)}`,
             borderRadius: "8px",
         },
 
@@ -275,11 +273,11 @@ const theme = extendTheme({
                         height: "6px",
                     },
                     "*::-webkit-scrollbar-thumb": {
-                        backgroundColor: "rgba(3, 37, 60, 0.5)",
+                        background: (theme) => alpha(theme.trello.colorErrorOtherWarm, 0.2),
                         borderRadius: "99px",
                     },
                     "*::-webkit-scrollbar-thumb:hover": {
-                        background: "rgba(3, 37, 60, 0.8)",
+                        background: (theme) => alpha(theme.trello.colorErrorOtherWarm, 0.5),
                     },
                 },
             },

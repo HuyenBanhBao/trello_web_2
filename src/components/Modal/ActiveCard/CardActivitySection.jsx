@@ -11,9 +11,9 @@ import Typography from "@mui/material/Typography";
 import { selectCurrentUser } from "~/redux/user/userSlice";
 import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined";
 import QuestionAnswerOutlinedIcon from "@mui/icons-material/QuestionAnswerOutlined";
-
+import { alpha } from "@mui/material/styles";
 // ===========================================================================================
-function CardActivitySection({ cardComments = [], onAddCardComment, onDeleteCardComment }) {
+function CardActivitySection({ cardComments = [], onAddCardComment, onDeleteCardComment, isAdmin }) {
     const currentUser = useSelector(selectCurrentUser);
     const theme = useTheme();
     // -------------------------------------- Add Card Comment --------------------------------------
@@ -84,14 +84,25 @@ function CardActivitySection({ cardComments = [], onAddCardComment, onDeleteCard
         <Box
             sx={{
                 mb: 2,
-                p: 1,
-                borderRadius: "4px",
-                // border: (theme) => `1px solid ${theme.trello.colorSnowGray}`,
-                backgroundColor: (theme) => theme.trello.colorAshGray,
-                boxShadow: (theme) => theme.trello.boxShadowBtn,
+                // p: 1,
+                borderRadius: "8px",
+                border: `1px solid ${alpha(theme.trello.colorErrorOtherStart, 0.5)}`,
+                bgcolor: theme.trello.colorMidnightBlue,
             }}
         >
-            <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
+            <Box
+                sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 1.5,
+                    m: 1,
+                    bgcolor: theme.trello.colorErrorOtherStrong,
+                    borderRadius: "8px",
+                    py: 0.5,
+                    px: 1,
+                    color: theme.trello.colorMidnightBlue,
+                }}
+            >
                 <QuestionAnswerOutlinedIcon />
                 <Typography variant="span" sx={{ fontWeight: "600", fontSize: "20px", userSelect: "none" }}>
                     Message
@@ -99,7 +110,7 @@ function CardActivitySection({ cardComments = [], onAddCardComment, onDeleteCard
             </Box>
 
             {/* Feature 04: Xử lý các hành động, ví dụ comment vào Card */}
-            <Box sx={{ mt: 2 }}>
+            <Box sx={{ p: 1 }}>
                 {/* Xử lý thêm comment vào Card */}
                 <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 2 }}>
                     <Avatar
@@ -111,7 +122,7 @@ function CardActivitySection({ cardComments = [], onAddCardComment, onDeleteCard
                         sx={{
                             mt: "4px",
                             "& .MuiOutlinedInput-root": {
-                                bgcolor: (theme) => (theme.palette.mode === "dark" ? "#33485D" : "transparent"),
+                                bgcolor: "transparent",
                                 padding: "8px 12px",
                                 borderRadius: "4px",
                                 border: "0.5px solid rgba(242, 242, 242, 0.3)",
@@ -150,11 +161,10 @@ function CardActivitySection({ cardComments = [], onAddCardComment, onDeleteCard
                 <Box
                     sx={{
                         py: 1.5,
-                        pl: 2,
-                        border: `2px solid ${theme.trello.colorIronBlue}`,
+                        px: 1,
+                        border: `1px solid ${theme.trello.colorIronBlue}`,
                         borderRadius: 1.5,
-                        backgroundColor: theme.trello.colorFrostGray,
-                        boxShadow: theme.trello.boxShadowBulletin,
+                        backgroundColor: theme.trello.colorGunmetalBlue,
                         maxHeight: "400px",
                         overflowY: "auto",
                     }}
@@ -165,60 +175,170 @@ function CardActivitySection({ cardComments = [], onAddCardComment, onDeleteCard
                             No activity found!
                         </Typography>
                     )}
-                    {cardComments.map((comment, index) => (
-                        <Box sx={{ display: "flex", gap: 1, width: "100%", mb: 1.5 }} key={index}>
-                            <Tooltip>
-                                <Avatar
-                                    sx={{ width: 36, height: 36, cursor: "pointer" }}
-                                    alt={comment.userDisplayName}
-                                    src={comment.userAvatar}
-                                />
-                            </Tooltip>
-                            <Box sx={{ width: "inherit" }}>
-                                <Typography variant="span" sx={{ fontWeight: "bold", mr: 1, userSelect: "none" }}>
-                                    {comment.userDisplayName}
-                                </Typography>
+                    {cardComments.map((comment, index) => {
+                        // ------------ CHECK WHO CMT ------------
+                        const isUser = currentUser._id === comment.userId;
 
-                                <Typography variant="span" sx={{ fontSize: "12px", userSelect: "none" }}>
-                                    {/* Format ngày tháng */}
-                                    {moment(comment.commentedAt).format("llll")}
-                                </Typography>
+                        // --------------------------------------------------------------
+                        if (isUser) {
+                            return (
+                                <Box sx={{ display: "flex", gap: 1, width: "100%", mb: 1.5 }} key={index}>
+                                    <Tooltip>
+                                        <Avatar
+                                            sx={{ width: 24, height: 24, cursor: "pointer" }}
+                                            alt={comment.userDisplayName}
+                                            src={comment.userAvatar}
+                                        />
+                                    </Tooltip>
+                                    <Box sx={{ width: "inherit" }}>
+                                        <Typography
+                                            variant="span"
+                                            sx={{ fontWeight: "600", mr: 1, userSelect: "none" }}
+                                        >
+                                            {isUser ? "you" : comment.userDisplayName}
+                                        </Typography>
 
-                                <Typography variant="span" sx={{ userSelect: "none", position: "relative" }}>
-                                    <DeleteOutlinedIcon
-                                        onClick={() => handleDeleteCardComment(comment)}
-                                        fontSize="small"
-                                        sx={{
-                                            position: "absolute",
-                                            p: "4px",
-                                            left: "16px",
-                                            width: "24px",
-                                            height: "24px",
-                                            "&:hover": {
-                                                color: (theme) => theme.trello.colorSkyMist,
-                                                cursor: "pointer",
-                                            },
-                                        }}
-                                    />
-                                </Typography>
+                                        <Typography
+                                            variant="span"
+                                            sx={{
+                                                fontSize: "10px",
+                                                userSelect: "none",
+                                                color: theme.trello.colorIronBlue,
+                                                fontStyle: "italic",
+                                            }}
+                                        >
+                                            {/* Format ngày tháng */}
+                                            {moment(comment.commentedAt).format("DD/MM/YYYY")}
+                                        </Typography>
 
-                                <Box
-                                    sx={{
-                                        display: "block",
-                                        bgcolor: (theme) => (theme.palette.mode === "dark" ? "#33485D" : "transparent"),
-                                        p: "8px 12px",
-                                        mt: "4px",
-                                        border: "0.5px solid rgba(254, 246, 199, 0.3)",
-                                        borderRadius: "4px",
-                                        wordBreak: "break-word",
-                                        boxShadow: "0 0 1px rgba(254, 246, 199, 0.3)",
-                                    }}
-                                >
-                                    {comment.content}
+                                        {isAdmin && (
+                                            <Typography
+                                                variant="span"
+                                                sx={{ userSelect: "none", position: "relative" }}
+                                            >
+                                                <DeleteOutlinedIcon
+                                                    onClick={() => handleDeleteCardComment(comment)}
+                                                    fontSize="small"
+                                                    sx={{
+                                                        position: "absolute",
+                                                        p: "4px",
+                                                        left: "16px",
+                                                        width: "24px",
+                                                        height: "24px",
+                                                        "&:hover": {
+                                                            color: (theme) => theme.trello.colorSkyMist,
+                                                            cursor: "pointer",
+                                                        },
+                                                    }}
+                                                />
+                                            </Typography>
+                                        )}
+
+                                        <Box
+                                            sx={{
+                                                display: "block",
+                                                bgcolor: "transparent",
+                                                p: "8px 12px",
+                                                mt: "4px",
+                                                width: "max-content",
+                                                border: `1px solid ${alpha(theme.trello.colorErrorOtherStart, 0.5)}`,
+                                                borderRadius: "0 21px 21px 21px",
+                                                maxWidth: "400px",
+                                                wordBreak: "break-word",
+                                                boxShadow: "0 0 1px rgba(254, 246, 199, 0.3)",
+                                            }}
+                                        >
+                                            {comment.content}
+                                        </Box>
+                                    </Box>
                                 </Box>
-                            </Box>
-                        </Box>
-                    ))}
+                            );
+                        }
+                        if (!isUser) {
+                            return (
+                                <Box
+                                    sx={{ display: "flex", justifyContent: "flex-end", gap: 1, width: "100%", mb: 1.5 }}
+                                    key={index}
+                                >
+                                    <Box
+                                        sx={{
+                                            flex: 1,
+                                            display: "flex",
+                                            flexDirection: "column",
+                                            alignItems: "flex-end",
+                                        }}
+                                    >
+                                        <Box>
+                                            {isAdmin && (
+                                                <Typography
+                                                    variant="span"
+                                                    sx={{ userSelect: "none", position: "relative" }}
+                                                >
+                                                    <DeleteOutlinedIcon
+                                                        onClick={() => handleDeleteCardComment(comment)}
+                                                        fontSize="small"
+                                                        sx={{
+                                                            position: "absolute",
+                                                            p: "4px",
+                                                            right: "8px",
+                                                            width: "24px",
+                                                            height: "24px",
+                                                            "&:hover": {
+                                                                color: (theme) => theme.trello.colorSkyMist,
+                                                                cursor: "pointer",
+                                                            },
+                                                        }}
+                                                    />
+                                                </Typography>
+                                            )}
+                                            <Typography
+                                                variant="span"
+                                                sx={{
+                                                    fontSize: "10px",
+                                                    userSelect: "none",
+                                                    color: theme.trello.colorIronBlue,
+                                                    fontStyle: "italic",
+                                                }}
+                                            >
+                                                {/* Format ngày tháng */}
+                                                {moment(comment.commentedAt).format("DD/MM/YYYY")}
+                                            </Typography>
+                                            <Typography
+                                                variant="span"
+                                                sx={{ fontWeight: "600", ml: 1, userSelect: "none" }}
+                                            >
+                                                {!isAdmin ? "Chủ trọ" : comment.userDisplayName}
+                                            </Typography>
+                                        </Box>
+
+                                        <Box
+                                            sx={{
+                                                display: "block",
+                                                bgcolor: "transparent",
+                                                maxWidth: "400px",
+                                                p: "8px 12px",
+                                                mt: "4px",
+                                                width: "max-content",
+                                                border: `1px solid ${alpha(theme.trello.colorErrorOtherStart, 0.5)}`,
+                                                borderRadius: " 21px 0 21px 21px",
+                                                wordBreak: "break-word",
+                                                boxShadow: "0 0 1px rgba(254, 246, 199, 0.3)",
+                                            }}
+                                        >
+                                            {comment.content}
+                                        </Box>
+                                    </Box>
+                                    <Tooltip>
+                                        <Avatar
+                                            sx={{ width: 24, height: 24, cursor: "pointer" }}
+                                            alt={comment.userDisplayName}
+                                            src={comment.userAvatar}
+                                        />
+                                    </Tooltip>
+                                </Box>
+                            );
+                        }
+                    })}
                 </Box>
             </Box>
         </Box>

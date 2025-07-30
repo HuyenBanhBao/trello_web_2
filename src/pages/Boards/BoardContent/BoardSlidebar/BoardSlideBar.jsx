@@ -1,9 +1,12 @@
 import { useState } from "react";
-import { Box } from "@mui/material";
+import { Box, MenuItem, Modal } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import { useDispatch, useSelector } from "react-redux";
 import Typography from "@mui/material/Typography";
 import Collapse from "@mui/material/Collapse";
+import { alpha } from "@mui/material/styles";
+import ContactEmergencyOutlinedIcon from "@mui/icons-material/ContactEmergencyOutlined";
+import CancelIcon from "@mui/icons-material/Cancel";
 // --------------------- COMPONENTS ---------------------------
 import BSBPriceService from "./BSBPriceService";
 import BSBDeleteCol from "./BSBDeleteCol";
@@ -72,33 +75,48 @@ const BoardSlideBar = () => {
         setIsOpen((prev) => !prev);
     };
 
+    // ---------------- OPEN CLOSE MODAL MANAGER USER -------------------------
+    const [isOpenManager, setIsOpenManager] = useState(false);
+    const handleOpenModal = () => {
+        setIsOpenManager(true);
+    };
+    const handleCloseModal = () => {
+        setIsOpenManager(false);
+        // Reset lại toàn bộ form khi đóng Modal
+    };
     // ===========================================================
     return (
         <>
-            <Box sx={{ height: "100%" }}>
+            <Box
+                sx={{
+                    height: "calc(100% - 100px)",
+                }}
+            >
                 <Box
                     sx={{
-                        p: 1,
+                        // p: "0 8px 8px",
                         mx: 1,
                         height: "100%",
                         borderRadius: "8px",
-                        overflowY: "auto",
-                        "&::-webkit-scrollbar": {
-                            width: "0px", // Chrome
-                        },
+                        // border: `1px solid ${alpha(theme.trello.colorErrorOtherStrong, 0.5)}`,
+                        // overflowY: "auto",
+                        // "&::-webkit-scrollbar": {
+                        //     display: "none",
+                        // },
+                        // scrollbarWidth: "none",
                     }}
                 >
                     {/* --------------------- COLUMN NAME --------------------- */}
                     <Box
                         sx={{
                             display: "block",
-                            p: 2,
-                            height: "60px",
+                            p: 1,
+                            height: "50px",
                             mb: 1.5,
-                            bgcolor: theme.trello.colorSlateBlue,
-                            boxShadow: theme.trello.boxShadowBtn,
                             color: theme.trello.colorFogWhiteBlue,
-                            borderRadius: "4px",
+                            backgroundColor: theme.trello.colorObsidianSlate,
+                            border: `1px solid ${alpha(theme.trello.colorErrorOtherStart, 0.5)}`,
+                            borderRadius: "8px",
                             fontSize: "20px",
                             fontWeight: "600",
                             textAlign: "center",
@@ -112,16 +130,24 @@ const BoardSlideBar = () => {
                     {!isAdmin && <Box>Them mo ta ve chu nha</Box>}
 
                     {activeColumn && isAdmin && (
-                        <>
+                        <Box
+                            sx={{
+                                height: "calc(100% - 60px)",
+                                overflowY: "auto",
+                                "&::-webkit-scrollbar": {
+                                    display: "none",
+                                },
+                                scrollbarWidth: "none",
+                            }}
+                        >
                             {/* --------------------- MANAGER CAOLUMN --------------------- */}
                             <Box
                                 sx={{
                                     mb: 2,
                                     p: 1,
-                                    color: theme.trello.colorFogWhiteBlue,
-                                    borderRadius: "4px",
-                                    backgroundColor: theme.trello.colorAshGray,
-                                    boxShadow: theme.trello.boxShadowBtn,
+                                    borderRadius: "8px",
+                                    backgroundColor: theme.trello.colorObsidianSlate,
+                                    border: `1px solid ${alpha(theme.trello.colorErrorOtherStart, 0.5)}`,
                                 }}
                             >
                                 <Collapse in={openManage} collapsedSize={30}>
@@ -132,7 +158,7 @@ const BoardSlideBar = () => {
                                             display: "flex",
                                             alignItems: "center",
                                             gap: 1.5,
-                                            color: theme.trello.colorDarkNavyGray,
+                                            color: theme.trello.colorErrorOtherStrong,
                                             mt: "4px",
                                             mb: 2,
                                             cursor: "pointer",
@@ -179,10 +205,57 @@ const BoardSlideBar = () => {
                             <BSBShowProfit />
                             {/* -------------------------------- SHOW CHI PHÍ --------------------------------- */}
                             <BSBCost />
-                        </>
+                        </Box>
                     )}
                 </Box>
             </Box>
+            <MenuItem
+                onClick={handleOpenModal}
+                sx={{
+                    flex: 1,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: 1,
+                    m: "16px 8px 0",
+                    p: 1,
+                    cursor: "pointer",
+                    borderRadius: "8px",
+                    bgcolor: theme.trello.colorObsidianSlate,
+                    color: theme.trello.colorErrorOtherStrong,
+                    border: `1px solid ${alpha(theme.trello.colorErrorOtherStart, 0.8)}`,
+                    transition: "all ease 0.3s",
+                    "&:hover": {
+                        bgcolor: alpha(theme.trello.colorErrorOtherStrong, 0.1),
+                    },
+                }}
+            >
+                <ContactEmergencyOutlinedIcon fontSize="large" />
+                <Typography
+                    variant="span"
+                    sx={{ display: "block", fontWeight: "600", fontSize: "24px", userSelect: "none" }}
+                >
+                    QUẢN LÝ KHÁCH THUÊ
+                </Typography>
+            </MenuItem>
+            <Modal
+                open={isOpenManager}
+                // onClose={handleCloseModal}
+                aria-labelledby="modal-send-mess-to-all"
+                aria-describedby="modal-send-mess-description"
+            >
+                <Box sx={{ width: "90vw", height: "90vh", bgcolor: theme.trello.colorErrorOtherStrong }}>
+                    <CancelIcon
+                        color="standard"
+                        sx={{
+                            color: (theme) => theme.trello.colorSlateBlue,
+                            "&:hover": { color: (theme) => theme.trello.colorDeepNavy },
+                        }}
+                        onClick={handleCloseModal}
+                    />
+                    123
+                </Box>
+            </Modal>
         </>
     );
 };

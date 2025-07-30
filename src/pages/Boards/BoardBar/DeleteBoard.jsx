@@ -58,24 +58,28 @@ const DeleteBoard = () => {
     // ======================================================================================
     return (
         <Box>
-            <Button
+            <Box
                 onClick={handleDeleteCol}
-                startIcon={<DeleteForeverIcon />}
                 sx={{
-                    width: { xs: "100%", sm: "150px" },
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 0.8,
+                    p: "6px 16px",
+                    borderRadius: "8px",
                     color: "white",
-                    backgroundColor: theme.trello.colorSlateBlue,
+                    backgroundColor: theme.trello.colorRedClay,
                     boxShadow: theme.trello.boxShadowBtn,
                     transition: "all 0.25s ease-in-out",
                     "&:hover": {
                         borderColor: "white",
                         boxShadow: theme.trello.boxShadowBtnHover,
-                        backgroundColor: theme.trello.colorSlateBlue,
+                        backgroundColor: theme.trello.colorRedClay,
                     },
                 }}
             >
+                <DeleteForeverIcon />
                 <Box>Delete Board</Box>
-            </Button>
+            </Box>
         </Box>
     );
 };

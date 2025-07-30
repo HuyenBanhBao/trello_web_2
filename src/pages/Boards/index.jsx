@@ -44,7 +44,9 @@ function Boards() {
     const theme = useTheme();
     // ------------- ADMIN --------------------
     const activeUser = useSelector(selectCurrentUser);
-    const isAdminFake = activeUser.email === "ngoctung2307@gmail.com";
+    console.log(activeUser);
+
+    const isAdmin = activeUser.role === "admin";
     // ----------------------------------------
     const [boards, setBoards] = useState(null);
     const [totalBoards, setTotalBoards] = useState(null);
@@ -120,7 +122,7 @@ function Boards() {
                                 <SpaceDashboardIcon fontSize="small" />
                                 Boards
                             </SidebarItem>
-                            {isAdminFake && (
+                            {isAdmin && (
                                 <SidebarItem
                                     sx={{
                                         ...theme.trello.btnPrimary,
@@ -140,7 +142,7 @@ function Boards() {
                             )}
                         </Stack>
                         <Divider sx={{ my: 1, height: "1px", backgroundColor: theme.trello.primaryColorTextBar }} />
-                        {isAdminFake && (
+                        {isAdmin && (
                             <Stack direction="column" spacing={1}>
                                 <SidebarCreateBoardModal afterCreateNewBoard={afterCreateNewBoard} />
                             </Stack>
