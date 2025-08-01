@@ -6,12 +6,13 @@ import Typography from "@mui/material/Typography";
 import Collapse from "@mui/material/Collapse";
 import { alpha } from "@mui/material/styles";
 import ContactEmergencyOutlinedIcon from "@mui/icons-material/ContactEmergencyOutlined";
-import CancelIcon from "@mui/icons-material/Cancel";
+
 // --------------------- COMPONENTS ---------------------------
 import BSBPriceService from "./BSBPriceService";
 import BSBDeleteCol from "./BSBDeleteCol";
 import BSBShowProfit from "./BSBShowProfit";
 import BSBCost from "./BSBCost";
+import ActiveManagerUser from "~/components/Modal/ManagerUser/ActiveManagerUser";
 import SendBulletinToAll from "~/components/Modal/Other/SendBulletinToAll";
 import SendMessToAll from "~/components/Modal/Other/SendMessToAll";
 import { selectCurrentActiveColumn } from "~/redux/aciveColumn/activeColumnSlice";
@@ -89,7 +90,7 @@ const BoardSlideBar = () => {
         <>
             <Box
                 sx={{
-                    height: "calc(100% - 100px)",
+                    height: "calc(100% - 60px)",
                 }}
             >
                 <Box
@@ -98,12 +99,6 @@ const BoardSlideBar = () => {
                         mx: 1,
                         height: "100%",
                         borderRadius: "8px",
-                        // border: `1px solid ${alpha(theme.trello.colorErrorOtherStrong, 0.5)}`,
-                        // overflowY: "auto",
-                        // "&::-webkit-scrollbar": {
-                        //     display: "none",
-                        // },
-                        // scrollbarWidth: "none",
                     }}
                 >
                     {/* --------------------- COLUMN NAME --------------------- */}
@@ -233,7 +228,7 @@ const BoardSlideBar = () => {
                 <ContactEmergencyOutlinedIcon fontSize="large" />
                 <Typography
                     variant="span"
-                    sx={{ display: "block", fontWeight: "600", fontSize: "24px", userSelect: "none" }}
+                    sx={{ display: "block", fontWeight: "600", fontSize: "16px", userSelect: "none" }}
                 >
                     QUẢN LÝ KHÁCH THUÊ
                 </Typography>
@@ -244,17 +239,7 @@ const BoardSlideBar = () => {
                 aria-labelledby="modal-send-mess-to-all"
                 aria-describedby="modal-send-mess-description"
             >
-                <Box sx={{ width: "90vw", height: "90vh", bgcolor: theme.trello.colorErrorOtherStrong }}>
-                    <CancelIcon
-                        color="standard"
-                        sx={{
-                            color: (theme) => theme.trello.colorSlateBlue,
-                            "&:hover": { color: (theme) => theme.trello.colorDeepNavy },
-                        }}
-                        onClick={handleCloseModal}
-                    />
-                    123
-                </Box>
+                <ActiveManagerUser handleCloseModal={handleCloseModal} />
             </Modal>
         </>
     );
