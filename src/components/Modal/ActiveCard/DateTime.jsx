@@ -13,6 +13,7 @@ import { selectCurrentActiveCard } from "~/redux/activeCard/activeCardSlice";
 const DateTime = ({ onAddDateContract }) => {
     const theme = useTheme();
     const activeCard = useSelector(selectCurrentActiveCard);
+    const [isOpenBtnSave, setIsOpenBtnSave] = useState(false);
 
     const initialDateValue = {
         contractDate: typeof activeCard?.contractDate === "number" ? dayjs(activeCard.contractDate) : dayjs(),
@@ -23,6 +24,15 @@ const DateTime = ({ onAddDateContract }) => {
     const [expireDateTime, setExpireDateTime] = useState(initialDateValue.expireDate); // Ngày hết hạn
 
     // ------------------------------- FUNC UPDATE DATA -------------------------------
+    const handleChangeValue = (event, type) => {
+        setIsOpenBtnSave(true);
+        if (type === "fromDate") {
+            setContractDateTime(event);
+        } else if (type === "toDate") {
+            setExpireDateTime(event);
+        }
+        //
+    };
 
     const handleSave = async () => {
         const payload = {
@@ -40,7 +50,7 @@ const DateTime = ({ onAddDateContract }) => {
                 <DatePicker
                     label="Ngày ký hợp đồng"
                     value={contractDateTime}
-                    onChange={(newValue) => setContractDateTime(newValue)}
+                    onChange={(e) => handleChangeValue(e, "fromDate")}
                     sx={{
                         width: 180,
                         "& .MuiInputBase-input": {
@@ -60,9 +70,9 @@ const DateTime = ({ onAddDateContract }) => {
                             borderColor: theme.trello.colorErrorOtherStrong,
                         },
                         "&:hover .MuiOutlinedInput-notchedOutline": {
-                            borderColor: theme.trello.colorErrorOtherStrong,
+                            borderColor: `${theme.trello.colorErrorOtherStrong} !important`,
                         },
-                        "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                        "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline": {
                             borderColor: `${theme.trello.colorErrorOtherStrong} !important`,
                         },
                     }}
@@ -70,7 +80,7 @@ const DateTime = ({ onAddDateContract }) => {
                 <DatePicker
                     label="Ngày hết hạn hợp đồng"
                     value={expireDateTime}
-                    onChange={(newValue) => setExpireDateTime(newValue)}
+                    onChange={(e) => handleChangeValue(e, "toDate")}
                     sx={{
                         width: 180,
                         "& .MuiInputBase-input": {
@@ -90,39 +100,41 @@ const DateTime = ({ onAddDateContract }) => {
                             borderColor: theme.trello.colorErrorOtherStrong,
                         },
                         "&:hover .MuiOutlinedInput-notchedOutline": {
-                            borderColor: theme.trello.colorErrorOtherStrong,
+                            borderColor: `${theme.trello.colorErrorOtherStrong} !important`,
                         },
-                        "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                        "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline": {
                             borderColor: `${theme.trello.colorErrorOtherStrong} !important`,
                         },
                     }}
                 />
             </LocalizationProvider>
-            <Box
-                onClick={handleSave}
-                variant="contained"
-                sx={{
-                    display: "flex",
-                    alignItems: "flex-end",
-                    height: "max-content",
-                    mt: "auto",
-                    py: 0.6,
-                    px: 1,
-                    borderRadius: "8px",
-                    fontWeight: "bold",
-                    cursor: "pointer",
-                    userSelect: "none",
-                    color: theme.trello.colorMidnightBlue,
-                    bgcolor: theme.trello.colorErrorOtherStrong,
-                    transition: "all ease 0.3s",
-                    boxShadow: (theme) => theme.trello.boxShadowBtn,
-                    "&:hover": {
-                        boxShadow: (theme) => theme.trello.boxShadowBtnHover,
-                    },
-                }}
-            >
-                Lưu
-            </Box>
+            {isOpenBtnSave && (
+                <Box
+                    onClick={handleSave}
+                    variant="contained"
+                    sx={{
+                        display: "flex",
+                        alignItems: "flex-end",
+                        height: "max-content",
+                        mt: "auto",
+                        py: 0.6,
+                        px: 1,
+                        borderRadius: "8px",
+                        fontWeight: "bold",
+                        cursor: "pointer",
+                        userSelect: "none",
+                        color: theme.trello.colorMidnightBlue,
+                        bgcolor: theme.trello.colorErrorOtherStrong,
+                        transition: "all ease 0.3s",
+                        boxShadow: (theme) => theme.trello.boxShadowBtn,
+                        "&:hover": {
+                            boxShadow: (theme) => theme.trello.boxShadowBtnHover,
+                        },
+                    }}
+                >
+                    Lưu
+                </Box>
+            )}
         </Box>
     );
 };

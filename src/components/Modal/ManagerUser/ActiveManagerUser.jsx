@@ -1,72 +1,72 @@
-import HomeRoundedIcon from "@mui/icons-material/HomeRounded";
-import ChevronRightRoundedIcon from "@mui/icons-material/ChevronRightRounded";
-import DownloadRoundedIcon from "@mui/icons-material/DownloadRounded";
+import { useState } from "react";
+import { Box, Grid } from "@mui/material";
+import { useTheme } from "@mui/material/styles";
+// ---------------------- icon ----------------------
+import CancelIcon from "@mui/icons-material/Cancel";
+// ---------------------- COMPONENTS ----------------------
+import SidebarManagerUser from "./SidebarManagerUser";
+import ContentManagerUser from "./ContentManagerUser";
+// =============================================================================
+const ActiveManagerUser = ({ handleCloseModal }) => {
+    const theme = useTheme();
+    const [isShowListUser, setIsShowListUser] = useState(true);
+    const [isShowListUserPrice, setIsShowListUserPrice] = useState(false);
 
-const ActiveManagerUser = () => {
+    // ============================================================================
     return (
-        <Box sx={{ display: "flex", minHeight: "90vh" }}>
+        <Box
+            sx={{
+                position: "relative",
+                display: "flex",
+                // flexDirection: "column",
+                width: "85vw",
+                maxWidth: "95vw",
+                // height: "89vh",
+                boxShadow: 24,
+                borderRadius: "8px",
+                outline: "none",
+                overflow: "hidden",
+                margin: " 40px auto",
+                border: `1px solid ${theme.trello.colorIronBlue}`,
+            }}
+        >
             {/* <Header />
             <Sidebar /> */}
-            <Box
-                component="main"
-                className="MainContent"
+            <CancelIcon
+                color="standard"
                 sx={{
-                    px: { xs: 2, md: 6 },
-                    pt: 3,
-                    pb: { xs: 2, sm: 2, md: 3 },
+                    position: "absolute",
+                    right: "20px",
+                    top: "23px",
+                    color: theme.trello.colorSnowGray,
+                    transition: "all ease 0.3s",
+                    "&:hover": { color: theme.trello.colorGraphite },
+                }}
+                onClick={handleCloseModal}
+            />
+            <Box
+                sx={{
+                    borderRadius: "8px",
+                    p: 1,
                     flex: 1,
                     display: "flex",
-                    flexDirection: "column",
-                    minWidth: 0,
-                    height: "100dvh",
                     gap: 1,
+                    minWidth: 0,
+                    height: "100%",
+                    bgcolor: theme.trello.colorMidnightBlue,
                 }}
             >
-                <Box sx={{ display: "flex", alignItems: "center" }}>
-                    <Breadcrumbs
-                        size="sm"
-                        aria-label="breadcrumbs"
-                        separator={<ChevronRightRoundedIcon fontSize="sm" />}
-                        sx={{ pl: 0 }}
-                    >
-                        <Link underline="none" color="neutral" href="#some-link" aria-label="Home">
-                            <HomeRoundedIcon />
-                        </Link>
-                        <Link
-                            underline="hover"
-                            color="neutral"
-                            href="#some-link"
-                            sx={{ fontSize: 12, fontWeight: 500 }}
-                        >
-                            Dashboard
-                        </Link>
-                        <Typography color="primary" sx={{ fontWeight: 500, fontSize: 12 }}>
-                            Orders
-                        </Typography>
-                    </Breadcrumbs>
-                </Box>
-
-                <Box
-                    sx={{
-                        display: "flex",
-                        mb: 1,
-                        gap: 1,
-                        flexDirection: { xs: "column", sm: "row" },
-                        alignItems: { xs: "start", sm: "center" },
-                        flexWrap: "wrap",
-                        justifyContent: "space-between",
-                    }}
-                >
-                    <Typography level="h2" component="h1">
-                        Orders
-                    </Typography>
-                    <Button color="primary" startDecorator={<DownloadRoundedIcon />} size="sm">
-                        Download PDF
-                    </Button>
-                </Box>
-
-                <OrderTable />
-                <OrderList />
+                <Grid container spacing={1}>
+                    <Grid item sx={{ width: "250px" }}>
+                        <SidebarManagerUser
+                            setIsShowListUser={setIsShowListUser}
+                            setIsShowListUserPrice={setIsShowListUserPrice}
+                        />
+                    </Grid>
+                    <Grid item sx={{ flex: 1 }}>
+                        <ContentManagerUser isShowListUser={isShowListUser} isShowListUserPrice={isShowListUserPrice} />
+                    </Grid>
+                </Grid>
             </Box>
         </Box>
     );

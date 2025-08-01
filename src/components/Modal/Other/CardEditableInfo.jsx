@@ -9,19 +9,16 @@ import { selectCurrentActiveColumn } from "~/redux/aciveColumn/activeColumnSlice
 import TextField from "@mui/material/TextField";
 import PaidOutlinedIcon from "@mui/icons-material/PaidOutlined";
 import { Button } from "@mui/material";
-import Collapse from "@mui/material/Collapse";
 import { alpha } from "@mui/material/styles";
 // ----------------------------------------------- ICON -----------------------------------------------
 import {
-    ElectricalServicesOutlined as ElectricIcon,
     WaterDrop as WaterIcon,
     WifiOutlined as WifiIcon,
-    DeleteOutlined as TrashIcon,
-    LocalLaundryServiceOutlined as WasherIcon,
     PaidOutlined as MoneyIcon,
-    CreditCard as CreditCardIcon,
-    CalendarMonth as CalendarIcon,
+    DeleteOutlined as TrashIcon,
     PersonOutlineOutlined as UserIcon,
+    LocalLaundryServiceOutlined as WasherIcon,
+    ElectricalServicesOutlined as ElectricIcon,
 } from "@mui/icons-material";
 
 // ================================================ MAIN ================================================
@@ -29,6 +26,7 @@ const CardEditableInfo = ({ setServiceFormCardData, handleSaveInfoServiceRoom, i
     const theme = useTheme();
     const activeCard = useSelector(selectCurrentActiveCard);
     const activeColumn = useSelector(selectCurrentActiveColumn);
+    const [isOpenBtnSave, setIsOpenBtnSave] = useState(false);
 
     const initialFormValues = {
         priceRoom: activeCard?.priceRoom || "",
@@ -61,9 +59,10 @@ const CardEditableInfo = ({ setServiceFormCardData, handleSaveInfoServiceRoom, i
             numElecNew: formValues.numElecNew,
         };
         setServiceFormCardData(updateServiceCard);
-    }, [formValues]);
+    }, [formValues, setServiceFormCardData]);
 
     const handleChange = (field) => (value) => {
+        setIsOpenBtnSave(true);
         setFormValues((prev) => ({ ...prev, [field]: value }));
     };
 
@@ -222,8 +221,11 @@ const CardEditableInfo = ({ setServiceFormCardData, handleSaveInfoServiceRoom, i
                                     display: "block",
                                     width: "100%",
                                     fontWeight: "600",
+                                    opacity: isOpenBtnSave ? 1 : 0.6,
+                                    pointerEvents: isOpenBtnSave ? "auto" : "none",
+                                    cursor: isOpenBtnSave ? "pointer" : "not-allowed",
                                 }}
-                                onClick={handleSaveInfoServiceRoom}
+                                onClick={isOpenBtnSave ? handleSaveInfoServiceRoom : undefined}
                             >
                                 SAVE
                             </Button>

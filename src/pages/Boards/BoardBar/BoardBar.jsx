@@ -256,7 +256,8 @@ const BoardBar = ({ board }) => {
                         <InviteBoardUser board={board} />
                     </Box>
                 )} */}
-                {isAdmin && <BoardUserGroup boardUsers={board?.FE_allUsers} board={board} />}
+
+                {/* {isAdmin && <BoardUserGroup boardUsers={board?.FE_allUsers} board={board} />} */}
             </Box>
         </Box>
     );
