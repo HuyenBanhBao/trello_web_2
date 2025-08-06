@@ -283,6 +283,16 @@ function ActiveCard() {
         }
     }, [isShowModalActiveCard, handleCloseModal]);
 
+    // ======================= tính độ cao của trang hiện ===========================
+    const [vh, setVh] = useState(window.innerHeight);
+    useEffect(() => {
+        const handleResize = () => {
+            setVh(window.innerHeight);
+        };
+        window.addEventListener("resize", handleResize);
+        return () => window.removeEventListener("resize", handleResize);
+    }, []);
+
     // ================================================================================================================
     return (
         <Modal
@@ -303,7 +313,7 @@ function ActiveCard() {
                     flexDirection: "column",
                     width: { xs: "100vw", md: "85vw" },
                     maxWidth: { xs: "100vw", md: "85vw" },
-                    maxHeight: { xs: "100vh", md: "95vh" },
+                    maxHeight: { xs: `${vh}px`, md: "95vh" },
                     boxShadow: 24,
                     outline: "none",
                     overflow: "hidden",

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Box, Grid, MenuItem, Modal } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import { alpha } from "@mui/material/styles";
@@ -25,6 +25,15 @@ const ActiveManagerUser = () => {
         setIsOpenManager(false);
         // Reset lại toàn bộ form khi đóng Modal
     };
+    // ======================= tính độ cao của trang hiện ===========================
+    const [vh, setVh] = useState(window.innerHeight);
+    useEffect(() => {
+        const handleResize = () => {
+            setVh(window.innerHeight);
+        };
+        window.addEventListener("resize", handleResize);
+        return () => window.removeEventListener("resize", handleResize);
+    }, []);
     // ============================================================================
     return (
         <>
@@ -77,7 +86,7 @@ const ActiveManagerUser = () => {
                             width: { xs: "100vw", md: "85vw" },
                             maxWidth: { xs: "100vw", md: "85vw" },
                             height: { xs: "100vh", md: "inherit" },
-                            maxHeight: { xs: "100vh", md: "95vh" },
+                            maxHeight: { xs: `${vh}px`, md: "95vh" },
                             boxShadow: 24,
                             borderRadius: { xs: 0, md: "8px" },
                             outline: "none",

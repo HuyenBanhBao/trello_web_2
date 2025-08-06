@@ -168,7 +168,7 @@ const ListManaUser = () => {
                     <TableContainer
                         component={Paper}
                         sx={{
-                            maxHeight: { xs: "calc(100% - 190px)", md: "calc(90vh - 190px)" },
+                            maxHeight: { xs: "80vh", md: "calc(90vh - 190px)" },
                             overflowY: "auto",
                             "&::-webkit-scrollbar": {
                                 display: "none",

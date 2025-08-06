@@ -145,7 +145,6 @@ const ManagerUserItem = ({ member, currentCard, matchedColumn, matchedTitle, mat
                 <StyledTableCell
                     sx={{
                         display: "table-cell",
-
                         width: { xs: "110px", md: "180px" },
                         color: `${theme.trello.colorErrorOtherStrong} !important`,
                         fontWeight: "600",
