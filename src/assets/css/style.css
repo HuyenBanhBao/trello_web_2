@@ -1,0 +1,15 @@
+/* Toast custom style */
+.mui-toast {
+    background-color: #1f2633; /* nền tối */
+    color: #eceff4; /* chữ sáng */
+    border-radius: 8px;
+    border: 1px solid #2e8b57;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    padding: 10px 16px;
+    font-family: "Roboto", sans-serif;
+    font-size: 12px;
+}
+
+.mui-toast-body {
+    padding: 0;
+}

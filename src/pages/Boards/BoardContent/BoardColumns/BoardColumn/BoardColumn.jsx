@@ -1,7 +1,8 @@
-import React from "react";
+import { useState } from "react";
 import Box from "@mui/material/Box";
 import { useSelector } from "react-redux";
 import { alpha } from "@mui/material/styles";
+import Collapse from "@mui/material/Collapse";
 // --------------------- IMPORT COMPONENTS ---------------------
 import HeaderCard from "./ListCards/CardItem/HeaderCard";
 import ListCards from "./ListCards/ListCards";
@@ -36,21 +37,35 @@ const BoardColumn = ({ column }) => {
         height: "100%", // "Chieu cao phải Luôn-max-100% vì nếu không sẽ lỗi lúc kéo column ngắn quá một cái column dài thì phải kéo ở khu vục giữa giữa rất khó chịu (demo ở video 32). Lưu ý lực này phải kết hợp với{...listeners} nằm ở Box chữ không phải ở div ngoài cùng để tránh trường hợp kéo vào vùng xanh."
         opacity: isDragging ? 0.5 : undefined,
     };
+    // --------------------------------------------------
+    // eslint-disable-next-line no-unused-vars
+    const [isOpen, setIsOpen] = useState(false);
+    const [openColl, setOpenColl] = useState(false);
+    const toggleManage = () => {
+        setOpenColl((prev) => !prev);
+        setIsOpen((prev) => !prev);
+    };
 
-    // --------------------- RETURN ---------------------
+    // ================================================================ RETURN ================================================================
     if (!isMember && !isAdmin) {
         return;
     }
 
     return (
-        <div ref={setNodeRef} style={dndKitColumnStyles}>
+        <div
+            ref={setNodeRef}
+            style={{
+                ...dndKitColumnStyles,
+                height: window.innerWidth < 900 ? "fit-content" : "100%",
+            }}
+        >
             <Box
                 sx={{
-                    minWidth: "350px",
-                    maxWidth: "350px",
+                    minWidth: { xs: "100%", md: "350px" },
+                    maxWidth: { xs: "100%", md: "350px" },
                     bgcolor: (theme) => theme.trello.colorMidnightBlue,
                     border: (theme) => `1px solid ${alpha(theme.trello.colorErrorOtherStart, 0.5)}`,
-                    ml: 2,
+                    ml: { xs: 0.5, md: 2 },
                     borderRadius: "6px",
                     height: "fit-content",
                     maxHeight: (theme) => `calc(${theme.trello.boardContentHeight} - ${theme.spacing(5)})`,
@@ -61,12 +76,19 @@ const BoardColumn = ({ column }) => {
                     msUserSelect: "none",
                 }}
             >
-                {/* --------------- HEADER --------------- */}
-                <HeaderCard column={column} attributes={attributes} listeners={listeners} />
-                {/* --------------- BODY --------------- */}
-                <ListCards cards={orderedCards} column={column} />
-                {/* --------------- FOOTER --------------- */}
-                <FooterCard column={column} />
+                <Collapse in={openColl} collapsedSize={50} sx={{ width: "100%" }}>
+                    {/* --------------- HEADER --------------- */}
+                    <HeaderCard
+                        column={column}
+                        toggleManage={toggleManage}
+                        attributes={attributes}
+                        listeners={listeners}
+                    />
+                    {/* --------------- BODY --------------- */}
+                    <ListCards cards={orderedCards} column={column} />
+                    {/* --------------- FOOTER --------------- */}
+                    {isAdmin && <FooterCard column={column} />}
+                </Collapse>
             </Box>
         </div>
     );

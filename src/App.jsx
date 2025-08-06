@@ -9,7 +9,7 @@ import NotFound from "~/pages/404/NotFound";
 import Settings from "~/pages/Settings/Settings";
 import { selectCurrentUser } from "~/redux/user/userSlice";
 import AccountVerification from "~/pages/Auth/AccountVerification";
-
+import { usePushNotification } from "./customHook/notification/usePushNotification";
 // ============================================ MAIN COMPONENT ============================================\
 /**
  * Giải pháp Clean Code trong việc xác định các route nào cần đăng nhập tài khoản xong thì mới cho truy cập
@@ -27,6 +27,8 @@ const ProtectedRoute = ({ user }) => {
 
 function App() {
     const currentUser = useSelector(selectCurrentUser);
+
+    usePushNotification(); // Gọi lấy thông tin đăng ký cấp quyền nhận thông báo
 
     return (
         <Routes>

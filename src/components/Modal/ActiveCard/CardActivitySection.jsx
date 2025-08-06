@@ -3,7 +3,7 @@ import Box from "@mui/material/Box";
 import { toast } from "react-toastify";
 import Avatar from "@mui/material/Avatar";
 import { useTheme } from "@mui/material/styles";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import Tooltip from "@mui/material/Tooltip";
 import TextField from "@mui/material/TextField";
 import { useConfirm } from "material-ui-confirm";
@@ -12,10 +12,19 @@ import { selectCurrentUser } from "~/redux/user/userSlice";
 import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined";
 import QuestionAnswerOutlinedIcon from "@mui/icons-material/QuestionAnswerOutlined";
 import { alpha } from "@mui/material/styles";
+import { disableRealtimeUpdate } from "~/redux/notifications/notificationsSlice";
+import { selectCurrentActiveCard } from "~/redux/activeCard/activeCardSlice";
 // ===========================================================================================
 function CardActivitySection({ cardComments = [], onAddCardComment, onDeleteCardComment, isAdmin }) {
-    const currentUser = useSelector(selectCurrentUser);
     const theme = useTheme();
+    const dispatch = useDispatch();
+    const currentUser = useSelector(selectCurrentUser);
+    const activeCard = useSelector(selectCurrentActiveCard);
+    // ----------------- TAT THONG BAO MESSAGE -----------------
+    const handleDisableMess = () => {
+        dispatch(disableRealtimeUpdate(activeCard?._id));
+    };
+
     // -------------------------------------- Add Card Comment --------------------------------------
     const handleAddCardComment = (event) => {
         // Bắt hành động người dùng nhấn phím Enter && không phải hành động Shift + Enter
@@ -49,27 +58,27 @@ function CardActivitySection({ cardComments = [], onAddCardComment, onDeleteCard
     const handleDeleteCardComment = async (commentDelete) => {
         // eslint-disable-next-line no-unused-vars
         const { confirmed, reason } = await confirmDeleteCardComment({
-            title: "Delete column?",
-            description: "Are you sure you want to delete this COMMENT",
-            confirmationText: "Confirm",
+            title: "Xóa?",
+            description: "Bạn muốn xóa tin nhắn này chứ?",
+            confirmationText: "Xóa",
             cancellationText: "Cancel",
             buttonOrder: ["confirm", "cancel"],
+            // title
+            titleProps: {
+                sx: theme.trello.modalTextHeader,
+            },
+            // Confirm
             confirmationButtonProps: {
                 variant: "contained",
-                sx: {
-                    color: (theme) => theme.trello.colorDustyCloud,
-                    backgroundColor: (theme) => theme.trello.colorSlateBlue,
-
-                    boxShadow: (theme) => theme.trello.boxShadowBtn,
-                    transition: "all 0.25s ease-in-out",
-
-                    "&:hover": {
-                        borderColor: "white",
-                        boxShadow: (theme) => theme.trello.boxShadowBtnHover,
-                        backgroundColor: (theme) => theme.trello.colorSlateBlue,
-                    },
+                sx: theme.trello.modalConfirmBtn,
+            },
+            // ✅ Style toàn bộ modal (nền, border, màu chữ...)
+            dialogProps: {
+                PaperProps: {
+                    sx: theme.trello.modalDialog,
                 },
             },
+            //
         });
 
         if (confirmed) {
@@ -83,28 +92,32 @@ function CardActivitySection({ cardComments = [], onAddCardComment, onDeleteCard
     return (
         <Box
             sx={{
-                mb: 2,
-                // p: 1,
-                borderRadius: "8px",
+                mb: { xs: 0, md: 2 },
+                width: { xs: "91vw", md: "100%" },
+                borderRadius: { xs: "5px", md: "8px" },
                 border: `1px solid ${alpha(theme.trello.colorErrorOtherStart, 0.5)}`,
                 bgcolor: theme.trello.colorMidnightBlue,
             }}
         >
             <Box
+                onClick={handleDisableMess}
                 sx={{
+                    m: 1,
+                    gap: { xs: 1, md: 1.5 },
+                    px: 1,
+                    py: 0.5,
                     display: "flex",
                     alignItems: "center",
-                    gap: 1.5,
-                    m: 1,
                     bgcolor: theme.trello.colorErrorOtherStrong,
                     borderRadius: "8px",
-                    py: 0.5,
-                    px: 1,
                     color: theme.trello.colorMidnightBlue,
                 }}
             >
-                <QuestionAnswerOutlinedIcon />
-                <Typography variant="span" sx={{ fontWeight: "600", fontSize: "20px", userSelect: "none" }}>
+                <QuestionAnswerOutlinedIcon sx={{ fontSize: { xs: "16px", md: "20px" } }} />
+                <Typography
+                    variant="span"
+                    sx={{ fontWeight: "600", fontSize: { xs: "14px", md: "20px" }, userSelect: "none" }}
+                >
                     Message
                 </Typography>
             </Box>
@@ -114,7 +127,7 @@ function CardActivitySection({ cardComments = [], onAddCardComment, onDeleteCard
                 {/* Xử lý thêm comment vào Card */}
                 <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 2 }}>
                     <Avatar
-                        sx={{ width: 36, height: 36, cursor: "pointer" }}
+                        sx={{ width: { xs: 24, md: 36 }, height: { xs: 24, md: 36 }, cursor: "pointer" }}
                         alt={currentUser?.displayName}
                         src={currentUser?.avatar}
                     />
@@ -165,6 +178,7 @@ function CardActivitySection({ cardComments = [], onAddCardComment, onDeleteCard
                         border: `1px solid ${theme.trello.colorIronBlue}`,
                         borderRadius: 1.5,
                         backgroundColor: theme.trello.colorGunmetalBlue,
+                        color: theme.trello.colorSnowGray,
                         maxHeight: "400px",
                         overflowY: "auto",
                     }}
@@ -182,7 +196,10 @@ function CardActivitySection({ cardComments = [], onAddCardComment, onDeleteCard
                         // --------------------------------------------------------------
                         if (isUser) {
                             return (
-                                <Box sx={{ display: "flex", gap: 1, width: "100%", mb: 1.5 }} key={index}>
+                                <Box
+                                    sx={{ display: "flex", gap: 1, width: "100%", mb: { xs: 0.6, md: 1.5 } }}
+                                    key={index}
+                                >
                                     <Tooltip>
                                         <Avatar
                                             sx={{ width: 24, height: 24, cursor: "pointer" }}
@@ -193,7 +210,12 @@ function CardActivitySection({ cardComments = [], onAddCardComment, onDeleteCard
                                     <Box sx={{ width: "inherit" }}>
                                         <Typography
                                             variant="span"
-                                            sx={{ fontWeight: "600", mr: 1, userSelect: "none" }}
+                                            sx={{
+                                                fontWeight: { xs: "400", md: "600" },
+                                                fontSize: { xs: "14px", md: "16px" },
+                                                mr: 1,
+                                                userSelect: "none",
+                                            }}
                                         >
                                             {isUser ? "you" : comment.userDisplayName}
                                         </Typography>
@@ -238,12 +260,13 @@ function CardActivitySection({ cardComments = [], onAddCardComment, onDeleteCard
                                             sx={{
                                                 display: "block",
                                                 bgcolor: "transparent",
-                                                p: "8px 12px",
+                                                p: { xs: "5px 10px", md: "8px 12px" },
+                                                fontSize: { xs: "12px", md: "14px" },
                                                 mt: "4px",
                                                 width: "max-content",
                                                 border: `1px solid ${alpha(theme.trello.colorErrorOtherStart, 0.5)}`,
                                                 borderRadius: "0 21px 21px 21px",
-                                                maxWidth: "400px",
+                                                maxWidth: { xs: "200px", sm: "300px", md: "400px" },
                                                 wordBreak: "break-word",
                                                 boxShadow: "0 0 1px rgba(254, 246, 199, 0.3)",
                                             }}
@@ -257,7 +280,13 @@ function CardActivitySection({ cardComments = [], onAddCardComment, onDeleteCard
                         if (!isUser) {
                             return (
                                 <Box
-                                    sx={{ display: "flex", justifyContent: "flex-end", gap: 1, width: "100%", mb: 1.5 }}
+                                    sx={{
+                                        display: "flex",
+                                        justifyContent: "flex-end",
+                                        gap: 1,
+                                        width: "100%",
+                                        mb: { xs: 0.6, md: 1.5 },
+                                    }}
                                     key={index}
                                 >
                                     <Box
@@ -305,7 +334,12 @@ function CardActivitySection({ cardComments = [], onAddCardComment, onDeleteCard
                                             </Typography>
                                             <Typography
                                                 variant="span"
-                                                sx={{ fontWeight: "600", ml: 1, userSelect: "none" }}
+                                                sx={{
+                                                    fontWeight: { xs: "400", md: "600" },
+                                                    fontSize: { xs: "14px", md: "16px" },
+                                                    ml: 1,
+                                                    userSelect: "none",
+                                                }}
                                             >
                                                 {!isAdmin ? "Chủ trọ" : comment.userDisplayName}
                                             </Typography>
@@ -315,8 +349,9 @@ function CardActivitySection({ cardComments = [], onAddCardComment, onDeleteCard
                                             sx={{
                                                 display: "block",
                                                 bgcolor: "transparent",
-                                                maxWidth: "400px",
-                                                p: "8px 12px",
+                                                maxWidth: { xs: "200px", sm: "300px", md: "400px" },
+                                                p: { xs: "5px 10px", md: "8px 12px" },
+                                                fontSize: { xs: "12px", md: "14px" },
                                                 mt: "4px",
                                                 width: "max-content",
                                                 border: `1px solid ${alpha(theme.trello.colorErrorOtherStart, 0.5)}`,

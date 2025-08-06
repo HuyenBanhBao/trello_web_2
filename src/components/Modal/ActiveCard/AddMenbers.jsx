@@ -15,6 +15,7 @@ import { useSelector } from "react-redux";
 import { selectCurrentActiveCard } from "~/redux/activeCard/activeCardSlice";
 import { socketIoInstance } from "~/socketClient"; // real-time
 import { selectCurrentActiveBoard } from "~/redux/activeBoard/activeBoardSlice";
+import ContactEmergencyRoundedIcon from "@mui/icons-material/ContactEmergencyRounded";
 import { alpha } from "@mui/material";
 import EditableInput from "~/components/Form/EditableInput";
 import VisuallyHiddenInput from "~/components/Form/VisuallyHiddenInput";
@@ -40,7 +41,7 @@ const AddMenbers = ({ isAdmin, callAPIUpdateUserInfo }) => {
         formState: { errors },
     } = useForm();
 
-    const submitInviteUserToBoard = (data) => {
+    const submitInviteUserToCard = (data) => {
         const { inviteeEmail } = data;
         // console.log("inviteeEmail:", inviteeEmail);
         // Gọi API mời user vào làm thành viên của card
@@ -82,22 +83,32 @@ const AddMenbers = ({ isAdmin, callAPIUpdateUserInfo }) => {
                         sx={{
                             display: "flex",
                             alignItems: "center",
-                            justifyContent: "space-between",
-                            p: 1,
+                            gap: { xs: 1, md: 1.5 },
+                            px: 1,
+                            py: 0.5,
                             m: 1,
                             bgcolor: theme.trello.colorErrorOtherStrong,
                             borderRadius: "8px",
                             color: theme.trello.colorMidnightBlue,
                         }}
                     >
-                        <Typography variant="span" sx={{ display: "block", fontWeight: "600", userSelect: "none" }}>
+                        <ContactEmergencyRoundedIcon sx={{ fontSize: { xs: "16px", md: "20px" } }} />
+                        <Typography
+                            variant="span"
+                            sx={{
+                                display: "block",
+                                fontWeight: "600",
+                                fontSize: { xs: "14px", md: "20px" },
+                                userSelect: "none",
+                            }}
+                        >
                             Khách hàng:
                         </Typography>
                     </Box>
                     {/* ------------------------------------------ */}
                     {activeCard?.memberIds?.length <= 0 && (
                         <Box>
-                            <form onSubmit={handleSubmit(submitInviteUserToBoard)} style={{ width: "100%" }}>
+                            <form onSubmit={handleSubmit(submitInviteUserToCard)} style={{ width: "100%" }}>
                                 <Box
                                     sx={{
                                         p: 1,
@@ -169,6 +180,7 @@ const AddMenbers = ({ isAdmin, callAPIUpdateUserInfo }) => {
                                             sx={{
                                                 ...theme.trello.btnPrimary,
                                                 fontWeight: "600",
+                                                p: { xs: "4px 10px", md: "6px 16px" },
                                                 color: theme.trello.colorErrorText,
                                                 bgcolor: theme.trello.colorErrorOtherStrong,
                                                 "&:hover": {
@@ -198,7 +210,10 @@ const AddMenbers = ({ isAdmin, callAPIUpdateUserInfo }) => {
                                     borderBottom: `1px solid ${alpha(theme.trello.colorErrorOtherStart, 0.5)}`,
                                 }}
                             >
-                                <Typography variant="span" sx={{ fontWeight: "600", userSelect: "none" }}>
+                                <Typography
+                                    variant="span"
+                                    sx={{ fontWeight: "600", fontSize: { xs: "14px", md: "16px" }, userSelect: "none" }}
+                                >
                                     {capitalizeFirstLetter(userCard?.displayName)}
                                 </Typography>
                                 <Avatar

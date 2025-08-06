@@ -247,7 +247,39 @@ const theme = extendTheme({
             backgroundColor: (theme) => theme.trello.colorSkyMist,
             borderRadius: "8px",
         },
+
+        // Modal delete
+        modalTextHeader: {
+            color: (theme) => theme.trello.colorErrorOtherStrong,
+            fontWeight: "bold",
+            fontSize: "20px",
+        },
+        modalConfirmBtn: {
+            color: (theme) => theme.trello.colorErrorText,
+            backgroundColor: (theme) => theme.trello.colorErrorOtherStrong,
+            boxShadow: (theme) => theme.trello.boxShadowBtn,
+            transition: "all 0.25s ease-in-out",
+            "&:hover": {
+                borderColor: "white",
+                boxShadow: (theme) => theme.trello.boxShadowBtnHover,
+                backgroundColor: (theme) => theme.trello.colorErrorOtherStrong,
+            },
+        },
+        modalDialog: {
+            backgroundColor: (theme) => theme.trello.colorMidnightBlue,
+            border: (theme) => `1px solid ${theme.trello.colorErrorOtherStart}`,
+            borderRadius: 2,
+            padding: 2,
+            color: (theme) => theme.trello.colorPaleSky,
+
+            "& p": {
+                color: (theme) => theme.trello.colorPaleSky,
+                fontSize: "14px",
+                fontStyle: "italic",
+            },
+        },
     },
+    // =================================================
     colorSchemes: {
         // light: {
         //     palette: {

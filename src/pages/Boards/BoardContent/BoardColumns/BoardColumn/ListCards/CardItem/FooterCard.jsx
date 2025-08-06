@@ -24,7 +24,7 @@ import { updateCurrentActiveColumn } from "~/redux/aciveColumn/activeColumnSlice
 // --------------------- MAIN COMPONENTS ---------------------
 
 const FooterCard = ({ column }) => {
-    const themeTrello = useTheme();
+    const theme = useTheme();
     const dispatch = useDispatch();
     const board = useSelector(selectCurrentActiveBoard);
     // const currentUser = useSelector(selectCurrentUser);
@@ -95,16 +95,16 @@ const FooterCard = ({ column }) => {
             {!openFormAddCard ? (
                 <Box
                     sx={{
-                        height: (theme) => theme.trello.columnFooterHeight,
+                        height: theme.trello.columnFooterHeight,
                         p: 2,
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "space-between",
-                        color: (theme) => theme.trello.colorSnowGray,
+                        color: theme.trello.colorSnowGray,
                     }}
                 >
                     <Button
-                        sx={{ color: (theme) => theme.trello.colorSnowGray }}
+                        sx={{ color: theme.trello.colorSnowGray }}
                         onClick={toggleFormAddCard}
                         startIcon={<AddCardIcon />}
                     >
@@ -137,14 +137,14 @@ const FooterCard = ({ column }) => {
                         onChange={(e) => setNewNameCard(e.target.value)}
                         sx={{
                             "& label": {
-                                color: (theme) => theme.trello.colorDarkNavyGray,
+                                color: theme.trello.colorDarkNavyGray,
                             },
                             "& label.MuiInputLabel-shrink:not(.Mui-focused)": {
                                 color: "transparent",
                             },
                             "& input": {
-                                color: (theme) => theme.palette.primary.main,
-                                bgcolor: (theme) => theme.trello.colorFogWhiteBlue,
+                                color: theme.palette.primary.main,
+                                bgcolor: theme.trello.colorFogWhiteBlue,
                                 borderRadius: "8px",
                             },
                             "& label.Mui-focused": {
@@ -152,14 +152,14 @@ const FooterCard = ({ column }) => {
                             },
                             "& .MuiOutlinedInput-root": {
                                 "& fieldset": {
-                                    borderColor: (theme) => theme.trello.colorSkyMist,
+                                    borderColor: theme.trello.colorSkyMist,
                                     borderRadius: "8px",
                                 },
                                 "&:hover fieldset": {
-                                    borderColor: (theme) => theme.trello.colorSkyMist,
+                                    borderColor: theme.trello.colorSkyMist,
                                 },
                                 "&.Mui-focused fieldset": {
-                                    borderColor: (theme) => theme.trello.colorSkyMist,
+                                    borderColor: theme.trello.colorSkyMist,
                                 },
                             },
                             "& .MuiOutLinedInput-input": {
@@ -179,14 +179,14 @@ const FooterCard = ({ column }) => {
                             onClick={addNewCard}
                             variant="contained"
                             size="small"
-                            sx={themeTrello.trello.btnPrimary}
+                            sx={theme.trello.btnPrimary}
                         >
                             Add
                         </Button>
                         <CloseIcon
                             onClick={toggleFormAddCard}
                             fontSize="small"
-                            sx={{ color: (theme) => theme.trello.colorSnowGray, cursor: "pointer" }}
+                            sx={{ color: theme.trello.colorSnowGray, cursor: "pointer" }}
                         />
                     </Box>
                 </Box>

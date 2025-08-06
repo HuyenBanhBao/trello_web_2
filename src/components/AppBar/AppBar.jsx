@@ -31,7 +31,8 @@ const AppBar = () => {
                 <Typography
                     variant="span"
                     sx={{
-                        fontSize: "18px",
+                        display: { xs: "none", md: "block" },
+                        fontSize: { md: "14px", lg: "18px" },
                         fontStyle: "italic",
                         color: (theme) => theme.trello.colorCloudySteel,
                         //

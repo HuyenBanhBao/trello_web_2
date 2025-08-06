@@ -8,16 +8,19 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { toast } from "react-toastify";
 import { useSelector } from "react-redux";
 import { selectCurrentActiveCard } from "~/redux/activeCard/activeCardSlice";
+import { selectCurrentUser } from "~/redux/user/userSlice";
 
 // =================================================================================================
 const DateTime = ({ onAddDateContract }) => {
     const theme = useTheme();
     const activeCard = useSelector(selectCurrentActiveCard);
+    const currentUser = useSelector(selectCurrentUser);
+    const isAdmin = currentUser?.role === "admin";
     const [isOpenBtnSave, setIsOpenBtnSave] = useState(false);
 
     const initialDateValue = {
         contractDate: typeof activeCard?.contractDate === "number" ? dayjs(activeCard.contractDate) : dayjs(),
-        expireDate: typeof activeCard?.expireDate === "number" ? dayjs(activeCard.expireDate) : dayjs(),
+        expireDate: typeof activeCard?.expireDate === "number" ? dayjs(activeCard.expireDate) : "Nhập ngày",
     };
 
     const [contractDateTime, setContractDateTime] = useState(initialDateValue.contractDate); // Ngày ký
@@ -41,26 +44,35 @@ const DateTime = ({ onAddDateContract }) => {
         };
         onAddDateContract(payload).then(() => {
             toast.success("Đã lưu!!");
+            setIsOpenBtnSave(false);
         });
     };
     // =============================================================================================
     return (
-        <Box sx={{ display: "flex", gap: 2, justifyContent: "center" }}>
+        <Box
+            sx={{
+                display: "flex",
+                gap: { xs: 1, md: 2 },
+                p: 1,
+                justifyContent: { xs: "flex-start", md: "center" },
+            }}
+        >
             <LocalizationProvider dateAdapter={AdapterDayjs}>
                 <DatePicker
                     label="Ngày ký hợp đồng"
                     value={contractDateTime}
                     onChange={(e) => handleChangeValue(e, "fromDate")}
                     sx={{
-                        width: 180,
+                        width: { xs: 130, md: 180 },
                         "& .MuiInputBase-input": {
                             p: 1,
                             pl: 2,
-                            fontSize: "16px",
+                            fontSize: { xs: "12px", md: "16px" },
                             fontWeight: "600",
                             color: theme.trello.colorErrorOtherStrong,
                         },
                         "& .MuiFormLabel-root": {
+                            fontSize: { xs: "12px", md: "14px" },
                             color: theme.trello.colorSnowGray,
                         },
                         "& .MuiButtonBase-root": {
@@ -82,15 +94,16 @@ const DateTime = ({ onAddDateContract }) => {
                     value={expireDateTime}
                     onChange={(e) => handleChangeValue(e, "toDate")}
                     sx={{
-                        width: 180,
+                        width: { xs: 130, md: 180 },
                         "& .MuiInputBase-input": {
                             p: 1,
                             pl: 2,
-                            fontSize: "16px",
+                            fontSize: { xs: "12px", md: "16px" },
                             fontWeight: "600",
                             color: theme.trello.colorErrorOtherStrong,
                         },
                         "& .MuiFormLabel-root": {
+                            fontSize: { xs: "12px", md: "14px" },
                             color: theme.trello.colorSnowGray,
                         },
                         "& .MuiButtonBase-root": {
@@ -108,7 +121,7 @@ const DateTime = ({ onAddDateContract }) => {
                     }}
                 />
             </LocalizationProvider>
-            {isOpenBtnSave && (
+            {isOpenBtnSave && isAdmin && (
                 <Box
                     onClick={handleSave}
                     variant="contained"
@@ -120,7 +133,8 @@ const DateTime = ({ onAddDateContract }) => {
                         py: 0.6,
                         px: 1,
                         borderRadius: "8px",
-                        fontWeight: "bold",
+                        fontSize: { xs: "14px", md: "16px" },
+                        fontWeight: "600",
                         cursor: "pointer",
                         userSelect: "none",
                         color: theme.trello.colorMidnightBlue,

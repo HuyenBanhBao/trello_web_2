@@ -30,8 +30,8 @@ const STYLES_IMAGE = {
     justifyContent: "center",
     userSelect: "none",
     cursor: "pointer",
-    width: 172,
-    height: 108,
+    width: { xs: 129, md: 172 },
+    height: { xs: 81, md: 108 },
     borderRadius: "8px",
     border: (theme) => `1px dashed ${theme.trello.colorErrorOtherStrong}`,
     transition: "all ease 0.3s",
@@ -156,7 +156,10 @@ const AddInfoUserInCard = ({ callAPIUpdateUserInfo }) => {
             <Box sx={{ p: 1, display: "flex", flexDirection: "column", gap: 0.5 }}>
                 <Collapse in={openManage} collapsedSize={30} sx={{ width: "100%" }}>
                     <Box sx={{ mb: 1, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-                        <Typography variant="span" sx={{ display: "block", fontWeight: "600" }}>
+                        <Typography
+                            variant="span"
+                            sx={{ display: "block", fontSize: { xs: "12px", md: "14px" }, fontWeight: "600" }}
+                        >
                             Thông tin:
                         </Typography>
                         <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
@@ -167,11 +170,11 @@ const AddInfoUserInCard = ({ callAPIUpdateUserInfo }) => {
                                     sx={{
                                         display: "flex",
                                         p: "3px 10px",
-                                        fontSize: "12px",
-                                        borderRadius: "8px",
-                                        fontWeight: "500",
                                         cursor: "pointer",
+                                        fontWeight: "500",
                                         userSelect: "none",
+                                        borderRadius: "8px",
+                                        fontSize: { xs: "10px", md: "12px" },
                                         color: theme.trello.colorMidnightBlue,
                                         bgcolor: theme.trello.colorErrorOtherStrong,
                                         transition: "all ease 0.3s",
@@ -190,11 +193,11 @@ const AddInfoUserInCard = ({ callAPIUpdateUserInfo }) => {
                                 sx={{
                                     display: "flex",
                                     p: "3px 10px",
-                                    fontSize: "12px",
-                                    borderRadius: "8px",
                                     fontWeight: "500",
                                     cursor: "pointer",
                                     userSelect: "none",
+                                    borderRadius: "8px",
+                                    fontSize: { xs: "10px", md: "12px" },
                                     color: theme.trello.colorErrorOtherStrong,
                                     border: `1px solid ${theme.trello.colorErrorOtherStart}`,
                                     transition: "all ease 0.3s",
@@ -212,6 +215,7 @@ const AddInfoUserInCard = ({ callAPIUpdateUserInfo }) => {
                         <Box
                             key={field}
                             sx={{
+                                mb: 0.5,
                                 display: "flex",
                                 alignItems: "center",
                                 justifyContent: "space-between",
@@ -225,8 +229,9 @@ const AddInfoUserInCard = ({ callAPIUpdateUserInfo }) => {
                                 {label}:
                             </Typography>
                             <EditableInput
-                                alignText="end"
                                 pTopBot="0px"
+                                alignText="end"
+                                inputFontSize={{ xs: "14px", md: "16px" }}
                                 value={formValues[field]}
                                 onChangedValue={createFieldHandler(field)}
                             />
@@ -250,7 +255,9 @@ const AddInfoUserInCard = ({ callAPIUpdateUserInfo }) => {
                                     component="label"
                                     sx={{ ...STYLES_IMAGE, height: 24, width: 80, borderStyle: "solid", mt: 1 }}
                                 >
-                                    <Typography>Mặt trước</Typography>
+                                    <Typography variant="span" sx={{ fontSize: { xs: "12px", md: "14px" } }}>
+                                        Mặt trước
+                                    </Typography>
                                     <VisuallyHiddenInput
                                         type="file"
                                         accept="image/*"
@@ -258,7 +265,6 @@ const AddInfoUserInCard = ({ callAPIUpdateUserInfo }) => {
                                     />
                                 </Box>
                             </Box>
-
                             {/* Ảnh mặt sau */}
                             <Box>
                                 <Box
@@ -271,7 +277,9 @@ const AddInfoUserInCard = ({ callAPIUpdateUserInfo }) => {
                                     component="label"
                                     sx={{ ...STYLES_IMAGE, height: 24, width: 80, borderStyle: "solid", mt: 1 }}
                                 >
-                                    <Typography>Mặt sau</Typography>
+                                    <Typography variant="span" sx={{ fontSize: { xs: "12px", md: "14px" } }}>
+                                        Mặt sau
+                                    </Typography>
                                     <VisuallyHiddenInput
                                         type="file"
                                         accept="image/*"
@@ -279,6 +287,7 @@ const AddInfoUserInCard = ({ callAPIUpdateUserInfo }) => {
                                     />
                                 </Box>
                             </Box>
+                            {/* ----------------- */}
                         </Box>
                     </Box>
                     {/* ----------------------------------------------------- */}

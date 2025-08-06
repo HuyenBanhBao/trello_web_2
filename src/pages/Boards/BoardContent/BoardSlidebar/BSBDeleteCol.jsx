@@ -26,27 +26,29 @@ const BSBDeleteCol = () => {
     const handleDeleteCol = async () => {
         // eslint-disable-next-line no-unused-vars
         const { confirmed, reason } = await confirmDeleteCol({
-            title: activeColumn ? "Delete column?" : "Chọn một dãy trọ",
-            description: activeColumn ? "Are you sure you want to delete this column and it's Cards?" : "",
-            confirmationText: "Confirm",
+            title: activeColumn ? "Xóa dãy trọ?" : "Chọn một dãy trọ",
+            description: activeColumn
+                ? "Việc xóa dãy trọ sẽ đồng nghĩa với việc các phòng trong nó cũng sẽ bị xóa theo, bạn thực sự muốn tiếp tục"
+                : "",
+            confirmationText: "Chấp nhận xóa",
             cancellationText: "Cancel",
             buttonOrder: activeColumn ? ["confirm", "cancel"] : ["cancel"],
+            // title
+            titleProps: {
+                sx: theme.trello.modalTextHeader,
+            },
+            // Confirm
             confirmationButtonProps: {
                 variant: "contained",
-                sx: {
-                    color: (theme) => theme.trello.colorDustyCloud,
-                    backgroundColor: (theme) => theme.trello.colorSlateBlue,
-
-                    boxShadow: (theme) => theme.trello.boxShadowBtn,
-                    transition: "all 0.25s ease-in-out",
-
-                    "&:hover": {
-                        borderColor: "white",
-                        boxShadow: (theme) => theme.trello.boxShadowBtnHover,
-                        backgroundColor: (theme) => theme.trello.colorSlateBlue,
-                    },
+                sx: theme.trello.modalConfirmBtn,
+            },
+            // ✅ Style toàn bộ modal (nền, border, màu chữ...)
+            dialogProps: {
+                PaperProps: {
+                    sx: theme.trello.modalDialog,
                 },
             },
+            //
         });
 
         if (confirmed) {

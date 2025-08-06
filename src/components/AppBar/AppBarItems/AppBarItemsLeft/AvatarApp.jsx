@@ -11,9 +11,9 @@ const AvatarApp = () => {
             sx={{
                 //
                 position: { xs: "absolute", sm: "initial" },
-                left: { xs: "100%", sm: "0" },
-                transform: { xs: "translateX(-150%)", sm: "none" },
-                ml: { xs: "auto", sm: 0 },
+                left: { xs: "50%", sm: "0" },
+                transform: { xs: "translateX(40%)", sm: "none" },
+                // ml: { xs: "auto", sm: 0 },
                 display: "flex",
             }}
         >
@@ -35,6 +35,7 @@ const AvatarApp = () => {
                             display: "inline-block",
                             fontSize: "20px",
                             fontWeight: "bold",
+                            whiteSpace: "nowrap",
                             color: (theme) => theme.trello.primaryColorTextBar,
                         }}
                     >

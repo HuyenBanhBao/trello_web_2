@@ -2,8 +2,6 @@ import React from "react";
 import Box from "@mui/material/Box";
 import { useSelector } from "react-redux";
 // --------------------- IMPORT COMPONENTS -------------------------
-import ModeSelect from "~/components/ModeSelect/ModeSelect";
-import Help from "../Menus/Help";
 import Profile from "../Menus/Profile";
 import Notifications from "~/components/AppBar/Notifications/Notifications";
 import AutoCompleteSearchBoard from "../SearchBoards/AutoCompleteSearchBoard";
@@ -15,7 +13,7 @@ const AppBarItemRight = () => {
 
     return (
         <>
-            <Box sx={{ display: "flex", alignItems: "center", justifyContent: "flex-end", gap: 2 }}>
+            <Box sx={{ display: "flex", alignItems: "center", justifyContent: "flex-end", gap: { xs: 1, sm: 2 } }}>
                 {isAdminFake && (
                     <Box sx={{ display: { xs: "none", sm: "flex" }, mr: 1 }}>
                         <AutoCompleteSearchBoard />
@@ -25,7 +23,7 @@ const AppBarItemRight = () => {
                     <ModeSelect />
                 </Box> */}
                 <Notifications /> {/* Xử lý hiển thị các thông báo */}
-                <Help />
+                {/* <Help /> */}
                 <Profile />
             </Box>
         </>

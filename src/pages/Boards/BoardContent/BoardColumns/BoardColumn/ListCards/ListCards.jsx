@@ -15,15 +15,16 @@ const ListCards = ({ cards, column }) => {
                 <Box
                     sx={{
                         p: "0 5px 5px 5px",
-                        m: "0 5px",
-                        display: "flex",
-                        flexDirection: "column",
-                        rowGap: 1.5,
+                        m: { xs: 0, md: "0 5px" },
+                        display: { xs: "grid", md: "flex" },
+                        gridTemplateColumns: { xs: "repeat(2, 1fr)", md: "none" },
+                        flexDirection: { md: "column" },
+                        gap: 1,
                         overflowX: "hidden",
                         overflowY: "auto",
                         maxHeight: (theme) => `calc(${theme.trello.cardsHeight} - ${theme.spacing(5)} - 20px)`,
                         "&::-webkit-scrollbar": {
-                            width: "5px",
+                            width: { xs: "0px", md: "5px" },
                         },
                         "&::-webkit-scrollbar-thumb": {
                             background: (theme) => alpha(theme.trello.colorErrorOtherWarm, 0.2),

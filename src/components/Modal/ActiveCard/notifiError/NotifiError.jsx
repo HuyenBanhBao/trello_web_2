@@ -24,11 +24,9 @@ import { selectCurrentActiveCard } from "~/redux/activeCard/activeCardSlice";
 const SidebarItem = styled(Box)(({ theme }) => ({
     display: "flex",
     alignItems: "center",
-    gap: "6px",
+
     cursor: "pointer",
-    fontSize: "14px",
-    fontWeight: "600",
-    padding: "10px 20px",
+    fontWeight: { xs: "400", md: "600" },
     borderRadius: "50px",
     userSelect: "none",
     transition: "all 0.3s ease",
@@ -85,6 +83,7 @@ const NotifiError = ({ callAPIUpdateReportCard }) => {
     const handleCloseModal = () => {
         setIsOpen(false);
         setSelectedKey(null);
+        setPreviewImage(null);
     };
 
     const handleNoteChange = (e) => {
@@ -112,11 +111,13 @@ const NotifiError = ({ callAPIUpdateReportCard }) => {
 
     // ------------------ PREVIEW IMAGE ------------------
     const onPreviewImageReport = (event) => {
-        setFileImage(event.target?.files[0]);
         const file = event.target?.files[0];
         if (file) {
+            setFileImage(file);
             const imageUrl = URL.createObjectURL(file); // tạo link preview tạm thời
             setPreviewImage(imageUrl);
+        } else {
+            setFileImage(fileImage);
         }
     };
     // ------------------ UPLAOD DATA REPORT ------------------
@@ -147,7 +148,7 @@ const NotifiError = ({ callAPIUpdateReportCard }) => {
         }
         // CALL API
         toast.promise(
-            callAPIUpdateReportCard(formData).then(() => {
+            callAPIUpdateReportCard(formData, "add-report").then(() => {
                 handleCloseModal();
                 setPreviewImage(null);
                 setChangedValuesWarn({});
@@ -168,7 +169,7 @@ const NotifiError = ({ callAPIUpdateReportCard }) => {
                     alignItems: "center",
                     fontWeight: "600",
                     fontSize: "16px",
-                    gap: 2,
+                    gap: { xs: 1, md: 1.5 },
                     m: 1,
                     px: 1,
                     py: 0.5,
@@ -178,9 +179,14 @@ const NotifiError = ({ callAPIUpdateReportCard }) => {
                     color: theme.trello.colorMidnightBlue,
                 }}
             >
-                <ErrorOutlineOutlinedIcon />
-                <Typography variant="span">Warning!!!</Typography>
-                <Typography variant="span" sx={{ fontStyle: "italic", fontSize: "12px", fontWeight: "400" }}>
+                <ErrorOutlineOutlinedIcon sx={{ fontSize: { xs: "16px", md: "20px" } }} />
+                <Typography variant="span" sx={{ fontSize: { xs: "14px", md: "20px" } }}>
+                    Báo lỗi!!!
+                </Typography>
+                <Typography
+                    variant="span"
+                    sx={{ fontStyle: "italic", fontSize: { xs: "10px", md: "12px" }, fontWeight: "400" }}
+                >
                     (Gửi cho Admin)
                 </Typography>
             </Box>
@@ -188,52 +194,80 @@ const NotifiError = ({ callAPIUpdateReportCard }) => {
                 {items.map((item) => (
                     <SidebarItem
                         key={item.key}
-                        sx={{ bgcolor: item.bgcolor, color: theme.trello.colorSnowGray }}
+                        sx={{
+                            bgcolor: item.bgcolor,
+                            color: theme.trello.colorSnowGray,
+                            gap: { xs: "3px", md: "6px" },
+                            padding: { xs: "5px 10px", md: "10px 20px" },
+                        }}
                         onClick={() => handleOpenModal(item.key)}
                     >
                         {item.icon}
-                        {item.label}
+                        <Typography variant="span" sx={{ fontSize: { xs: "12px", md: "16px" } }}>
+                            {item.label}
+                        </Typography>
                     </SidebarItem>
                 ))}
             </Box>
 
-            <Modal open={isOpen} aria-labelledby="modal-send-warn" aria-describedby="modal-send-warn-desc">
+            <Modal
+                BackdropProps={{
+                    sx: {
+                        backgroundColor: "rgba(0, 0, 0, 0.3)",
+                        backdropFilter: "blur(2px)",
+                    },
+                }}
+                open={isOpen}
+                aria-labelledby="modal-send-warn"
+                aria-describedby="modal-send-warn-desc"
+            >
                 <Box
                     sx={{
                         position: "absolute",
                         top: "50%",
                         left: "50%",
                         transform: "translate(-50%, -50%)",
-                        width: 600,
-                        bgcolor: "white",
+                        width: { xs: "90%", md: "600px" },
                         boxShadow: 24,
                         borderRadius: "8px",
-                        border: "none",
                         outline: 0,
-                        padding: "20px 30px",
-                        backgroundColor: (theme) =>
-                            theme.palette.mode === "dark" ? "#1A2027" : theme.trello.colorFogWhiteBlue,
+                        border: `1px solid ${alpha(theme.trello.colorErrorOtherStrong, 0.4)}`,
+                        bgcolor: theme.trello.colorGunmetalBlue,
                     }}
                 >
                     <Box
                         sx={{
                             position: "absolute",
-                            top: "10px",
-                            right: "10px",
+                            top: "6px",
+                            right: "6px",
                             cursor: "pointer",
                         }}
                     >
                         <CancelIcon
                             color="standard"
                             sx={{
-                                color: (theme) => theme.trello.colorSlateBlue,
-                                "&:hover": { color: (theme) => theme.trello.colorDeepNavy },
+                                color: theme.trello.colorSlateBlue,
+                                transition: "all ease 0.2s",
+                                "&:hover": { color: theme.trello.colorErrorOtherStrong },
                             }}
                             onClick={handleCloseModal}
                         />
                     </Box>
+                    <Box
+                        sx={{
+                            p: "10px 20px",
+                            fontWeight: "600",
+                            color: theme.trello.colorSnowGray,
+                            fontSize: { xs: "14px", md: "16px" },
+                            bgcolor: theme.trello.colorMidnightBlue,
+                            borderRadius: "8px 8px 0 0",
+                            borderBottom: `1px solid ${alpha(theme.trello.colorErrorOtherStrong, 0.4)}`,
+                        }}
+                    >
+                        Oppss !!!
+                    </Box>
 
-                    <Box>
+                    <Box sx={{ p: "10px" }}>
                         <Box
                             id="modal-send-warn"
                             sx={{
@@ -241,12 +275,16 @@ const NotifiError = ({ callAPIUpdateReportCard }) => {
                                 alignItems: "center",
                                 gap: 1,
                                 mb: 3,
-                                color: (theme) => theme.trello.colorSlateBlue,
+                                color: theme.trello.colorSnowGray,
                             }}
                         >
                             {selectedItem?.icon}
-                            <Typography variant="h6" component="h2" sx={{ fontStyle: "italic", fontWeight: "600" }}>
-                                {valuesWarn[selectedKey]?.name}
+                            <Typography variant="span" sx={{ fontSize: { xs: "12px", md: "14px" } }}>
+                                {selectedKey === "other"
+                                    ? "Bạn đang gặp 1 vấn đề nào đó ư?"
+                                    : `Bạn đang gặp vấn đề về ${valuesWarn[selectedKey]?.name} ư?`}
+                                <br />
+                                {"Hãy mô tả vấn đề (kèm theo 1 ảnh chụp) để Admin có thể hỗ trợ bạn nhé."}
                             </Typography>
                         </Box>
 
@@ -258,33 +296,26 @@ const NotifiError = ({ callAPIUpdateReportCard }) => {
                                         sx={{
                                             mt: "4px",
                                             "& .MuiOutlinedInput-root": {
-                                                bgcolor: (theme) =>
-                                                    theme.palette.mode === "dark" ? "#33485D" : "transparent",
+                                                bgcolor: "transparent",
                                                 padding: "8px 12px",
                                                 borderRadius: "4px",
-                                                border: "0.5px solid rgba(48, 48, 48, 0.3)",
-                                                boxShadow: "0 0 1px rgba(46, 46, 46, 0.3)",
+                                                border: `1px solid ${alpha(theme.trello.colorErrorOtherStrong, 0.4)}`,
                                                 "& fieldset": { border: "none" },
-                                                "&:hover fieldset": {
-                                                    border: "1px solid rgba(49, 49, 49, 0.8)",
-                                                },
-                                                "&.Mui-focused fieldset": {
-                                                    border: "1px solid rgba(49, 49, 49, 0.8)",
-                                                },
                                             },
                                             "& .MuiOutlinedInput-input": {
                                                 padding: 0,
                                                 wordBreak: "break-word",
-                                                color: (theme) => theme.trello.colorSlateBlue,
-                                                caretColor: (theme) => theme.trello.colorSlateBlue,
+                                                fontSize: { xs: "12px", md: "14px" },
+                                                color: theme.trello.colorSnowGray,
+                                                caretColor: theme.trello.colorSnowGray,
                                                 "&::placeholder": {
-                                                    color: (theme) => theme.trello.colorSlateBlue,
+                                                    color: theme.trello.colorSnowGray,
                                                     opacity: 0.5,
                                                 },
                                             },
                                         }}
                                         fullWidth
-                                        placeholder={`Miêu tả vấn đề về ${valuesWarn[selectedKey].name}...`}
+                                        placeholder={`Mô tả vấn đề...`}
                                         type="text"
                                         variant="outlined"
                                         multiline
@@ -292,70 +323,105 @@ const NotifiError = ({ callAPIUpdateReportCard }) => {
                                         onChange={handleNoteChange}
                                     />
                                 </Box>
-                                <Box sx={{ display: "flex", gap: 2, mt: 2, mr: 3, justifyContent: "flex-end" }}>
-                                    {/* --------------------- ADD IMAGE ERROR --------------------- */}
-                                    {/* SHOW IMAGE */}
+                                <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                                    {/* IMAGE MAN REPAIR */}
                                     <Box>
-                                        {previewImage ? (
-                                            <Box
-                                                //
-                                                component="img"
-                                                sx={{ height: 140, width: 140, objectFit: "cover" }}
-                                                src={previewImage}
-                                                alt="image-error"
-                                            />
-                                        ) : (
-                                            <Typography>Add image</Typography>
-                                        )}
-                                    </Box>
-
-                                    {/* BTN ADD IMAGE */}
-                                    <Box
-                                        component="label"
-                                        sx={{
-                                            display: "flex",
-                                            alignItems: "center",
-                                            justifyContent: "center",
-                                            height: 140,
-                                            width: 140,
-                                            border: `1px dashed ${theme.trello.colorSlateBlue}`,
-                                            cursor: "pointer",
-
-                                            //
-                                        }}
-                                    >
-                                        <AddIcon />
-                                        <VisuallyHiddenInput
-                                            type="file"
-                                            accept="image/*"
-                                            onChange={onPreviewImageReport}
+                                        <Box
+                                            component="img"
+                                            sx={{
+                                                display: "block",
+                                                ml: { xs: "15px", md: "30px" },
+                                                height: { xs: 120, md: 200 },
+                                                width: { xs: 120, md: 200 },
+                                                objectFit: "cover",
+                                                borderRadius: "8px",
+                                            }}
+                                            src={"/assets/repairman.png"}
+                                            alt="image-error"
                                         />
                                     </Box>
-                                </Box>
+                                    <Box>
+                                        <Box
+                                            sx={{
+                                                display: "flex",
+                                                gap: { xs: 1, md: 2 },
+                                                mt: 2,
+                                                justifyContent: "flex-end",
+                                            }}
+                                        >
+                                            {/* --------------------- ADD IMAGE ERROR --------------------- */}
 
-                                {/* BTN REPORT */}
-                                <Box
-                                    onClick={onUploadDataReport}
-                                    component="button"
-                                    sx={{
-                                        display: "block",
-                                        ml: "auto",
-                                        mt: 2,
-                                        p: "5px 10px",
-                                        borderColor: "transparent",
-                                        fontWeight: "600",
-                                        color: (theme) => theme.trello.colorSlateBlue,
-                                        backgroundColor: (theme) => theme.trello.colorErrorOther,
-                                        boxShadow: (theme) => theme.trello.boxShadowBtn,
-                                        transition: "all 0.25s ease-in-out",
+                                            {/* SHOW IMAGE */}
+                                            <Box>
+                                                <Box
+                                                    component="img"
+                                                    sx={{
+                                                        height: { xs: 80, md: 140 },
+                                                        width: { xs: 80, md: 140 },
+                                                        objectFit: "cover",
+                                                        borderRadius: "8px",
+                                                    }}
+                                                    src={previewImage || "/assets/id_card.webp"}
+                                                    alt="image-error"
+                                                />
+                                            </Box>
+                                            {/* ------------------------------------------------ */}
+                                            {/* BTN ADD IMAGE */}
+                                            <Box
+                                                component="label"
+                                                sx={{
+                                                    p: { xs: "4px 8px", md: "8px 16px" },
+                                                    display: "flex",
+                                                    alignItems: "center",
+                                                    justifyContent: "center",
+                                                    height: "fit-content",
+                                                    fontSize: { xs: "10px", md: "14px" },
+                                                    borderRadius: "4px",
+                                                    cursor: "pointer",
+                                                    border: `1px solid ${alpha(
+                                                        theme.trello.colorErrorOtherStrong,
+                                                        0.4
+                                                    )}`,
+                                                    color: theme.trello.colorSnowGray,
+                                                    //
+                                                }}
+                                            >
+                                                <Typography variant="span">
+                                                    {previewImage ? "Đổi ảnh" : "Thêm ảnh"}
+                                                </Typography>
+                                                <VisuallyHiddenInput
+                                                    type="file"
+                                                    accept="image/*"
+                                                    onChange={onPreviewImageReport}
+                                                />
+                                            </Box>
+                                            {/* ------------------------------------------------ */}
+                                        </Box>
 
-                                        "&:hover": {
-                                            boxShadow: (theme) => theme.trello.boxShadowBtnHover,
-                                            backgroundColor: (theme) => theme.trello.colorErrorOther,
-                                        },
-                                    }}
-                                >
-                                    REPORT
+                                        {/* BTN REPORT */}
+                                        <Box
+                                            onClick={onUploadDataReport}
+                                            component="button"
+                                            sx={{
+                                                mt: 2,
+                                                ml: "auto",
+                                                p: { xs: "5px 10px", md: "10px 20px" },
+                                                display: "block",
+                                                fontSize: { xs: "10px", md: "14px" },
+                                                fontWeight: "600",
+                                                borderColor: "transparent",
+                                                color: theme.trello.colorErrorText,
+                                                transition: "all 0.25s ease-in-out",
+                                                borderRadius: "8px",
+                                                backgroundColor: theme.trello.colorErrorOtherStrong,
+                                                "&:hover": {
+                                                    backgroundColor: alpha(theme.trello.colorErrorOtherStrong, 0.5),
+                                                },
+                                            }}
+                                        >
+                                            Gửi
+                                        </Box>
+                                    </Box>
                                 </Box>
                             </>
                         )}

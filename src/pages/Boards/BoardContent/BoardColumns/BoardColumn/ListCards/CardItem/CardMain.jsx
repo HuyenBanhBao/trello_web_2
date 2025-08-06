@@ -7,9 +7,11 @@ import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import { useTheme } from "@mui/material/styles";
 import { alpha } from "@mui/material/styles";
+import useMediaQuery from "@mui/material/useMediaQuery";
+import Badge from "@mui/material/Badge";
 // -------------------------- ICONS --------------------------
-import NewspaperIcon from "@mui/icons-material/Newspaper";
-import ForumIcon from "@mui/icons-material/Forum";
+import NotificationsNoneOutlinedIcon from "@mui/icons-material/NotificationsNoneOutlined";
+import MarkunreadOutlinedIcon from "@mui/icons-material/MarkunreadOutlined";
 import PermIdentityOutlinedIcon from "@mui/icons-material/PermIdentityOutlined";
 import PersonOffOutlinedIcon from "@mui/icons-material/PersonOffOutlined";
 import GroupOutlinedIcon from "@mui/icons-material/GroupOutlined";
@@ -22,30 +24,37 @@ import { selectCurrentUser } from "~/redux/user/userSlice";
 import { updateCurrentActiveColumn } from "~/redux/aciveColumn/activeColumnSlice";
 import { updateCurrentActiveCard, showModalActiveCard } from "~/redux/activeCard/activeCardSlice";
 import { selectCurrentActiveBoard } from "~/redux/activeBoard/activeBoardSlice";
+import { disableRealtimeUpdate } from "~/redux/notifications/notificationsSlice";
 // =================================================== MAIN COMPONENT ===================================================
 const CardMain = ({ card, column }) => {
-    // console.log(card);
     const theme = useTheme();
     const dispatch = useDispatch();
-    // ckeck use is member or admin or not
+    // -------------------------------------------------
+    const isMobile = useMediaQuery(theme.breakpoints.down("md")); // Lấy kích trước của màn hình MD
     const activeBoard = useSelector(selectCurrentActiveBoard);
     const activeUser = useSelector(selectCurrentUser);
-    // const isMember = card?.memberIds?.includes(activeUser._id);
+
+    // -------------------- NOTIFICATION -------------------------
+    const isRealtimeUpdate = useSelector((state) => state.notifications.isRealtimeUpdateMap[card._id]); // check real time
+    const handleClickOpenMess = () => {
+        dispatch(disableRealtimeUpdate({ cardId: card?._id, type: "comment" }));
+    };
+    // -----------------------------------------------------------
     const isMember = card?.memberIds?.some((member) => member.userId.toString() === activeUser._id.toString());
     const isAdmin = activeBoard?.ownerIds.includes(activeUser._id);
-
     // ckeck use in ROOM or not
     const isUserInRoom = card.userRoom && card.userRoom !== "0";
+    // -----------------------------------------------------------
+
+    // -----------------------------------------------------------
     // Report key
     const keysReport = card.reportCard?.map((report) => {
         const keys = Object.keys(report.reportContent);
         return keys[0];
     });
-    //
     const isElec = keysReport?.includes("electric");
     const isWater = keysReport?.includes("water");
     const isOther = keysReport?.includes("other");
-    // -------------------------- FUNCTION --------------------------
     // --------------------------- KIEM TRA CÓ THONG TIN THI SẼ HIEN ---------------------------
     const showCardAction = () => {
         return !!card?.userRoom || !!card?.comments?.length || !!card?.bulletins?.length;
@@ -63,7 +72,7 @@ const CardMain = ({ card, column }) => {
         transform: CSS.Transform.toString(transform),
         transition,
         opacity: isDragging ? 0.5 : undefined,
-        border: isDragging ? "1px solid #2ecc71" : undefined,
+        border: (theme) => (isDragging ? `1px solid ${theme.trello.colorErrorOtherStrong}` : undefined),
     };
 
     const setActiveCard = () => {
@@ -89,6 +98,7 @@ const CardMain = ({ card, column }) => {
                     cursor: "grab",
                     overflow: "unset",
                     borderRadius: "8px",
+                    width: "100%",
                     bgcolor: theme.trello.colorGunmetalBlue,
                     border: `1px solid ${alpha(theme.trello.colorErrorOtherStart, 0.5)}`,
                     transition: "all ease 0.3s",
@@ -111,58 +121,68 @@ const CardMain = ({ card, column }) => {
                 >
                     {card?.FE_PlaceholderCard && <Typography sx={{ width: "100%" }}></Typography>}
                     {!card?.FE_PlaceholderCard && (
-                        <Box sx={{ width: "100%" }}>
+                        <Box
+                            sx={{
+                                display: { xs: "flex", md: "block" },
+                                flexDirection: "row-reverse",
+                                justifyContent: "flex-start",
+                                width: "100%",
+                            }}
+                        >
                             {/* ------------------------- NOTIFI ------------------------- */}
                             <Box
                                 sx={{
                                     display: "flex",
-                                    gap: 1,
-                                    mb: 1.5,
+                                    alignItems: "center",
+                                    gap: { xs: 0.5, md: 1 },
+                                    mb: { xs: 0, md: 1.5 },
                                     fontSize: "10px",
                                     fontWeight: "600",
                                     lineHeight: "24px",
                                     color: theme.trello.colorSlateBlue,
                                 }}
                             >
-                                {isElec && (
-                                    <Box
-                                        sx={{
-                                            ...theme.trello.dotOtherStyle(
-                                                theme.trello.colorErrorElecDarker,
-                                                theme.trello.colorRedClay
-                                            ),
-                                            width: "12px",
-                                            height: "12px",
-                                            borderRadius: "50%",
-                                        }}
-                                    />
-                                )}
-                                {isWater && (
-                                    <Box
-                                        sx={{
-                                            ...theme.trello.dotOtherStyle(
-                                                theme.trello.colorDotBlueLight,
-                                                theme.trello.colorDotBlueBase
-                                            ),
-                                            width: "12px",
-                                            height: "12px",
-                                            borderRadius: "50%",
-                                        }}
-                                    />
-                                )}
-                                {isOther && (
-                                    <Box
-                                        sx={{
-                                            ...theme.trello.dotOtherStyle(
-                                                theme.trello.colorErrorOtherStart,
-                                                theme.trello.colorErrorOtherStrong
-                                            ),
-                                            width: "12px",
-                                            height: "12px",
-                                            borderRadius: "50%",
-                                        }}
-                                    />
-                                )}
+                                <Box sx={{ display: "flex", gap: { xs: 0.8, md: 1 } }}>
+                                    {isElec && (
+                                        <Box
+                                            sx={{
+                                                ...theme.trello.dotOtherStyle(
+                                                    theme.trello.colorErrorElecDarker,
+                                                    theme.trello.colorRedClay
+                                                ),
+                                                width: { xs: "8px", md: "12px" },
+                                                height: { xs: "8px", md: "12px" },
+                                                borderRadius: "50%",
+                                            }}
+                                        />
+                                    )}
+                                    {isWater && (
+                                        <Box
+                                            sx={{
+                                                ...theme.trello.dotOtherStyle(
+                                                    theme.trello.colorDotBlueLight,
+                                                    theme.trello.colorDotBlueBase
+                                                ),
+                                                width: { xs: "8px", md: "12px" },
+                                                height: { xs: "8px", md: "12px" },
+                                                borderRadius: "50%",
+                                            }}
+                                        />
+                                    )}
+                                    {isOther && (
+                                        <Box
+                                            sx={{
+                                                ...theme.trello.dotOtherStyle(
+                                                    theme.trello.colorErrorOtherStart,
+                                                    theme.trello.colorErrorOtherStrong
+                                                ),
+                                                width: { xs: "8px", md: "12px" },
+                                                height: { xs: "8px", md: "12px" },
+                                                borderRadius: "50%",
+                                            }}
+                                        />
+                                    )}
+                                </Box>
                                 {isUserInRoom ? (
                                     <Box
                                         sx={{
@@ -172,16 +192,16 @@ const CardMain = ({ card, column }) => {
                                             alignItems: "center",
                                             justifyContent: "center",
                                             borderRadius: "99px",
-                                            width: "24px",
-                                            height: "24px",
+                                            width: { xs: "20px", md: "24px" },
+                                            height: { xs: "20px", md: "24px" },
                                             color: theme.trello.colorSnowGray,
                                             bgcolor: theme.trello.colorRevenueGreen,
                                             boxShadow: theme.trello.boxShadowPrimary,
                                         }}
                                     >
                                         <PermIdentityOutlinedIcon
-                                            fontSize="small"
                                             sx={{
+                                                fontSize: { xs: "16px", md: "20px" },
                                                 position: "absolute",
                                                 transform: "translateY(-52%) translateX(-50%)",
                                                 top: "50%",
@@ -199,16 +219,17 @@ const CardMain = ({ card, column }) => {
                                             alignItems: "center",
                                             justifyContent: "center",
                                             borderRadius: "99px",
-                                            width: "24px",
-                                            height: "24px",
+                                            width: { xs: "20px", md: "24px" },
+                                            height: { xs: "20px", md: "24px" },
                                             color: theme.trello.colorSnowGray,
                                             bgcolor: theme.trello.colorRedClay,
                                             boxShadow: theme.trello.boxShadowPrimary,
                                         }}
                                     >
                                         <PersonOffOutlinedIcon
-                                            fontSize="small"
+                                            // fontSize="inherit"
                                             sx={{
+                                                fontSize: { xs: "16px", md: "20px" },
                                                 position: "absolute",
                                                 transform: "translateY(-52%) translateX(-50%)",
                                                 top: "50%",
@@ -223,20 +244,21 @@ const CardMain = ({ card, column }) => {
                             <Box
                                 sx={{
                                     display: "flex",
-                                    alignItems: "center",
+                                    alignItems: { xs: "flex-start", md: "center" },
                                     gap: 1,
                                     flex: 1,
+                                    fontSize: { xs: "14px", md: "18px" },
                                     fontWeight: "600",
                                     color: theme.trello.colorSnowGray,
                                 }}
                             >
-                                PHÒNG
+                                {isMobile ? "" : "Phòng"}
                                 <Typography
                                     variant="span"
                                     sx={{
                                         display: "block",
-                                        p: "5px 10px",
-                                        fontSize: "18px",
+                                        p: { xs: "3px 10px", md: "5px 10px" },
+                                        fontSize: { xs: "12px", md: "18px" },
                                         fontWeight: "600",
                                         borderRadius: "6px",
                                         color: theme.trello.colorMidnightBlue,
@@ -254,29 +276,75 @@ const CardMain = ({ card, column }) => {
 
                 {/* --------------------------------------- */}
                 {showCardAction() && (
-                    <CardActions sx={{ p: "0 4px 8px 4px", display: "flex" }}>
+                    <CardActions
+                        sx={{
+                            p: "0 4px 8px 4px",
+                            display: "flex",
+                            alignItems: "center",
+                            gap: { xs: 0.5, md: 1 },
+                            mt: "auto",
+                        }}
+                    >
                         {!!card?.bulletins?.length && (
-                            <Button
-                                sx={{ color: theme.trello.colorIronBlue }}
-                                startIcon={<NewspaperIcon />}
-                                size="small"
+                            <Badge
+                                color="warning"
+                                // variant="none"
+                                // variant="dot"
+                                variant={isRealtimeUpdate?.bulletin ? "dot" : "none"}
+                                sx={{ cursor: "pointer" }}
+                                id="basic-button-open-notification"
+                                aria-controls={open ? "basic-notification-drop-down" : undefined}
+                                aria-haspopup="true"
+                                aria-expanded={open ? "true" : undefined}
                             >
-                                {card?.bulletins?.length}
-                            </Button>
+                                <NotificationsNoneOutlinedIcon
+                                    sx={{
+                                        fontSize: "18px",
+                                        color: isRealtimeUpdate?.bulletin
+                                            ? theme.trello.colorSnowGray
+                                            : theme.trello.colorIronBlue,
+                                    }}
+                                />
+                            </Badge>
                         )}
+
                         {!!card?.comments?.length && (
-                            <Button sx={{ color: theme.trello.colorIronBlue }} startIcon={<ForumIcon />} size="small">
-                                {card?.comments?.length}
-                            </Button>
+                            <Badge
+                                color="warning"
+                                // variant="none"
+                                // variant="dot"
+                                variant={isRealtimeUpdate?.comment ? "dot" : "none"}
+                                sx={{ cursor: "pointer" }}
+                                id="basic-button-open-notification"
+                                aria-controls={open ? "basic-notification-drop-down" : undefined}
+                                aria-haspopup="true"
+                                aria-expanded={open ? "true" : undefined}
+                            >
+                                <MarkunreadOutlinedIcon
+                                    onClick={handleClickOpenMess}
+                                    sx={{
+                                        fontSize: "18px",
+                                        color: isRealtimeUpdate?.comment
+                                            ? theme.trello.colorSnowGray
+                                            : theme.trello.colorIronBlue,
+                                    }}
+                                />
+                            </Badge>
                         )}
                         {Number(card?.userRoom) > 0 && (
-                            <Button
-                                sx={{ color: theme.trello.colorIronBlue }}
-                                startIcon={<GroupOutlinedIcon />}
-                                size="small"
+                            <Box
+                                sx={{
+                                    display: "flex",
+                                    gap: { xs: 0.2, md: 0.5 },
+                                    alignItems: "center",
+                                    color: theme.trello.colorIronBlue,
+                                    minWidth: { xs: "max-content", md: "64px" },
+                                    fontSize: "14px",
+                                }}
                             >
+                                <GroupOutlinedIcon sx={{ fontSize: "18px" }} />
                                 {card?.userRoom}
-                            </Button>
+                            </Box>
                         )}
                     </CardActions>
                 )}

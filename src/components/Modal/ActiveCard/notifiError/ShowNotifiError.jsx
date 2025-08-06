@@ -12,7 +12,7 @@ import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined";
 import ErrorOutlineOutlinedIcon from "@mui/icons-material/ErrorOutlineOutlined";
 // ---------------------------------- COMPONENT ----------------------------------
 import { selectCurrentActiveCard } from "~/redux/activeCard/activeCardSlice";
-import useListenCardReloaded from "~/customHook/socket/useListenCardReloaded";
+// import useListenCardReloaded from "~/customHook/socket/useListenCardReloaded";
 import { alpha } from "@mui/material/styles";
 // ==========================================================================================================
 const ShowNotifiError = ({ onDeleteCardReport }) => {
@@ -31,7 +31,7 @@ const ShowNotifiError = ({ onDeleteCardReport }) => {
         setSelectedImage(null);
     };
     // --------------------------------------------
-    useListenCardReloaded(); // Tách ra customHooks riêng để xử lý cho tất cả các hàm muốn realtime
+    // useListenCardReloaded(); // Tách ra customHooks riêng để xử lý cho tất cả các hàm muốn realtime
     const activeCard = useSelector(selectCurrentActiveCard);
     const reportColorMap = {
         electric: theme.trello.colorRedClay,
@@ -44,28 +44,29 @@ const ShowNotifiError = ({ onDeleteCardReport }) => {
     const handleDeleteReport = async (deleteReport) => {
         // eslint-disable-next-line no-unused-vars
         const { confirmed, reason } = await confirmDeleteCardBulletin({
-            title: "Delete?",
-            description: "Are you sure you want to delete this REPORT",
-            confirmationText: "Confirm",
+            title: "Xóa?",
+            description: "Lỗi này đã xử lý xong chưa? Bạn có chắc muốn xóa nó?",
+            confirmationText: "Xóa",
             cancellationText: "Cancel",
             buttonOrder: ["confirm", "cancel"],
+            // title
+            titleProps: {
+                sx: theme.trello.modalTextHeader,
+            },
+            // Confirm
             confirmationButtonProps: {
                 variant: "contained",
-                sx: {
-                    color: (theme) => theme.trello.colorDustyCloud,
-                    boxShadow: (theme) => theme.trello.boxShadowBtn,
-                    backgroundColor: (theme) => theme.trello.colorSlateBlue,
-                    transition: "all 0.25s ease-in-out",
-                    "&:hover": {
-                        borderColor: "white",
-                        boxShadow: (theme) => theme.trello.boxShadowBtnHover,
-                        backgroundColor: (theme) => theme.trello.colorSlateBlue,
-                    },
+                sx: theme.trello.modalConfirmBtn,
+            },
+            // ✅ Style toàn bộ modal (nền, border, màu chữ...)
+            dialogProps: {
+                PaperProps: {
+                    sx: theme.trello.modalDialog,
                 },
             },
+            //
         });
         if (confirmed) {
-            console.log(deleteReport);
             onDeleteCardReport(deleteReport).then(() => {
                 toast.success("Đã xóa thông báo lỗi!");
             });
@@ -85,7 +86,7 @@ const ShowNotifiError = ({ onDeleteCardReport }) => {
                 sx={{
                     display: "flex",
                     alignItems: "center",
-                    gap: 1.5,
+                    gap: { xs: 1, md: 1.5 },
                     bgcolor: theme.trello.colorErrorOtherStrong,
                     borderRadius: "8px",
                     px: 1,
@@ -94,14 +95,20 @@ const ShowNotifiError = ({ onDeleteCardReport }) => {
                     color: theme.trello.colorMidnightBlue,
                 }}
             >
-                <ErrorOutlineOutlinedIcon />
+                <ErrorOutlineOutlinedIcon sx={{ fontSize: { xs: "16px", md: "20px" } }} />
                 <Typography
                     variant="span"
-                    sx={{ display: "block", mr: "auto", fontWeight: "600", fontSize: "20px", userSelect: "none" }}
+                    sx={{
+                        display: "block",
+                        mr: "auto",
+                        fontWeight: "600",
+                        fontSize: { xs: "14px", md: "20px" },
+                        userSelect: "none",
+                    }}
                 >
                     Warning
                 </Typography>
-                <Typography>
+                <Typography variant="span" sx={{ fontSize: { xs: "12px", md: "18px" } }}>
                     {activeCard?.reportCard?.length}
                     {" Thông báo"}
                 </Typography>
@@ -112,8 +119,9 @@ const ShowNotifiError = ({ onDeleteCardReport }) => {
                 {/* Hiển thị danh sách các comments */}
                 <Box
                     sx={{
-                        py: 1.5,
-                        pl: 2,
+                        pt: { xs: 0.5, md: 1.5 },
+                        pb: 1.5,
+                        pl: { xs: 1, md: 2 },
                         borderRadius: 1.5,
                         bgcolor: theme.trello.colorMidnightBlue,
                         maxHeight: "400px",
@@ -124,6 +132,7 @@ const ShowNotifiError = ({ onDeleteCardReport }) => {
                     {activeCard.reportCard?.map((report, index) => {
                         const [firstKey] = Object.keys(report.reportContent || {});
                         const content = report.reportContent?.[firstKey];
+                        // -------------------------------------------------
                         return (
                             <Box sx={{ width: "100%" }} key={index}>
                                 <Box sx={{ width: "inherit" }}>
@@ -131,7 +140,7 @@ const ShowNotifiError = ({ onDeleteCardReport }) => {
                                     <Typography
                                         variant="span"
                                         sx={{
-                                            fontSize: "11px",
+                                            fontSize: { xs: "9px", md: "11px" },
                                             userSelect: "none",
                                             color: theme.trello.colorIronBlue,
                                         }}
@@ -145,10 +154,10 @@ const ShowNotifiError = ({ onDeleteCardReport }) => {
                                             display: "flex",
                                             alignItems: "center",
                                             gap: 2,
-                                            mr: 1.5,
-                                            p: 1.5,
-                                            borderTopLeftRadius: "24px",
-                                            borderBottomRightRadius: "24px",
+                                            mr: { xs: 1, md: 1.5 },
+                                            p: { xs: 0.5, md: 1.5 },
+                                            borderTopLeftRadius: { xs: "16px", md: "24px" },
+                                            borderBottomRightRadius: { xs: "16px", md: "24px" },
                                             bgcolor: theme.trello.colorGunmetalBlue,
                                             border: `1px solid ${reportColorMap[firstKey]}`,
                                             borderLeftWidth: "8px",
@@ -159,7 +168,7 @@ const ShowNotifiError = ({ onDeleteCardReport }) => {
                                                 flex: 1,
                                                 display: "flex",
                                                 alignItems: "center",
-                                                gap: 2,
+                                                gap: { xs: 0, md: 1.5 },
                                                 // p: "8px 12px",
                                                 wordBreak: "break-word",
                                                 userSelect: "none",
@@ -167,58 +176,65 @@ const ShowNotifiError = ({ onDeleteCardReport }) => {
                                             }}
                                         >
                                             {/* content */}
-                                            <ErrorOutlineOutlinedIcon />
+                                            {/* BTN DELETE */}
+                                            <DeleteOutlinedIcon
+                                                onClick={() => handleDeleteReport(report)}
+                                                sx={{
+                                                    fontSize: { xs: "26px", md: "30px" },
+                                                    p: "4px",
+                                                    color: theme.trello.colorIronBlue,
+                                                    transition: "all 0.25s ease-in-out",
+                                                    "&:hover": {
+                                                        color: reportColorMap[firstKey],
+                                                        cursor: "pointer",
+                                                    },
+                                                }}
+                                            />
                                             <Box sx={{ ml: 1, flex: 1 }}>
                                                 <Typography
                                                     variant="span"
                                                     sx={{
                                                         display: "block",
-                                                        fontSize: "18px",
+                                                        fontSize: { xs: "12px", md: "18px" },
                                                         fontWeight: "600",
                                                         textTransform: "uppercase",
-                                                        mb: 0.5,
+                                                        mb: { xs: 0, md: 0.5 },
                                                     }}
                                                 >
                                                     {content?.name || "Không xác định"}
                                                 </Typography>
                                                 <Typography
                                                     variant="span"
-                                                    sx={{ fontStyle: "italic", color: theme.trello.colorIronBlue }}
+                                                    sx={{
+                                                        fontStyle: "italic",
+                                                        color: theme.trello.colorIronBlue,
+                                                        fontSize: { xs: "12px", md: "16px" },
+                                                    }}
                                                 >
                                                     {content?.note || "Không có mô tả"}
                                                 </Typography>
                                             </Box>
-                                            {/* BTN DELETE */}
-                                            <Typography variant="span" sx={{ userSelect: "none" }}>
-                                                <DeleteOutlinedIcon
-                                                    onClick={() => handleDeleteReport(report)}
-                                                    fontSize="small"
-                                                    sx={{
-                                                        p: "4px",
-                                                        width: "30px",
-                                                        height: "30px",
-                                                        color: theme.trello.colorIronBlue,
-                                                        transition: "all 0.25s ease-in-out",
-                                                        "&:hover": {
-                                                            color: reportColorMap[firstKey],
-                                                            cursor: "pointer",
-                                                        },
-                                                    }}
-                                                />
-                                            </Typography>
+
                                             {/* ------------------ */}
                                         </Box>
                                         {/* IMAGE */}
-                                        <Box sx={{ display: "flex", gap: 2, mr: 3, justifyContent: "flex-end" }}>
+                                        <Box
+                                            sx={{
+                                                display: "flex",
+                                                gap: 2,
+                                                mr: { xs: 0, md: 3 },
+                                                justifyContent: "flex-end",
+                                            }}
+                                        >
                                             <Box>
                                                 <Box
                                                     component="img"
                                                     sx={{
                                                         display: "flex",
-                                                        height: 80,
+                                                        height: { xs: 50, md: 80 },
                                                         width: 80,
                                                         objectFit: "cover",
-                                                        borderRadius: "8px",
+                                                        borderRadius: { xs: "14px 0", md: "8px" },
                                                         cursor: "pointer",
                                                         transition: "0.3s",
                                                         "&:hover": {
@@ -226,7 +242,7 @@ const ShowNotifiError = ({ onDeleteCardReport }) => {
                                                         },
                                                     }}
                                                     src={report.reportImages}
-                                                    alt=""
+                                                    alt="tundev"
                                                     onClick={() => handleOpenImageDialog(report.reportImages)}
                                                 />
                                             </Box>

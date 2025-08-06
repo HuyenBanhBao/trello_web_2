@@ -73,11 +73,11 @@ function CardUserGroup({ cardMemberIds = [], onUpdateCardMembers }) {
                         fontSize: "14px",
                         fontWeight: "600",
                         borderRadius: "50%",
-                        color: (theme) => (theme.palette.mode === "dark" ? "#90caf9" : "#172b4d"),
-                        bgcolor: (theme) => (theme.palette.mode === "dark" ? "#2f3542" : theme.palette.grey[200]),
+                        color: "#172b4d",
+                        bgcolor: (theme) => theme.palette.grey[200],
                         "&:hover": {
-                            color: (theme) => (theme.palette.mode === "dark" ? "#000000de" : "#0c66e4"),
-                            bgcolor: (theme) => (theme.palette.mode === "dark" ? "#90caf9" : "#e9f2ff"),
+                            color: "#0c66e4",
+                            bgcolor: "#e9f2ff",
                         },
                     }}
                 >

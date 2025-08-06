@@ -12,16 +12,16 @@ const ContentManagerUser = ({ isShowListUser, isShowListUserPrice }) => {
     return (
         <Box sx={{ height: "100%" }}>
             {/* ---------------------------------------- Header ---------------------------------------- */}
-            <Box>
+            <Box sx={{ width: "inherit" }}>
                 <Typography
                     variant="span"
                     sx={{
                         display: "block",
-                        py: 1.5,
-                        px: 2,
+                        py: { xs: 1, md: 1.5 },
+                        px: { xs: 1.5, md: 2 },
                         mb: 1,
                         borderRadius: "8px",
-                        fontSize: "20px",
+                        fontSize: { xs: "16px", md: "20px" },
                         fontWeight: "600",
                         color: theme.trello.colorErrorText,
                         bgcolor: theme.trello.colorErrorOtherStrong,
@@ -35,9 +35,9 @@ const ContentManagerUser = ({ isShowListUser, isShowListUserPrice }) => {
 
             <Box
                 sx={{
-                    p: 1,
+                    p: { xs: 0.5, md: 1 },
                     borderRadius: "8px",
-                    height: "calc(90vh - 90px)",
+                    height: { xs: "calc(100vh - 58px)", md: "calc(90vh - 90px)" },
                     bgcolor: theme.trello.colorObsidianSlate,
                     border: `1px solid ${alpha(theme.trello.colorErrorOtherStart, 0.5)}`,
                     //
