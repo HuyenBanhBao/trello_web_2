@@ -69,14 +69,14 @@ const CardEditableInfo = ({ setServiceFormCardData, handleSaveInfoServiceRoom, i
     const fieldsCard = [
         {
             label: "Giá phòng:",
-            icon: <MoneyIcon />,
+            icon: <MoneyIcon sx={{ fontSize: { xs: "16px", md: "20px" } }} />,
             valueKey: "priceRoom",
             suffix: "k /tháng",
             size: 12,
         },
         {
             label: "Người:",
-            icon: <UserIcon />,
+            icon: <UserIcon sx={{ fontSize: { xs: "16px", md: "20px" } }} />,
             valueKey: "userRoom",
             suffix: "",
             size: 6,
@@ -162,15 +162,24 @@ const CardEditableInfo = ({ setServiceFormCardData, handleSaveInfoServiceRoom, i
                 sx={{
                     display: "flex",
                     alignItems: "center",
-                    gap: 1.5,
+                    gap: { xs: 1, md: 1.5 },
                     bgcolor: theme.trello.colorErrorOtherStrong,
                     borderRadius: "8px",
                     px: 1,
                     color: theme.trello.colorMidnightBlue,
                 }}
             >
-                <PaidOutlinedIcon fontSize="small" />
-                <Typography variant="span" sx={{ fontWeight: "600", userSelect: "none", mr: "auto", my: 0.5 }}>
+                <PaidOutlinedIcon sx={{ fontSize: { xs: "16px", md: "20px" } }} />
+                <Typography
+                    variant="span"
+                    sx={{
+                        fontWeight: "600",
+                        fontSize: { xs: "14px", md: "20px" },
+                        userSelect: "none",
+                        mr: "auto",
+                        my: 0.5,
+                    }}
+                >
                     Phí dịch vụ
                 </Typography>
             </Box>
@@ -196,6 +205,7 @@ const CardEditableInfo = ({ setServiceFormCardData, handleSaveInfoServiceRoom, i
                                         sx={{
                                             color: item.cl ? item.cl : "inherit",
                                             fontWeight: item.fw ? item.fw : "inherit",
+                                            fontSize: { xs: "12px", md: "16px" },
                                         }}
                                     >
                                         {item.label}
@@ -203,9 +213,19 @@ const CardEditableInfo = ({ setServiceFormCardData, handleSaveInfoServiceRoom, i
                                 )}
                                 <EditableInput
                                     value={formValues[item.valueKey] || ""}
+                                    inputFontSize={{ xs: "14px", md: "16px" }}
                                     onChangedValue={item.valueKey ? handleChange(item.valueKey) : undefined}
                                 />
-                                {item.suffix && <span>{item.suffix}</span>}
+                                {item.suffix && (
+                                    <Typography
+                                        variant="span"
+                                        sx={{
+                                            fontSize: { xs: "12px", md: "16px" },
+                                        }}
+                                    >
+                                        {item.suffix}
+                                    </Typography>
+                                )}
                                 {item.icon}
                             </Box>
                         </Grid>
@@ -221,6 +241,7 @@ const CardEditableInfo = ({ setServiceFormCardData, handleSaveInfoServiceRoom, i
                                     display: "block",
                                     width: "100%",
                                     fontWeight: "600",
+
                                     opacity: isOpenBtnSave ? 1 : 0.6,
                                     pointerEvents: isOpenBtnSave ? "auto" : "none",
                                     cursor: isOpenBtnSave ? "pointer" : "not-allowed",
@@ -252,7 +273,10 @@ const CardEditableInfo = ({ setServiceFormCardData, handleSaveInfoServiceRoom, i
                                 }}
                             >
                                 {item.label && (
-                                    <Typography variant="span" sx={{ display: "block", mr: "auto" }}>
+                                    <Typography
+                                        variant="span"
+                                        sx={{ display: "block", mr: "auto", fontSize: { xs: "12px", md: "16px" } }}
+                                    >
                                         {item.label}
                                     </Typography>
                                 )}
@@ -286,6 +310,7 @@ const CardEditableInfo = ({ setServiceFormCardData, handleSaveInfoServiceRoom, i
                                             ml: "auto",
                                             display: "block",
                                             px: "6px",
+                                            fontSize: { xs: "14px", md: "16px" },
                                             color: (theme) => theme.trello.colorSnowGray,
                                             textAlign: "end",
                                             overflow: "hidden",
@@ -294,7 +319,16 @@ const CardEditableInfo = ({ setServiceFormCardData, handleSaveInfoServiceRoom, i
                                         },
                                     }}
                                 />
-                                {item.suffix && <span>{item.suffix}</span>}
+                                {item.suffix && (
+                                    <Typography
+                                        variant="span"
+                                        sx={{
+                                            fontSize: { xs: "12px", md: "16px" },
+                                        }}
+                                    >
+                                        {item.suffix}
+                                    </Typography>
+                                )}
                                 {item.icon}
                             </Box>
                         </Grid>

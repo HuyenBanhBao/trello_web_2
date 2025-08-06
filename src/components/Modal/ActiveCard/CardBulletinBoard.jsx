@@ -1,4 +1,3 @@
-import moment from "moment";
 import Box from "@mui/material/Box";
 import { toast } from "react-toastify";
 import { useSelector } from "react-redux";
@@ -49,27 +48,27 @@ function CardBulletinBoard({ cardBulletin = [], onAddCardBulletin, onDeleteCardB
     const handleDeleteCardComment = async (bulletinDelete) => {
         // eslint-disable-next-line no-unused-vars
         const { confirmed, reason } = await confirmDeleteCardBulletin({
-            title: "Delete?",
-            description: "Are you sure you want to delete this BULLETIN",
-            confirmationText: "Confirm",
+            title: "Xóa?",
+            description: "Bạn chắc chắn muốn xóa thông báo này?",
+            confirmationText: "Chắc chắn",
             cancellationText: "Cancel",
             buttonOrder: ["confirm", "cancel"],
+            // title
+            titleProps: {
+                sx: theme.trello.modalTextHeader,
+            },
+            // Confirm
             confirmationButtonProps: {
                 variant: "contained",
-                sx: {
-                    color: theme.trello.colorDustyCloud,
-                    backgroundColor: theme.trello.colorSlateBlue,
-
-                    boxShadow: theme.trello.boxShadowBtn,
-                    transition: "all 0.25s ease-in-out",
-
-                    "&:hover": {
-                        borderColor: "white",
-                        boxShadow: theme.trello.boxShadowBtnHover,
-                        backgroundColor: theme.trello.colorSlateBlue,
-                    },
+                sx: theme.trello.modalConfirmBtn,
+            },
+            // ✅ Style toàn bộ modal (nền, border, màu chữ...)
+            dialogProps: {
+                PaperProps: {
+                    sx: theme.trello.modalDialog,
                 },
             },
+            //
         });
 
         if (confirmed) {
@@ -84,49 +83,57 @@ function CardBulletinBoard({ cardBulletin = [], onAddCardBulletin, onDeleteCardB
         <Box
             sx={{
                 mb: 2,
-                p: 1,
+                p: { xs: "15px 20px 35px", md: "25px 40px" },
                 borderRadius: "8px",
                 border: `1px solid ${alpha(theme.trello.colorErrorOtherStart, 0.5)}`,
-                backgroundColor: theme.trello.colorMidnightBlue,
+                height: { xs: "240px", md: "400px" },
+                background: 'url("/assets/wood-bulletin.png")',
+                backgroundRepeat: "no-repeat",
+                backgroundSize: "100% 100%",
+                backgroundPosition: "center",
             }}
         >
             <Box
                 sx={{
                     display: "flex",
                     alignItems: "center",
-                    gap: 1.5,
-                    bgcolor: theme.trello.colorErrorOtherStrong,
+                    justifyContent: "center",
+                    gap: { xs: 1, md: 1.5 },
                     borderRadius: "8px",
+                    mx: 2,
                     px: 1,
                     py: 0.5,
                     color: theme.trello.colorMidnightBlue,
                 }}
             >
-                <NewspaperIcon />
-                <Typography variant="span" sx={{ fontWeight: "600", fontSize: "20px", userSelect: "none" }}>
-                    Bảng tin
+                <NewspaperIcon sx={{ fontSize: { xs: "16px", md: "20px" } }} />
+                <Typography
+                    variant="span"
+                    sx={{ fontWeight: "600", fontSize: { xs: "14px", md: "20px" }, userSelect: "none" }}
+                >
+                    NỘI QUY VÀ THÔNG BÁO
                 </Typography>
             </Box>
 
             {/* Xử lý bảng tin của Card */}
-            <Box sx={{ mt: 2 }}>
+            <Box>
                 {/* Xử lý thêm comment vào Card */}
                 {isAdmin && (
-                    <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 2 }}>
+                    <Box sx={{ display: "flex", alignItems: "center", gap: 1, m: { xs: "0 15px", md: "0 60px" } }}>
                         <Avatar
-                            sx={{ width: 36, height: 36, cursor: "pointer" }}
+                            sx={{ width: { xs: 24, md: 36 }, height: { xs: 24, md: 36 }, cursor: "pointer" }}
                             alt={currentUser?.username}
                             src={currentUser?.avatar}
                         />
                         <TextField
+                            spellCheck="false"
                             sx={{
                                 mt: "4px",
                                 "& .MuiOutlinedInput-root": {
-                                    bgcolor: theme.trello.colorDarkNavyGray,
-                                    padding: "8px 12px",
+                                    bgcolor: theme.trello.colorSnowGray,
+                                    padding: { xs: "5px 9px", md: "8px 12px" },
                                     border: `1px solid ${theme.trello.colorPaleSky}`,
                                     borderRadius: "4px",
-                                    boxShadow: theme.trello.boxShadowBtn,
                                     "& fieldset": {
                                         border: "none", // ẩn border mặc định
                                     },
@@ -140,10 +147,12 @@ function CardBulletinBoard({ cardBulletin = [], onAddCardBulletin, onDeleteCardB
                                 "& .MuiOutlinedInput-input": {
                                     padding: 0, // padding đã có ở `.MuiOutlinedInput-root` rồi
                                     wordBreak: "break-word",
-                                    color: theme.trello.colorSnowGray,
-                                    caretColor: theme.trello.colorSnowGray,
+                                    fontSize: { xs: "12px", md: "14px" },
+                                    color: theme.trello.colorMidnightBlue,
+                                    caretColor: theme.trello.colorMidnightBlue,
                                     "&::placeholder": {
-                                        color: theme.trello.colorSnowGray,
+                                        fontSize: { xs: "12px", md: "14px" },
+                                        color: theme.trello.colorMidnightBlue,
                                         opacity: 0.5,
                                     },
                                 },
@@ -161,58 +170,61 @@ function CardBulletinBoard({ cardBulletin = [], onAddCardBulletin, onDeleteCardB
                 {/* Hiển thị danh sách các comments */}
                 <Box
                     sx={{
-                        pl: 2,
-                        py: 1.5,
-                        display: "flex",
-                        flexDirection: "column",
-                        alignItems: "center",
-                        borderRadius: 1.5,
-                        maxHeight: "300px",
+                        mt: "10px",
+                        p: { xs: "0 20px", md: "0 50px" },
+                        display: "grid",
+                        gridTemplateColumns: {
+                            xs: "1fr",
+                            md: "1fr 1fr",
+                        },
+                        gap: { xs: 0.5, md: 1 },
+                        width: "100%",
+                        height: { xs: "95px", md: "200px" },
                         overflowY: "auto",
-                        gap: 1.5,
-                        // border: `1px solid ${alpha(theme.trello.colorErrorOtherStart, 0.5)}`,
-                        // backgroundColor: theme.trello.colorPaleSky,
                     }}
                 >
                     {cardBulletin.map((bulletin, index) => (
-                        <Box sx={{ display: "flex", gap: 1, width: "85%" }} key={index}>
-                            <Box sx={{ display: "flex", alignItems: "center", width: "100%" }}>
+                        <Box
+                            sx={{
+                                gap: 1,
+                                width: "100%",
+                                color: theme.trello.colorMidnightBlue,
+                            }}
+                            key={index}
+                        >
+                            <Box sx={{ display: "flex", alignItems: "center", gap: { xs: 0.5, md: 1 }, width: "100%" }}>
                                 {/* -------------- DATE -------------- */}
 
                                 <Box sx={{ flex: 1, display: "flex", justifyContent: "center" }}>
                                     {/* -------------- INFO -------------- */}
-                                    <Box>
-                                        <Typography
-                                            variant="span"
-                                            sx={{
-                                                fontSize: "9px",
-                                                fontStyle: "italic",
-                                                userSelect: "none",
-                                                color: theme.trello.colorIronBlue,
-                                            }}
-                                        >
-                                            {/* Format ngày tháng */}
-                                            {/* {moment(comment.commentedAt).format("llll")} */}
-                                            {moment(bulletin.bulletinedAt).format("DD/MM/YYYY")}
-                                        </Typography>
+                                    <Box sx={{ width: "100%" }}>
                                         <Box
                                             sx={{
                                                 flex: 1,
                                                 mr: 1,
                                                 display: "flex",
                                                 alignItems: "center",
-                                                gap: 2,
-                                                p: "16px 24px",
+                                                gap: { xs: 0.5, md: 1 },
+                                                p: { xs: "5px 10px", md: "8px 16px" },
                                                 userSelect: "none",
-                                                width: "max-content",
+                                                width: "100%",
                                                 borderRadius: "50px",
                                                 wordBreak: "break-word",
-                                                // bgcolor: theme.trello.colorErrorOtherWarmer,
-                                                border: `1px solid ${alpha(theme.trello.colorErrorOtherStart, 0.5)}`,
+                                                bgcolor: theme.trello.colorErrorOtherWarmer,
                                             }}
                                         >
-                                            <NotificationsActiveOutlinedIcon />
-                                            <Box sx={{ flex: 1, display: "flex", flexDirection: "column" }}>
+                                            <NotificationsActiveOutlinedIcon
+                                                sx={{ fontSize: { xs: "14px", md: "18px" } }}
+                                            />
+                                            <Box
+                                                sx={{
+                                                    flex: 1,
+                                                    display: "flex",
+                                                    fontWeight: "500",
+                                                    flexDirection: "column",
+                                                    fontSize: { xs: "12px", md: "14px" },
+                                                }}
+                                            >
                                                 {bulletin.bulletin}
                                             </Box>
                                         </Box>
@@ -223,17 +235,7 @@ function CardBulletinBoard({ cardBulletin = [], onAddCardBulletin, onDeleteCardB
                                     {isAdmin && (
                                         <DeleteOutlinedIcon
                                             onClick={() => handleDeleteCardComment(bulletin)}
-                                            fontSize="small"
-                                            sx={{
-                                                p: "4px",
-                                                width: "30px",
-                                                height: "30px",
-                                                color: theme.trello.colorSnowGray,
-                                                "&:hover": {
-                                                    color: theme.trello.colorSkyMist,
-                                                    cursor: "pointer",
-                                                },
-                                            }}
+                                            sx={{ display: "flex", fontSize: { xs: "14px", md: "18px" } }}
                                         />
                                     )}
                                 </Typography>

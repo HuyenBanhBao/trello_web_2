@@ -23,17 +23,17 @@ const ListManaUser = () => {
     const theme = useTheme();
     // -------------------------------------------
     const [valueForm1, setValueForm1] = useState("");
-    const [valueForm2, setValueForm2] = useState("");
-    const [valueForm3, setValueForm3] = useState("");
+    // const [valueForm2, setValueForm2] = useState("");
+    // const [valueForm3, setValueForm3] = useState("");
     const handleChange1 = (event) => {
         setValueForm1(event.target.value);
     };
-    const handleChange2 = (event) => {
-        setValueForm2(event.target.value);
-    };
-    const handleChange3 = (event) => {
-        setValueForm3(event.target.value);
-    };
+    // const handleChange2 = (event) => {
+    //     setValueForm2(event.target.value);
+    // };
+    // const handleChange3 = (event) => {
+    //     setValueForm3(event.target.value);
+    // };
     // ------------------------- info member -------------------------
     const activeBoard = useSelector(selectCurrentActiveBoard);
     const members = activeBoard.members;
@@ -45,7 +45,6 @@ const ListManaUser = () => {
     const matchedColumns = activeBoard.columns.filter((column) =>
         column.memberIds.some((memberId) => memberIds.includes(memberId))
     );
-    console.log(matchedColumns);
 
     // --------------- Tạo mảng để lưu USER cùng với các thong tin cần thiết ---------------
     const memberDataSorted = members.map((member) => {
@@ -66,6 +65,8 @@ const ListManaUser = () => {
             matchedColumnTitles,
         };
     });
+    // ---------------- Tạo mảng để lưu và SELECT ----------------
+    const memberColumnTitles = [...new Set(matchedColumns.map((column) => column.title))];
     // Sap xep so phong
     function extractNumber(str) {
         const match = str.match(/\d+/); // tìm số đầu tiên
@@ -89,15 +90,19 @@ const ListManaUser = () => {
             backgroundColor: theme.trello.colorMidnightBlue,
             color: theme.trello.colorErrorOtherStrong,
             fontWeight: "600",
-            paddingTop: "8px",
-            paddingBottom: "8px",
+            padding: "3px 6px",
+            [theme.breakpoints.up("md")]: {
+                padding: "8px 16px",
+            },
         },
         [`&.${tableCellClasses.body}`]: {
             px: 1,
             fontSize: "14px",
             color: theme.trello.colorSnowGray,
-            paddingTop: "8px",
-            paddingBottom: "8px",
+            padding: "3px 6px",
+            [theme.breakpoints.up("md")]: {
+                padding: "8px 16px",
+            },
         },
     }));
 
@@ -109,19 +114,19 @@ const ListManaUser = () => {
                 <Box sx={{ display: "flex", gap: 3 }}>
                     <Box sx={{ width: "100%", display: "flex", justifyContent: "flex-end" }}>
                         {/* ------------------------------------ */}
-                        <FormControl sx={{ m: 1, minWidth: 160 }}>
+                        <FormControl sx={{ m: 1, minWidth: { xs: 150, md: 250 } }}>
                             <FormLabel
                                 id="demo-simple-select-label"
                                 sx={{
-                                    fontSize: "13px",
+                                    fontSize: { xs: "10px", md: "13px" },
                                     fontStyle: "italic",
-                                    color: theme.trello.colorErrorOtherStrong,
+                                    color: theme.trello.colorSnowGray,
                                     "&.Mui-focused ": {
-                                        color: theme.trello.colorErrorOtherStrong,
+                                        color: theme.trello.colorSnowGray,
                                     },
                                 }}
                             >
-                                Status
+                                Theo địa chỉ
                             </FormLabel>
                             <Select
                                 labelId="demo-simple-select-label"
@@ -132,9 +137,10 @@ const ListManaUser = () => {
                                     p: 0,
                                     border: `1px solid ${alpha(theme.trello.colorErrorOtherStart, 0.5)}`,
                                     color: theme.trello.colorErrorOtherStrong,
+                                    fontSize: { xs: "12px", md: "14px" },
                                     "& .MuiSelect-select": {
-                                        px: 1.5,
-                                        py: 1,
+                                        px: { xs: 1, md: 1.5 },
+                                        py: { xs: 0.5, md: 1 },
                                     },
                                     "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
                                         borderColor: "transparent",
@@ -145,98 +151,15 @@ const ListManaUser = () => {
                                 }}
                                 onChange={handleChange1}
                             >
-                                <MenuItem value="paid">Paid</MenuItem>
-                                <MenuItem value="pending">Pending</MenuItem>
-                                <MenuItem value="refunded">Refunded</MenuItem>
-                                <MenuItem value="cancelled">Cancelled</MenuItem>
+                                <MenuItem value="">Tất cả</MenuItem>
+                                {memberColumnTitles.map((memberColumnTitle, index) => (
+                                    <MenuItem key={index} value={memberColumnTitle}>
+                                        {memberColumnTitle}
+                                    </MenuItem>
+                                ))}
                             </Select>
                         </FormControl>
-                        {/* ------------------------------------ */}
-                        <FormControl sx={{ m: 1, minWidth: 160 }}>
-                            <FormLabel
-                                id="demo-simple-select-label"
-                                sx={{
-                                    fontSize: "13px",
-                                    fontStyle: "italic",
-                                    color: theme.trello.colorErrorOtherStrong,
-                                    "&.Mui-focused ": {
-                                        color: theme.trello.colorErrorOtherStrong,
-                                    },
-                                }}
-                            >
-                                Status
-                            </FormLabel>
-                            <Select
-                                labelId="demo-simple-select-label"
-                                id="demo-simple-select"
-                                value={valueForm2}
-                                label="Age"
-                                sx={{
-                                    p: 0,
-                                    border: `1px solid ${alpha(theme.trello.colorErrorOtherStart, 0.5)}`,
-                                    color: theme.trello.colorErrorOtherStrong,
-                                    "& .MuiSelect-select": {
-                                        px: 1.5,
-                                        py: 1,
-                                    },
-                                    "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                                        borderColor: "transparent",
-                                    },
-                                    "& .MuiSvgIcon-root": {
-                                        color: theme.trello.colorErrorOtherStrong,
-                                    },
-                                }}
-                                onChange={handleChange2}
-                            >
-                                <MenuItem value="paid">Paid</MenuItem>
-                                <MenuItem value="pending">Pending</MenuItem>
-                                <MenuItem value="refunded">Refunded</MenuItem>
-                                <MenuItem value="cancelled">Cancelled</MenuItem>
-                            </Select>
-                        </FormControl>
-                        {/* ------------------------------------ */}
-                        <FormControl sx={{ m: 1, minWidth: 160 }}>
-                            <FormLabel
-                                id="demo-simple-select-label"
-                                sx={{
-                                    fontSize: "13px",
-                                    fontStyle: "italic",
-                                    color: theme.trello.colorErrorOtherStrong,
-                                    "&.Mui-focused ": {
-                                        color: theme.trello.colorErrorOtherStrong,
-                                    },
-                                }}
-                            >
-                                Status
-                            </FormLabel>
-                            <Select
-                                labelId="demo-simple-select-label"
-                                id="demo-simple-select"
-                                value={valueForm3}
-                                label="Age"
-                                sx={{
-                                    p: 0,
-                                    border: `1px solid ${alpha(theme.trello.colorErrorOtherStart, 0.5)}`,
-                                    color: theme.trello.colorErrorOtherStrong,
-                                    "& .MuiSelect-select": {
-                                        px: 1.5,
-                                        py: 1,
-                                    },
-                                    "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                                        borderColor: "transparent",
-                                    },
-                                    "& .MuiSvgIcon-root": {
-                                        color: theme.trello.colorErrorOtherStrong,
-                                    },
-                                }}
-                                onChange={handleChange3}
-                            >
-                                <MenuItem value="paid">Paid</MenuItem>
-                                <MenuItem value="pending">Pending</MenuItem>
-                                <MenuItem value="refunded">Refunded</MenuItem>
-                                <MenuItem value="cancelled">Cancelled</MenuItem>
-                            </Select>
-                        </FormControl>
+
                         {/* ------------------------------------ */}
                     </Box>
                 </Box>
@@ -245,7 +168,7 @@ const ListManaUser = () => {
                     <TableContainer
                         component={Paper}
                         sx={{
-                            maxHeight: "calc(90vh - 190px)",
+                            maxHeight: { xs: "calc(100% - 190px)", md: "calc(90vh - 190px)" },
                             overflowY: "auto",
                             "&::-webkit-scrollbar": {
                                 display: "none",
@@ -263,35 +186,87 @@ const ListManaUser = () => {
                         >
                             <TableHead>
                                 <TableRow>
-                                    <StyledTableCell sx={{ width: "180px" }}>Họ và tên (user name)</StyledTableCell>
-                                    <StyledTableCell align="right" sx={{ width: "180px" }}>
-                                        Số điện thoại/Email
+                                    <StyledTableCell
+                                        sx={{
+                                            width: { xs: "110px", md: "180px" },
+
+                                            fontSize: { xs: "12px", md: "14px" },
+                                        }}
+                                    >
+                                        Họ và tên
                                     </StyledTableCell>
-                                    <StyledTableCell align="right" sx={{ width: "180px" }}>
+                                    <StyledTableCell
+                                        align="right"
+                                        sx={{
+                                            display: { xs: "none", md: "table-cell" },
+                                            width: "150px",
+                                            fontSize: { xs: "12px", md: "14px" },
+                                        }}
+                                    >
+                                        Số điện thoại
+                                    </StyledTableCell>
+                                    <StyledTableCell
+                                        align="right"
+                                        sx={{
+                                            display: { xs: "none", md: "table-cell" },
+                                            width: "150px",
+                                            fontSize: { xs: "12px", md: "14px" },
+                                        }}
+                                    >
                                         Số CCCD/CMT
                                     </StyledTableCell>
-                                    <StyledTableCell align="right" sx={{ width: "180px" }}>
+                                    <StyledTableCell
+                                        align="right"
+                                        sx={{
+                                            width: { xs: "80px", md: "150px" },
+                                            fontSize: { xs: "12px", md: "14px" },
+                                        }}
+                                    >
                                         Số phòng
                                     </StyledTableCell>
-                                    <StyledTableCell align="right">Tòa nhà</StyledTableCell>
+                                    <StyledTableCell
+                                        align="right"
+                                        sx={{
+                                            display: { xs: "none", md: "table-cell" },
+                                            width: "150px",
+                                            fontSize: { xs: "12px", md: "14px" },
+                                        }}
+                                    >
+                                        Hạn hợp đồng
+                                    </StyledTableCell>
+                                    <StyledTableCell
+                                        align="right"
+                                        sx={{
+                                            fontSize: { xs: "12px", md: "14px" },
+                                        }}
+                                    >
+                                        Tòa nhà
+                                    </StyledTableCell>
                                 </TableRow>
                             </TableHead>
                             <TableBody>
-                                {memberDataSorted.map(
-                                    (
-                                        { member, currentCard, matchedColumn, matchedTitle, matchedColumnTitles },
-                                        index
-                                    ) => (
-                                        <ManagerUserItem
-                                            key={member._id || index}
-                                            member={member}
-                                            currentCard={currentCard}
-                                            matchedTitle={matchedTitle}
-                                            matchedColumn={matchedColumn}
-                                            matchedColumnTitles={matchedColumnTitles}
-                                        />
-                                    )
-                                )}
+                                {memberDataSorted
+                                    .filter(({ matchedColumnTitles }) => {
+                                        // Nếu không có giá trị được chọn, hiển thị tất cả
+                                        if (!valueForm1) return true;
+                                        // Nếu có giá trị được chọn, chỉ hiển thị các thành viên thuộc tòa nhà đó
+                                        return matchedColumnTitles.includes(valueForm1);
+                                    })
+                                    .map(
+                                        (
+                                            { member, currentCard, matchedColumn, matchedTitle, matchedColumnTitles },
+                                            index
+                                        ) => (
+                                            <ManagerUserItem
+                                                key={member._id || index}
+                                                member={member}
+                                                currentCard={currentCard}
+                                                matchedTitle={matchedTitle}
+                                                matchedColumn={matchedColumn}
+                                                matchedColumnTitles={matchedColumnTitles}
+                                            />
+                                        )
+                                    )}
                             </TableBody>
                         </Table>
                     </TableContainer>

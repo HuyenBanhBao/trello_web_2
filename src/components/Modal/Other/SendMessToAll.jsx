@@ -81,8 +81,7 @@ function SendMessToAll({ onAddComentToAllCard, activeColumn }) {
                         border: "none",
                         outline: 0,
                         padding: "20px 30px",
-                        backgroundColor: (theme) =>
-                            theme.palette.mode === "dark" ? "#1A2027" : theme.trello.colorFogWhiteBlue,
+                        backgroundColor: (theme) => theme.trello.colorFogWhiteBlue,
                     }}
                 >
                     <Box
@@ -145,8 +144,7 @@ function SendMessToAll({ onAddComentToAllCard, activeColumn }) {
                                     sx={{
                                         mt: "4px",
                                         "& .MuiOutlinedInput-root": {
-                                            bgcolor: (theme) =>
-                                                theme.palette.mode === "dark" ? "#33485D" : "transparent",
+                                            bgcolor: "transparent",
                                             padding: "8px 12px",
                                             borderRadius: "4px",
                                             border: "0.5px solid rgba(48, 48, 48, 0.3)",

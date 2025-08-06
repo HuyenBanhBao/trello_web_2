@@ -123,6 +123,7 @@ function Notifications() {
     // =============================================================================================================
     return (
         <Box>
+            {/* ------------------ NOTIFI ------------------ */}
             <Tooltip title="Notifications">
                 <Badge
                     color="warning"
@@ -145,6 +146,7 @@ function Notifications() {
                 </Badge>
             </Tooltip>
 
+            {/* ------------------ MENU ------------------ */}
             <Menu
                 sx={{ mt: 2 }}
                 id="basic-notification-drop-down"

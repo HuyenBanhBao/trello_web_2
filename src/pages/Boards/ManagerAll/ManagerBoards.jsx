@@ -2,6 +2,7 @@ import { Link, useLocation } from "react-router-dom";
 // ----------------- MUI -----------------
 import Box from "@mui/material/Box";
 import Card from "@mui/material/Card";
+import { alpha } from "@mui/material/styles";
 import { useTheme } from "@mui/material/styles";
 import Typography from "@mui/material/Typography";
 import Pagination from "@mui/material/Pagination";
@@ -20,18 +21,16 @@ import { DEFAULT_ITEMS_PER_PAGE, DEFAULT_PAGE } from "~/utils/constants";
 const ITEM_STYLES = {
     display: "flex",
     alignItems: "center",
-    gap: 0.5,
-    p: "5px 10px",
+    gap: 0.3,
+    p: "4px 8px",
     borderRadius: "6px",
-    fontSize: "12px",
+    fontSize: "10px",
     fontWeight: "500",
     color: (theme) => theme.trello.colorSnowGray,
     boxShadow: (theme) => theme.trello.boxShadowPrimary,
 };
 // ======================================================================================
 const ManagerBoards = ({ allBoards, totalBoards }) => {
-    console.log(allBoards);
-
     const theme = useTheme();
     // Số lượng bản ghi boards hiển thị tối đa trên 1 page tùy dự án (thường sẽ là 12 cái)
     // const [boards, setBoards] = useState(null);
@@ -59,8 +58,8 @@ const ManagerBoards = ({ allBoards, totalBoards }) => {
                     p: 2,
                     borderRadius: "10px",
                     height: theme.trello.listBoardHeight,
-                    bgcolor: theme.trello.colorFrostGray,
-                    boxShadow: theme.trello.boxShadowBulletin,
+                    bgcolor: theme.trello.colorMidnightBlue,
+                    border: `1px solid ${alpha(theme.trello.colorErrorOtherStart, 0.4)}`,
 
                     //
                 }}
@@ -94,6 +93,8 @@ const ManagerBoards = ({ allBoards, totalBoards }) => {
                         {allBoards.map((b) => {
                             return (
                                 <Box
+                                    component={Link}
+                                    to={`/boards/${b._id}`}
                                     key={b._id}
                                     sx={{
                                         height: "100%",
@@ -113,7 +114,8 @@ const ManagerBoards = ({ allBoards, totalBoards }) => {
                                             color: "inherit",
                                             transition: "all 0.2s ease-in-out",
                                             boxShadow: theme.trello.boxShadowPrimary,
-                                            backgroundColor: theme.trello.colorSlateBlue,
+                                            backgroundColor: theme.trello.colorGunmetalBlue,
+                                            border: `1px solid ${alpha(theme.trello.colorErrorOtherStart, 0.4)}`,
                                             "&:hover": {
                                                 transform: "translateY(-6px)",
                                             },
@@ -150,10 +152,10 @@ const ManagerBoards = ({ allBoards, totalBoards }) => {
                                         </Box>
                                         <Box
                                             sx={{
-                                                px: 1,
-                                                pb: 1,
+                                                px: 0.5,
+                                                pb: 0.5,
                                                 height: "calc(100% - 43px)",
-                                                bgcolor: theme.trello.colorSlateBlue,
+                                                bgcolor: theme.trello.colorGunmetalBlue,
                                                 mt: -0.5,
                                             }}
                                         >
@@ -163,9 +165,12 @@ const ManagerBoards = ({ allBoards, totalBoards }) => {
                                                     flexDirection: "column",
                                                     height: "100%",
                                                     borderRadius: "8px",
-                                                    bgcolor: theme.trello.colorSkyMist,
-                                                    boxShadow: theme.trello.boxShadowBulletin,
-                                                    "&:last-child": { p: 1.5 },
+                                                    bgcolor: theme.trello.colorGunmetalBlue,
+                                                    border: `1px solid ${alpha(
+                                                        theme.trello.colorErrorOtherStart,
+                                                        0.4
+                                                    )}`,
+                                                    "&:last-child": { p: 1 },
                                                 }}
                                             >
                                                 {/* ------------------------ BOARD DECS ------------------------ */}
@@ -180,6 +185,7 @@ const ManagerBoards = ({ allBoards, totalBoards }) => {
                                                         overflow: "hidden",
                                                         whiteSpace: "nowrap",
                                                         textOverflow: "ellipsis",
+                                                        color: theme.trello.colorIronBlue,
                                                     }}
                                                 >
                                                     <MapOutlinedIcon fontSize="small" />
@@ -194,18 +200,19 @@ const ManagerBoards = ({ allBoards, totalBoards }) => {
                                                         display: "flex",
                                                         flexWrap: "wrap",
                                                         alignItems: "center",
-                                                        gap: 3,
+                                                        gap: 1,
                                                     }}
                                                 >
                                                     {b?.cardCount !== 0 && (
                                                         <Box
                                                             sx={{
                                                                 ...ITEM_STYLES,
-                                                                bgcolor: theme.trello.colorDarkNavyGray,
+                                                                bgcolor: theme.trello.colorErrorOtherStrong,
+                                                                color: theme.trello.colorErrorText,
                                                             }}
                                                         >
-                                                            <MeetingRoomOutlinedIcon fontSize="small" /> {b?.cardCount}{" "}
-                                                            Phòng
+                                                            <MeetingRoomOutlinedIcon sx={{ fontSize: "16px" }} />{" "}
+                                                            {b?.cardCount} Phòng
                                                         </Box>
                                                     )}
                                                     {b?.emptyRoomCardCount !== 0 && (
@@ -215,7 +222,7 @@ const ManagerBoards = ({ allBoards, totalBoards }) => {
                                                                 bgcolor: theme.trello.colorRedClay,
                                                             }}
                                                         >
-                                                            <NoMeetingRoomOutlinedIcon fontSize="small" />{" "}
+                                                            <NoMeetingRoomOutlinedIcon sx={{ fontSize: "16px" }} />{" "}
                                                             {b?.emptyRoomCardCount} Phòng
                                                         </Box>
                                                     )}
@@ -224,37 +231,18 @@ const ManagerBoards = ({ allBoards, totalBoards }) => {
                                                             sx={{
                                                                 ...ITEM_STYLES,
                                                                 bgcolor: theme.trello.colorDarkNavyGray,
+                                                                border: `1px solid ${alpha(
+                                                                    theme.trello.colorErrorOtherStart,
+                                                                    0.4
+                                                                )}`,
                                                             }}
                                                         >
-                                                            <GroupOutlinedIcon fontSize="small" />{" "}
+                                                            <GroupOutlinedIcon sx={{ fontSize: "16px" }} />{" "}
                                                             {b?.totalUserRoomCount}
                                                         </Box>
                                                     )}
                                                 </Box>
                                                 {/* ------------------------ LINK ------------------------ */}
-                                                <Typography
-                                                    component={Link}
-                                                    to={`/boards/${b._id}`}
-                                                    sx={{
-                                                        mt: "auto",
-                                                        ml: "auto",
-                                                        p: "5px 15px",
-                                                        display: "block",
-                                                        color: theme.trello.colorErrorText,
-                                                        fontWeight: "600",
-                                                        fontStyle: "italic",
-                                                        borderRadius: "8px",
-                                                        bgcolor: theme.trello.colorErrorOtherStrong,
-                                                        boxShadow: theme.trello.boxShadowBtn,
-                                                        transition: "all ease 0.3s",
-                                                        "&:hover": {
-                                                            boxShadow: theme.trello.boxShadowBtnHover,
-                                                        },
-                                                    }}
-                                                    //
-                                                >
-                                                    Go to board
-                                                </Typography>
                                             </CardContent>
                                         </Box>
                                     </Card>
@@ -282,14 +270,16 @@ const ManagerBoards = ({ allBoards, totalBoards }) => {
                             color="standard"
                             sx={{
                                 "& .MuiPaginationItem-root": {
-                                    color: theme.trello.colorDeepNavy,
-                                    borderColor: theme.trello.colorDeepNavy,
+                                    color: theme.trello.colorErrorOtherStrong,
+                                    borderColor: theme.trello.colorErrorOtherWarmer,
+                                    minWidth: "30px",
+                                    height: "30px",
                                 },
                                 "& .Mui-selected": {
-                                    backgroundColor: theme.trello.colorDeepNavy,
+                                    backgroundColor: `${theme.trello.colorErrorOtherWarmer} !important`,
                                     color: "white",
                                     "&:hover": {
-                                        backgroundColor: theme.trello.colorSlateBlue,
+                                        backgroundColor: `${theme.trello.colorErrorOtherStrong} !important`,
                                     },
                                 },
                             }}

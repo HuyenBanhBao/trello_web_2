@@ -34,12 +34,28 @@ function SecurityTab() {
             // Title, Description, Content...vv của gói material-ui-confirm đều có type là ReactNode nên có thể thoải sử dụng MUI components, rất tiện lợi khi cần custom styles
             title: (
                 <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                    <LogoutIcon sx={{ color: "warning.dark" }} /> Change Password
+                    <LogoutIcon sx={{ color: "warning.dark" }} /> Đổi mật khẩu
                 </Box>
             ),
-            description: "You have to login again after successfully changing your password. Continue?",
-            confirmationText: "Confirm",
+            description: "Bạn cần đăng nhập lại sau khi thay đổi mật khẩu thành công. Tiếp tục?",
+            confirmationText: "Tiếp tục",
             cancellationText: "Cancel",
+            // title
+            titleProps: {
+                sx: (theme) => theme.trello.modalTextHeader,
+            },
+            // Confirm
+            confirmationButtonProps: {
+                variant: "contained",
+                sx: (theme) => theme.trello.modalConfirmBtn,
+            },
+            // ✅ Style toàn bộ modal (nền, border, màu chữ...)
+            dialogProps: {
+                PaperProps: {
+                    sx: (theme) => theme.trello.modalDialog,
+                },
+            },
+            //
         });
 
         if (confirmed) {

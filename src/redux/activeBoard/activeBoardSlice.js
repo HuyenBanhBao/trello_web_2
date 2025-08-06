@@ -98,7 +98,11 @@ export const activeBoardSlice = createSlice({
             .addCase(fetchBoardDetailsAPI.fulfilled, (state, action) => {
                 // action.payload chính là cái  response.data trả về ở trên.
                 let board = action.payload;
+                const currentUserId = board.userId;
 
+                if (Array.isArray(board.memberIds) && board.memberIds.includes(currentUserId)) {
+                    board.memberIds = [currentUserId];
+                }
                 // Thành viên trong cái board sẽ là góp lại của 2 mảnh: owners và members
                 // Cach 1:
                 // board.FE_allUsers = [...board.owners, ...board.members];
@@ -115,6 +119,7 @@ export const activeBoardSlice = createSlice({
                 // Xử lý dữ liệu board nếu cần thiết
                 board.columns = mapOrder(board.columns, board.columnOrderIds, "_id"); // Sắp xếp lại mảng columns
                 board.columns.forEach((column) => {
+                    board.columnOrderIds = [column._id];
                     if (isEmpty(column.cards)) {
                         column.cards = [generatePlaceholder(column)];
                         column.cardOrderIds = [generatePlaceholder(column)._id];

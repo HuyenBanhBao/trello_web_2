@@ -1,5 +1,5 @@
 // --------------------- MUI ---------------------
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Box from "@mui/material/Box";
 import Stack from "@mui/material/Stack";
 import Modal from "@mui/material/Modal";
@@ -14,6 +14,9 @@ import CancelIcon from "@mui/icons-material/Cancel";
 import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined";
 import PaymentOutlinedIcon from "@mui/icons-material/PaymentOutlined";
 import MeetingRoomOutlinedIcon from "@mui/icons-material/MeetingRoomOutlined";
+import ForumOutlinedIcon from "@mui/icons-material/ForumOutlined";
+import Popover from "@mui/material/Popover";
+import Badge from "@mui/material/Badge";
 // -------------- REACT --------------
 import { toast } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
@@ -34,15 +37,14 @@ import DateTime from "./DateTime";
 // import { singleFileValidator } from "~/utils/validators";
 import { selectCurrentUser } from "~/redux/user/userSlice";
 import ToggleFocusInput from "~/components/Form/ToggleFocusInput";
-import { updateCardDetailsAPI, updateCardDetailsReportAPI, updateUserDetailsAPI } from "~/apis";
+import { updateCardDetailsAPI, updateCardDetailsReportAPI, updateUserDetailsAPI, sendNotificationAPI } from "~/apis";
 // import VisuallyHiddenInput from "~/components/Form/VisuallyHiddenInput";
 import CardEditableInfo from "../Other/CardEditableInfo";
 import NotifiError from "./notifiError/NotifiError";
 import ShowNotifiError from "./notifiError/ShowNotifiError";
+import { disableRealtimeUpdate } from "~/redux/notifications/notificationsSlice";
 // --------------- IMPORT FUNCTIONS --------------------
 import { handleDeleteCard } from "./functions/handleDeleteCard";
-// import { handleDeleteCover } from "./functions/handleDeleteCover";
-// import useListenCardReloaded from "~/customHook/socket/useListenCardReloaded";
 // ==================================================================================
 // --------------------------------- Function ---------------------------------------
 const SidebarItem = styled(Box)(({ theme }) => ({
@@ -52,17 +54,16 @@ const SidebarItem = styled(Box)(({ theme }) => ({
     cursor: "pointer",
     fontSize: "14px",
     fontWeight: "600",
-    // color: theme.palette.mode === "dark" ? "#90caf9" : "#172b4d",
-    backgroundColor: theme.palette.mode === "dark" ? "#2f3542" : "#091e420f",
+    backgroundColor: "#091e420f",
     padding: "10px",
     border: `1px solid ${theme.trello.colorSnowGray}`,
     borderRadius: "4px",
     userSelect: "none",
-    boxShadow: theme.palette.mode === "dark" ? "0 2px 4px rgba(0, 0, 0, 0.4)" : "0 2px 4px rgba(0, 0, 0, 0.1)",
+    boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
     transition: "all 0.3s ease",
     "&:hover": {
-        backgroundColor: theme.palette.mode === "dark" ? "#33485D" : "rgba(254, 246, 199, 0.1)",
-        boxShadow: theme.palette.mode === "dark" ? "0 4px 8px rgba(0, 0, 0, 0.5)" : "0 4px 8px rgba(0, 0, 0, 0.15)",
+        backgroundColor: "rgba(254, 246, 199, 0.1)",
+        boxShadow: "0 4px 8px rgba(0, 0, 0, 0.15)",
     },
 }));
 
@@ -77,42 +78,92 @@ function ActiveCard() {
     const board = useSelector(selectCurrentActiveBoard);
     const activeCard = useSelector(selectCurrentActiveCard);
     const currentUser = useSelector(selectCurrentUser);
-    const isAdmin = board?.ownerIds.includes(currentUser._id);
+    const isAdmin = currentUser?.role === "admin";
     const isShowModalActiveCard = useSelector(selectIsShowModalActiveCard);
+    const isRealtimeUpdate = useSelector((state) => state.notifications.isRealtimeUpdateMap[activeCard?._id]); // check real time
+    // --------------------- DISABLE MESSAGE ---------------------
+    // --------------------- OPEN CLOSE btn mess ---------------------
+    const [anchorElOpenCloseMess, setAnchorElOpenCloseMess] = useState(null);
+    const handleClickOpenMess = (event) => {
+        setAnchorElOpenCloseMess(event.currentTarget);
+        dispatch(disableRealtimeUpdate({ cardId: activeCard?._id, type: "comment" }));
+    };
+    const handleCloseMess = () => {
+        setAnchorElOpenCloseMess(null);
+    };
+    const openMess = Boolean(anchorElOpenCloseMess);
+    const idOpenCloseMess = openMess ? "simple-popover" : undefined;
+
     // --------------------- useState -------------------------
     const [serviceFormCardData, setServiceFormCardData] = useState({});
     // không dùng biến state để check đóng mở Modal nữa vì sẽ check theo isShowModalActiveCard
     // const [isOpen, setIsOpen] = useState(true);
     // const handleOpenModal = () => setIsOpen(true);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     const handleCloseModal = () => {
         dispatch(clearAndHideCurrentActiveCard()); // Đặt lại currentActiveCard là null
         dispatch(clearAndHideCurrentActiveColumn());
-        // setIsOpen(false);
+    };
+    // ===============================================================================
+    const callAPISendNotification = async (payload, targetUserId) => {
+        const res = await sendNotificationAPI({ ...payload, targetUserId });
+        return res;
     };
 
     // Function goi API dùng chung cho các trường hợp update card title, desc, cover, comment =====================================================
-    const callAPIUpdateCard = async (updateData) => {
+    const callAPIUpdateCard = async (updateData, type) => {
+        const titleNotifi = type === "comment" ? "TIN NHẮN" : "THÔNG BÁO";
         const updatedCard = await updateCardDetailsAPI(activeCard._id, updateData);
+        // console.log(updatedCard);
         // B1: Cập nhật lại cái card đang active trong modal hiện tại
         dispatch(updateCurrentActiveCard(updatedCard));
         // B2: Cập nhật lại cái bản ghi card trong cái activeBoard (nested data)
         dispatch(updateCardInBoard(updatedCard));
+        // 2. Gửi Web Push nếu cần (khi người dùng offline vẫn nhận được)
+        const targetUserId = updatedCard?.memberIds?.[0]?.userId;
+        const targetAdminId = board?.ownerIds?.[0];
+
+        if (targetUserId && (type === "comment" || type === "bulletin")) {
+            await callAPISendNotification(
+                {
+                    title: "Smart Bamboo",
+                    body: `Phòng "${updatedCard.title}": ${titleNotifi}`,
+                    icon: "/logo192.png",
+                },
+                isAdmin ? targetUserId : targetAdminId
+            );
+        }
         // ✅ Emit socket tới người khác để đồng bộ dữ liệu card
         socketIoInstance.emit("FE_CARD_RELOADED", {
             cardId: updatedCard._id,
             updatedCard, // Gửi toàn bộ card đã được update
+            type,
         });
         return updatedCard;
     };
     // ----------------------------------------------------------
-    const callAPIUpdateReportCard = async (updateData) => {
+    const callAPIUpdateReportCard = async (updateData, type) => {
         const updatedCard = await updateCardDetailsReportAPI(activeCard._id, updateData);
+        console.log(updatedCard);
+
         dispatch(updateCurrentActiveCard(updatedCard)); // B1: Cập nhật lại cái card đang active trong modal hiện tại
         dispatch(updateCardInBoard(updatedCard)); // B2: Cập nhật lại cái bản ghi card trong cái activeBoard (nested data)
         // ✅ Emit socket tới người khác để đồng bộ dữ liệu card
+        const targetUserId = updatedCard?.memberIds?.[0]?.userId;
+        if (targetUserId && type === "add-report") {
+            await callAPISendNotification(
+                {
+                    title: "Smart Bamboo",
+                    body: `Phòng "${updatedCard.title}": BÁO LỖI `,
+                    icon: "/logo192.png",
+                },
+                targetUserId
+            );
+        }
         socketIoInstance.emit("FE_CARD_RELOADED", {
             cardId: updatedCard._id,
             updatedCard, // Gửi toàn bộ card đã được update
+            type,
         });
         return updatedCard;
     };
@@ -126,7 +177,7 @@ function ActiveCard() {
     // ------------------ RENAME CARD TITLE ------------------
     const onUpdateCardTitle = (newTitle) => {
         if (isAdmin) {
-            callAPIUpdateCard({ title: newTitle.trim() }); // Call Api
+            callAPIUpdateCard({ title: newTitle.trim() }, "newTitle"); // Call Api
         } else {
             toast.warning("You are not admin, can't edit NUMBER ROOM");
         }
@@ -172,31 +223,31 @@ function ActiveCard() {
     // Dùng async await ở đây để component con CardActivitySection chờ và nếu thành công thì mới clear thẻ input comment
     //  ------------------ ADD DATE ------------------
     const onAddDateContract = async (dateToAdd) => {
-        await callAPIUpdateCard(dateToAdd);
+        await callAPIUpdateCard(dateToAdd, "dateToAdd");
     };
     //  ------------------ ADD BULLETIN ------------------
     const onAddCardBulletin = async (bulletinToAdd) => {
         // Gọi api thêm comment lên component cha
-        await callAPIUpdateCard({ bulletinToAdd });
+        await callAPIUpdateCard({ bulletinToAdd }, "bulletin");
     };
     //  ------------------ ADD COMMENT ------------------
     const onAddCardComment = async (commentToAdd) => {
         // Gọi api thêm comment lên component cha
-        await callAPIUpdateCard({ commentToAdd });
+        await callAPIUpdateCard({ commentToAdd }, "comment");
     };
     // ------------------ DELETE BULLETIN ------------------
     const onDeleteCardBulletin = async (bulletinDelete) => {
-        await callAPIUpdateCard({ bulletinDelete });
+        await callAPIUpdateCard({ bulletinDelete }, "del-bulletin");
     };
 
     // ------------------ DELETE COMMENT ------------------
     const onDeleteCardComment = async (commentDelete) => {
-        await callAPIUpdateCard({ commentDelete });
+        await callAPIUpdateCard({ commentDelete }, "del-comment");
     };
 
     // ------------------ DELETE REPORT ------------------
     const onDeleteCardReport = async (reportDelete) => {
-        await callAPIUpdateReportCard({ reportDelete });
+        await callAPIUpdateReportCard({ reportDelete }, "del-report");
     };
 
     //  ------------------ UPDATE MEMBERS ------------------
@@ -211,6 +262,26 @@ function ActiveCard() {
             toast.success("Cập nhật phí dịch vụ thành công!");
         });
     };
+    // Xử lý sự kiện nút quay lại của trình duyệt
+    useEffect(() => {
+        if (isShowModalActiveCard) {
+            // Lưu lại trạng thái hiện tại vào history để có thể quay lại
+            window.history.pushState(null, null, window.location.pathname);
+
+            // Xử lý sự kiện popstate (khi người dùng nhấn nút quay lại)
+            const handlePopState = () => {
+                handleCloseModal();
+            };
+
+            // Đăng ký lắng nghe sự kiện
+            window.addEventListener("popstate", handlePopState);
+
+            // Cleanup function khi component unmount hoặc isShowModalActiveCard thay đổi
+            return () => {
+                window.removeEventListener("popstate", handlePopState);
+            };
+        }
+    }, [isShowModalActiveCard, handleCloseModal]);
 
     // ================================================================================================================
     return (
@@ -230,15 +301,14 @@ function ActiveCard() {
                     position: "relative",
                     display: "flex",
                     flexDirection: "column",
-                    width: "85vw",
-                    maxWidth: "95vw",
-                    maxHeight: "95vh",
-                    bgcolor: "white",
+                    width: { xs: "100vw", md: "85vw" },
+                    maxWidth: { xs: "100vw", md: "85vw" },
+                    maxHeight: { xs: "100vh", md: "95vh" },
                     boxShadow: 24,
-                    borderRadius: "8px",
                     outline: "none",
                     overflow: "hidden",
                     margin: "50px auto",
+                    borderRadius: { xs: "0", md: "8px" },
                     border: `1px solid ${theme.trello.colorIronBlue}`,
                 }}
             >
@@ -268,7 +338,8 @@ function ActiveCard() {
                 <Box
                     sx={{
                         display: "flex",
-                        pr: "60px",
+                        flexDirection: { xs: "column", md: "row" },
+                        pr: { xs: 0, md: "60px" },
                         alignItems: "center",
                         bgcolor: theme.trello.colorMidnightBlue,
                         borderBottom: `1px solid ${alpha(theme.trello.colorErrorOtherStart, 0.5)}`,
@@ -280,24 +351,113 @@ function ActiveCard() {
                             pl: 2.5,
                             pr: 6,
                             py: 1,
+                            width: "100%",
                             display: "inline-flex",
                             alignItems: "center",
                             gap: 1,
                             color: theme.trello.colorSnowGray,
                             bgcolor: theme.trello.colorMidnightBlue,
+                            borderBottom: {
+                                xs: `1px solid ${alpha(theme.trello.colorErrorOtherStart, 0.5)}`,
+                                md: "none",
+                            },
                         }}
                     >
-                        <MeetingRoomOutlinedIcon fontSize="large" />
-                        {/* Feature 01: Xử lý tiêu đề của Card */}
-                        <ToggleFocusInput
-                            className="card-title-modal"
-                            inputFontSize="22px"
-                            value={activeCard?.title}
-                            onChangedValue={onUpdateCardTitle}
-                        />
+                        <MeetingRoomOutlinedIcon sx={{ xs: "20px", md: "26px" }} />
+                        {"Phòng: "}
+                        {isAdmin ? (
+                            <ToggleFocusInput
+                                className="card-title-modal"
+                                inputFontSize="22px"
+                                value={activeCard?.title}
+                                onChangedValue={onUpdateCardTitle}
+                            />
+                        ) : (
+                            <Typography variant="span" sx={{ fontSize: "20px", fontWeight: "600" }}>
+                                {activeCard?.title}
+                            </Typography>
+                        )}
                     </Box>
-                    <Box sx={{ flex: 2 }}>
-                        <DateTime onAddDateContract={onAddDateContract} />
+                    <Box
+                        sx={{
+                            flex: 2,
+                            py: { xs: 1, md: 0 },
+                            width: "100%",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: { xs: "space-between", md: "center" },
+                        }}
+                    >
+                        {isAdmin && (
+                            <Box>
+                                <DateTime onAddDateContract={onAddDateContract} />
+                            </Box>
+                        )}
+                        {/* ----------------------- ICON MESSAGE ----------------------- */}
+                        <Box
+                            sx={{
+                                display: { xs: "block", md: "none" },
+                                pr: 1.5,
+                                color: theme.trello.colorSnowGray,
+                                ml: "auto",
+                            }}
+                        >
+                            <Box aria-describedby={idOpenCloseMess} variant="contained" onClick={handleClickOpenMess}>
+                                <Badge
+                                    color="warning"
+                                    // variant="none"
+                                    // variant="dot"
+                                    variant={isRealtimeUpdate?.comment ? "dot" : "none"}
+                                    sx={{ cursor: "pointer" }}
+                                    id="basic-button-open-notification"
+                                    aria-controls={open ? "basic-notification-drop-down" : undefined}
+                                    aria-haspopup="true"
+                                    aria-expanded={open ? "true" : undefined}
+                                >
+                                    <ForumOutlinedIcon
+                                        sx={{
+                                            color: isRealtimeUpdate?.comment
+                                                ? theme.trello.colorSnowGray
+                                                : theme.trello.colorIronBlue,
+                                        }}
+                                    />
+                                </Badge>
+                            </Box>
+                            <Popover
+                                id={idOpenCloseMess}
+                                open={openMess}
+                                anchorEl={anchorElOpenCloseMess}
+                                onClose={handleCloseMess}
+                                anchorOrigin={{
+                                    vertical: "bottom",
+                                    horizontal: "right",
+                                }}
+                                transformOrigin={{
+                                    vertical: "top",
+                                    horizontal: "right",
+                                }}
+                                sx={{
+                                    right: 1,
+                                    "& .MuiPopover-paper": {
+                                        backgroundColor: "rgba(0, 0, 0, 0.3)",
+                                    },
+                                }}
+                                BackdropProps={{
+                                    sx: {
+                                        backgroundColor: "rgba(0, 0, 0, 0.3)",
+                                        backdropFilter: "blur(2px)",
+                                    },
+                                }}
+                            >
+                                <CardActivitySection
+                                    cardComments={activeCard?.comments}
+                                    onAddCardComment={onAddCardComment}
+                                    onDeleteCardComment={onDeleteCardComment}
+                                    isAdmin={isAdmin}
+                                />
+                            </Popover>
+                        </Box>
+                        {/* ---------------------------------------------- */}
                     </Box>
                 </Box>
 
@@ -315,7 +475,7 @@ function ActiveCard() {
                 >
                     {/* -------------------- Card cover images -------------------- */}
                     {/* CẦN SỬA LẠI */}
-                    {activeCard?.cover && (
+                    {/* {activeCard?.cover && (
                         <Box sx={{ mt: 1 }}>
                             <Box
                                 component="img"
@@ -330,12 +490,17 @@ function ActiveCard() {
                                 alt="card-cover"
                             />
                         </Box>
-                    )}
+                    )} */}
                     {/* ----------------------------------------------------------------- */}
 
                     <Grid container spacing={1} sx={{ mb: 1, mt: 1 }}>
                         {/* ---------------------- LEFT SIDE ---------------------- */}
                         <Grid xs={12} sm={8}>
+                            {/* ----------------- MOBILE ----------------- */}
+                            <Box sx={{ display: { xs: "block", md: "none" } }}>
+                                <AddMenbers isAdmin={isAdmin} callAPIUpdateUserInfo={callAPIUpdateUserInfo} />
+                            </Box>
+                            {/* ----------------- END MOBILE ----------------- */}
                             {/* ----------------- Bảng tin ------------------ */}
                             <CardBulletinBoard
                                 cardBulletin={activeCard?.bulletins}
@@ -345,23 +510,37 @@ function ActiveCard() {
                             />
                             {/* ------------------ ERROR ----------------- */}
                             <ShowNotifiError onDeleteCardReport={onDeleteCardReport} />
-
-                            {/* -------------------- GROUPS -------------------- */}
-                            <Box sx={{ display: "flex", gap: 2 }}></Box>
+                            {/* --------------------------------- REPORT --------------------------------- */}
+                            <Box
+                                sx={{
+                                    display: { xs: "block", md: "none" },
+                                    borderRadius: "8px",
+                                    mb: 0.5,
+                                    border: `1px solid ${alpha(theme.trello.colorErrorOtherStart, 0.5)}`,
+                                    backgroundColor: theme.trello.colorMidnightBlue,
+                                }}
+                            >
+                                {/* ------------------------------ NOTIFI ERROR -------------------------------- */}
+                                <NotifiError callAPIUpdateReportCard={callAPIUpdateReportCard} />
+                            </Box>
 
                             {/* ------------------ Activity ----------------- */}
-                            <CardActivitySection
-                                cardComments={activeCard?.comments}
-                                onAddCardComment={onAddCardComment}
-                                onDeleteCardComment={onDeleteCardComment}
-                                isAdmin={isAdmin}
-                            />
+                            <Box sx={{ display: { xs: "none", md: "block" } }}>
+                                <CardActivitySection
+                                    cardComments={activeCard?.comments}
+                                    onAddCardComment={onAddCardComment}
+                                    onDeleteCardComment={onDeleteCardComment}
+                                    isAdmin={isAdmin}
+                                />
+                            </Box>
                         </Grid>
 
                         {/* ---------------------- Right side ---------------------- */}
                         <Grid xs={12} sm={4}>
                             {/* ---------------------- ADD Members ---------------------- */}
-                            <AddMenbers isAdmin={isAdmin} callAPIUpdateUserInfo={callAPIUpdateUserInfo} />
+                            <Box sx={{ display: { xs: "none", md: "block" } }}>
+                                <AddMenbers isAdmin={isAdmin} callAPIUpdateUserInfo={callAPIUpdateUserInfo} />
+                            </Box>
 
                             {/* ---------------------- PRICE ROOM ---------------------- */}
                             <CardEditableInfo
@@ -424,9 +603,10 @@ function ActiveCard() {
                                 </Box>
                             </Box>
 
-                            {/* --------------------------------- BUTTONS --------------------------------- */}
+                            {/* --------------------------------- REPORT --------------------------------- */}
                             <Box
                                 sx={{
+                                    display: { xs: "none", md: "block" },
                                     borderRadius: "8px",
                                     border: `1px solid ${alpha(theme.trello.colorErrorOtherStart, 0.5)}`,
                                     backgroundColor: theme.trello.colorMidnightBlue,

@@ -26,15 +26,15 @@ const SidebarItem = styled(Box)(({ theme }) => ({
     display: "flex",
     cursor: "pointer",
     alignItems: "center",
-    backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
+    backgroundColor: "#fff",
     padding: "12px 16px",
     borderRadius: "8px",
     "&:hover": {
-        backgroundColor: theme.palette.mode === "dark" ? "#33485D" : theme.palette.grey[300],
+        backgroundColor: theme.palette.grey[300],
     },
     "&.active": {
-        color: theme.palette.mode === "dark" ? "#90caf9" : "#0c66e4",
-        backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#e9f2ff",
+        color: "#0c66e4",
+        backgroundColor: "#e9f2ff",
     },
 }));
 
@@ -44,7 +44,7 @@ function Boards() {
     const theme = useTheme();
     // ------------- ADMIN --------------------
     const activeUser = useSelector(selectCurrentUser);
-    console.log(activeUser);
+    // console.log(activeUser);
 
     const isAdmin = activeUser.role === "admin";
     // ----------------------------------------
@@ -73,14 +73,8 @@ function Boards() {
     };
     // --------------------------- CHỌN BẢNG ---------------------------
     const [openManagerBoards, setOpenManagerBoards] = useState(true);
-    const [openManagerInfo, setOpenManagerInfo] = useState(false);
     const chooseOpenManager = () => {
         setOpenManagerBoards(true);
-        setOpenManagerInfo(false);
-    };
-    const chooseOpenManagerInfo = () => {
-        setOpenManagerBoards(false);
-        setOpenManagerInfo(true);
     };
     // ============================================================================================================
     // Lúc chưa tồn tại boards > đang chờ gọi api thì hiện loading
@@ -101,7 +95,7 @@ function Boards() {
                             width: "250px",
                             gap: 1,
                             p: 2,
-                            backgroundColor: theme.trello.colorDarkNavyGray,
+                            backgroundColor: theme.trello.colorMidnightBlue,
                             height: theme.trello.boardsHeight,
                         }}
                     >
@@ -120,26 +114,8 @@ function Boards() {
                                 onClick={chooseOpenManager}
                             >
                                 <SpaceDashboardIcon fontSize="small" />
-                                Boards
+                                Danh sách khu
                             </SidebarItem>
-                            {isAdmin && (
-                                <SidebarItem
-                                    sx={{
-                                        ...theme.trello.btnPrimary,
-                                        bgcolor: theme.trello.colorErrorOtherStrong,
-                                        color: theme.trello.colorErrorText,
-                                        "&:hover": {
-                                            bgcolor: theme.trello.colorErrorOtherStrong,
-                                            color: theme.trello.colorErrorText,
-                                            boxShadow: (theme) => theme.trello.boxShadowBtnHover,
-                                        },
-                                    }}
-                                    onClick={chooseOpenManagerInfo}
-                                >
-                                    <HomeIcon fontSize="small" />
-                                    Manager
-                                </SidebarItem>
-                            )}
                         </Stack>
                         <Divider sx={{ my: 1, height: "1px", backgroundColor: theme.trello.primaryColorTextBar }} />
                         {isAdmin && (
@@ -154,17 +130,13 @@ function Boards() {
                         sx={{
                             p: 2,
                             flex: 1,
-                            // width: "100%",
-                            backgroundColor: theme.trello.colorSlateBlue,
                             display: "flex",
                             flexDirection: "column",
                             height: theme.trello.boardsHeight,
+                            backgroundColor: theme.trello.colorGunmetalBlue,
                         }}
                     >
                         {openManagerBoards && <ManagerBoards allBoards={boards} totalBoards={totalBoards} />}
-                        {openManagerInfo && (
-                            <Box sx={{ bgcolor: theme.trello.colorAshGray, height: "100%" }}>Biểu đồ thống kê</Box>
-                        )}
                     </Grid>
                 </Grid>
             </Box>

@@ -38,6 +38,20 @@ const Profile = () => {
             title: "Log out of your account?",
             confirmationText: "Confirm",
             cancellationText: "Cancel",
+            titleProps: {
+                sx: (theme) => theme.trello.modalTextHeader,
+            },
+            // Confirm
+            confirmationButtonProps: {
+                variant: "contained",
+                sx: (theme) => theme.trello.modalConfirmBtn,
+            },
+            // ✅ Style toàn bộ modal (nền, border, màu chữ...)
+            dialogProps: {
+                PaperProps: {
+                    sx: (theme) => theme.trello.modalDialog,
+                },
+            },
         });
 
         if (confirmed) {

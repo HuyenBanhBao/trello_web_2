@@ -1,11 +1,15 @@
 import React from "react";
 import Box from "@mui/material/Box";
+import { useSelector } from "react-redux";
 // --------------------- IMPORT COMPONENTS -------------------------
 import AvatarApp from "./AppBarItemsLeft/AvatarApp";
+import { selectCurrentUser } from "~/redux/user/userSlice";
 // import AppBarNav from "./AppBarItemsLeft/AppBarNav";
 import Navbar from "~/components/AppBar/Menus/Navbar";
 // --------------------- MAIN COMPONENT -------------------------
 const AppBarItemLeft = () => {
+    const currentUser = useSelector(selectCurrentUser);
+    const isAdmin = currentUser?.role === "admin";
     return (
         <>
             <Box
@@ -19,7 +23,7 @@ const AppBarItemLeft = () => {
                 }}
             >
                 {/* ------------------------- MENU BAR ------------------------- */}
-                <Navbar />
+                {isAdmin && <Navbar />}
                 {/* ------------------------- AVATAR ------------------------- */}
                 <AvatarApp />
                 {/* ------------------------- NAV ------------------------- */}

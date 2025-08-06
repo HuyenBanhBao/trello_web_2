@@ -5,6 +5,7 @@ import { API_ROOT } from "~/utils/constants";
 // Khởi tạo giá trị của một Slice trong redux
 const initialState = {
     currentNotifications: null,
+    isRealtimeUpdateMap: {},
 };
 // ===================================================================================================================================
 // Các hành động gọi api ( bât đồng bộ) và cập nhật dữ liệu vào Redux, dùng Middleware createAsyncThunk đi kèm với extraReducers
@@ -56,6 +57,22 @@ export const notificationsSlice = createSlice({
             // unshift là thêm phần tử vào đầu mảng, ngược lại với push
             state.currentNotifications.unshift(incomingNotification);
         },
+
+        // ------ Realtime theo card ------
+        enableRealtimeUpdate: (state, action) => {
+            const { cardId, type } = action.payload;
+            if (!state.isRealtimeUpdateMap[cardId]) {
+                state.isRealtimeUpdateMap[cardId] = {};
+            }
+            state.isRealtimeUpdateMap[cardId][type] = true;
+        },
+
+        disableRealtimeUpdate: (state, action) => {
+            const { cardId, type } = action.payload;
+            if (state.isRealtimeUpdateMap[cardId]) {
+                state.isRealtimeUpdateMap[cardId][type] = false;
+            }
+        },
     },
     // ExtraReducers: Xử lý dữ liệu bất đồng bộ
     extraReducers: (builder) => {
@@ -85,14 +102,24 @@ export const notificationsSlice = createSlice({
 // ===================================================================================================================================
 // Actions: Là nơi dành cho các components bên dưới gọi bằng dispatch() tí nó để cập nhật lại dữ liệu thông qua reducer (chạy đồng bộ)
 // Để ý ở trên thì không thấy properties actions đâu cả, bởi vì những cái actions này đơn giản là được thằng redux tạo tự động theo tên của reducer nhé.
-export const { clearCurrentNotifications, updateCurrentNotifications, addNotification } = notificationsSlice.actions;
+export const {
+    clearCurrentNotifications,
+    updateCurrentNotifications,
+    addNotification,
+    enableRealtimeUpdate,
+    disableRealtimeUpdate,
+    //
+} = notificationsSlice.actions;
 
 // ===================================================================================================================================
 // Selectors: Là nơi dành cho các components bên dưới gọi bằng hook useSelector() để lấy dữ liệu từ trong kho redux store ra sử dụng
 export const selectCurrentNotifications = (state) => {
     return state.notifications.currentNotifications;
 };
-
+export const selectCardHasAnyRealtimeUpdate = (state, cardId) => {
+    const map = state.notifications.isRealtimeUpdateMap[cardId];
+    return !!map && Object.values(map).some(Boolean); // Nếu có bất kỳ giá trị true nào
+};
 // ===================================================================================================================================
 // Cái file này tên là notificationsSlice NHƯNG chúng ta sẽ export một thứ tên là Reducer, mọi người lưu ý :D
 // export default notificationsSlice.reducer;

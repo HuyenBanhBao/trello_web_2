@@ -20,7 +20,7 @@ import { useDispatch, useSelector } from "react-redux";
 // --------------------- APIS ---------------------
 import { updateBoardDetailsAPI, updateColumnDetailsAPI, moveCardToDifferentColumnsAPI } from "~/apis";
 import ActiveCard from "~/components/Modal/ActiveCard/ActiveCard";
-
+import useListenCardReloaded from "~/customHook/socket/useListenCardReloaded";
 // ============================================================================================================
 // ============================================== MAIN COMPONENT ==============================================
 const Board = () => {
@@ -139,6 +139,8 @@ const Board = () => {
             nextCardOrderIds: newBoard.columns.find((column) => column._id === nextColumnId).cardOrderIds,
         });
     };
+    useListenCardReloaded(); // Tách ra customHooks riêng để xử lý cho tất cả các hàm muốn realtime
+
     // =========================================== RENDER ===========================================
     if (!board) {
         return <PageLoadingSpinner caption="Loading board..." />;

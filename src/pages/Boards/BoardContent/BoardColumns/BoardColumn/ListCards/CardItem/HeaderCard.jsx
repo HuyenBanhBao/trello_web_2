@@ -11,7 +11,7 @@ import { updateColumnDetailsAPI } from "~/apis";
 import ToggleFocusInput from "~/components/Form/ToggleFocusInput";
 import { Typography } from "@mui/material";
 // ===================================================== MAIN COMPONENT =====================================================
-const HeaderCard = ({ column, attributes, listeners }) => {
+const HeaderCard = ({ column, toggleManage, attributes, listeners }) => {
     const dispatch = useDispatch();
     const board = useSelector(selectCurrentActiveBoard);
     // ------------------------------- UPDATE TITLE -------------------------------
@@ -57,6 +57,7 @@ const HeaderCard = ({ column, attributes, listeners }) => {
                         {...attributes}
                         {...listeners}
                         sx={{
+                            display: { xs: "none", md: "block" },
                             outline: "none",
                             cursor: "grab",
                             backgroundColor: "rgba(0, 0, 0, 0.05)",
@@ -73,7 +74,9 @@ const HeaderCard = ({ column, attributes, listeners }) => {
                 </Box>
                 <Box>
                     <Typography
+                        onClick={toggleManage}
                         sx={{
+                            display: "block",
                             whiteSpace: "nowrap",
                             bgcolor: (theme) => theme.trello.colorPaleSky,
                             p: "3px 6px",

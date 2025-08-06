@@ -4,7 +4,7 @@ import Modal from "@mui/material/Modal";
 import Typography from "@mui/material/Typography";
 import LibraryAddIcon from "@mui/icons-material/LibraryAdd";
 import CancelIcon from "@mui/icons-material/Cancel";
-import { useForm, Controller } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import TextField from "@mui/material/TextField";
 import InputAdornment from "@mui/material/InputAdornment";
 import { FIELD_REQUIRED_MESSAGE } from "~/utils/validators";
@@ -12,9 +12,6 @@ import FieldErrorAlert from "~/components/Form/FieldErrorAlert";
 import AbcIcon from "@mui/icons-material/Abc";
 import DescriptionOutlinedIcon from "@mui/icons-material/DescriptionOutlined";
 import Button from "@mui/material/Button";
-import Radio from "@mui/material/Radio";
-import RadioGroup from "@mui/material/RadioGroup";
-import FormControlLabel from "@mui/material/FormControlLabel";
 import { styled } from "@mui/material/styles";
 import { createNewBoardAPI } from "~/apis";
 import { useTheme } from "@mui/material/styles";
@@ -25,15 +22,15 @@ const SidebarItem = styled(Box)(({ theme }) => ({
     alignItems: "center",
     gap: "8px",
     cursor: "pointer",
-    backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
+    backgroundColor: "#fff",
     padding: "12px 16px",
     borderRadius: "8px",
     "&:hover": {
-        backgroundColor: theme.palette.mode === "dark" ? "#33485D" : theme.palette.grey[300],
+        backgroundColor: theme.palette.grey[300],
     },
     "&.active": {
-        color: theme.palette.mode === "dark" ? "#90caf9" : "#0c66e4",
-        backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#e9f2ff",
+        color: "#0c66e4",
+        backgroundColor: "#e9f2ff",
     },
 }));
 
@@ -77,7 +74,7 @@ function SidebarCreateBoardModal({ afterCreateNewBoard }) {
         <>
             <SidebarItem onClick={handleOpenModal} sx={theme.trello.btnPrimary}>
                 <LibraryAddIcon fontSize="small" />
-                Create a new board
+                Tạo một khu mới
             </SidebarItem>
 
             <Modal
@@ -99,7 +96,7 @@ function SidebarCreateBoardModal({ afterCreateNewBoard }) {
                         border: "none",
                         outline: 0,
                         padding: "20px 30px",
-                        backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "white",
+                        backgroundColor: "white",
                     }}
                 >
                     <Box
@@ -123,7 +120,7 @@ function SidebarCreateBoardModal({ afterCreateNewBoard }) {
                         <LibraryAddIcon />
                         <Typography variant="h6" component="h2">
                             {" "}
-                            Create a new board
+                            Tạo một khu mới
                         </Typography>
                     </Box>
                     <Box id="modal-modal-description" sx={{ my: 2 }}>

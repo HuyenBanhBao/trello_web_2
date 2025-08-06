@@ -1,4 +1,5 @@
-// ------------------- IMPORT FROM LIBRARIES -------------------
+// ------------------- -------------------
+import "./assets/css/style.css";
 // ------------------- MUI DIALOG -------------------
 import CssBaseline from "@mui/material/CssBaseline";
 import { ConfirmProvider } from "material-ui-confirm";
@@ -45,7 +46,19 @@ createRoot(document.getElementById("root")).render(
                         <GlobalStyles styles={{ a: { textDecoration: "none" } }} />
                         <CssBaseline />
                         <App />
-                        <ToastContainer position="bottom-right" autoClose={4000} theme="colored" closeOnClick />
+                        <ToastContainer
+                            position="bottom-right"
+                            autoClose={2500}
+                            closeOnClick
+                            hideProgressBar={false}
+                            newestOnTop
+                            rtl={false}
+                            pauseOnFocusLoss
+                            draggable
+                            pauseOnHover
+                            toastClassName="mui-toast"
+                            bodyClassName="mui-toast-body"
+                        />
                     </ConfirmProvider>
                 </CssVarsProvider>
             </BrowserRouter>

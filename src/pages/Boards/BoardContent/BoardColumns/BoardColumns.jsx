@@ -16,11 +16,15 @@ import {
     setOriginalBoard,
     selectCurrentActiveBoard,
 } from "~/redux/activeBoard/activeBoardSlice";
+import { selectCurrentUser } from "~/redux/user/userSlice";
 // --------------------- DND KIT ---------------------
 import { SortableContext, horizontalListSortingStrategy } from "@dnd-kit/sortable";
+import { Typography } from "@mui/material";
 // ---------------------------------- MAIN COMPONENT ---------------------
 const BoardColumns = ({ columns }) => {
-    const themeTrello = useTheme();
+    const theme = useTheme();
+    const currentUser = useSelector(selectCurrentUser);
+    const isAdmin = currentUser?.role === "admin";
     // ===================================== STATE & FUNCTIONS =====================================
     // ===================================== OPEN - CLOSE FORM ADD NEW COLUMN =====================================
     const dispatch = useDispatch(); // Khai báo dispatch
@@ -91,24 +95,30 @@ const BoardColumns = ({ columns }) => {
             <SortableContext items={columns?.map((c) => c._id)} strategy={horizontalListSortingStrategy}>
                 <Box
                     sx={{
-                        background: (theme) => theme.trello.colorObsidianSlate,
-                        border: (theme) => `1px solid ${alpha(theme.trello.colorErrorOtherStart, 0.4)}`,
+                        background: theme.trello.colorObsidianSlate,
+                        border: `1px solid ${alpha(theme.trello.colorErrorOtherStart, 0.4)}`,
                         width: "100%",
                         height: "100%",
                         display: "flex",
-                        overflowX: "auto",
-                        overflowY: "hidden",
+                        flexDirection: { xs: "column", md: "row" },
+                        rowGap: { xs: 1.5, md: 0 },
+                        overflowX: { xs: "hidden", md: "auto" },
+                        overflowY: { xs: "auto", md: "hidden" },
                         borderRadius: "8px",
-                        p: 2,
+                        p: { xs: "8px 8px 8px 0", md: 2 },
+
                         pl: 0,
-                        // boxShadow: (theme) => theme.trello.boxShadowBulletin,
+                        // boxShadow: theme.trello.boxShadowBulletin,
+                        "&::-webkit-scrollbar": {
+                            width: "0px", // Chrome
+                        },
                         "&::-webkit-scrollbar-track": { m: 2 },
                         "&::-webkit-scrollbar-thumb": {
-                            background: (theme) => alpha(theme.trello.colorErrorOtherWarm, 0.2),
+                            background: alpha(theme.trello.colorErrorOtherWarm, 0.2),
                             borderRadius: "99px",
                         },
                         "&::-webkit-scrollbar-thumb:hover": {
-                            background: (theme) => alpha(theme.trello.colorErrorOtherWarm, 0.5),
+                            background: alpha(theme.trello.colorErrorOtherWarm, 0.5),
                         },
                     }}
                 >
@@ -117,112 +127,118 @@ const BoardColumns = ({ columns }) => {
                     ))}
 
                     {/* -------------------- ADD NEW COLUMN -------------------- */}
-                    {!openFormAddColumn ? (
-                        <Box
-                            onClick={toggleFormAddColumn}
-                            sx={{
-                                minWidth: "250px",
-                                maxWidth: "250px",
-                                ml: 2,
-                                height: "fit-content",
-                                borderRadius: "6px",
-                            }}
-                        >
-                            <Button
-                                startIcon={<LibraryAddIcon />}
-                                sx={{
-                                    p: 1,
-                                    pl: 2,
-                                    width: "100%",
-                                    justifyContent: "flex-start",
-                                    bgcolor: (theme) => theme.trello.colorPaleSky,
-                                    color: (theme) => theme.trello.colorFogWhiteBlue,
-                                    border: (theme) => `1px solid ${theme.trello.colorFrostGray}`,
-                                    boxShadow: (theme) => theme.trello.boxShadowPrimary,
-                                    transition: "all ease 0.3s",
-                                    "&:hover": {
-                                        bgcolor: (theme) => theme.trello.colorIronBlue,
-                                    },
-                                }}
-                            >
-                                Add new column
-                            </Button>
-                        </Box>
-                    ) : (
-                        <Box
-                            sx={{
-                                minWidth: "250px",
-                                maxWidth: "250px",
-                                mx: 2,
-                                p: 1,
-                                height: "fit-content",
-                                borderRadius: "6px",
-                                bgcolor: (theme) => theme.trello.colorSnowGray,
-                                display: "flex",
-                                flexDirection: "column",
-                                gap: 1,
-                                border: (theme) => `1px solid ${theme.trello.colorFrostGray}`,
-                                boxShadow: (theme) => theme.trello.boxShadowPrimary,
-                            }}
-                        >
-                            <TextField
-                                label="Enter column title"
-                                type="text"
-                                size="small"
-                                variant="outlined"
-                                autoFocus
-                                value={newNameColumn}
-                                onChange={(e) => setNewNameColumn(e.target.value)}
-                                sx={{
-                                    "& label": {
-                                        color: (theme) => theme.trello.colorSlateBlue,
-                                    },
-                                    "& input": {
-                                        color: (theme) => theme.trello.colorSlateBlue,
-                                    },
-                                    "& label.Mui-focused": {
-                                        color: (theme) => theme.trello.colorSlateBlue,
-                                    },
-                                    "& .MuiOutlinedInput-root": {
-                                        "& fieldset": {
-                                            borderColor: (theme) => theme.trello.colorSlateBlue,
-                                        },
-                                        "&:hover fieldset": {
-                                            borderColor: (theme) => theme.trello.colorSlateBlue,
-                                        },
-                                        "&.Mui-focused fieldset": {
-                                            borderColor: (theme) => theme.trello.colorSlateBlue,
-                                        },
-                                    },
-                                }}
-                            />
-                            <Box
-                                sx={{
-                                    display: "flex",
-                                    alignItems: "center",
-                                    gap: 2,
-                                }}
-                            >
-                                <Button
-                                    className="interceptor-loading"
-                                    onClick={addNewColumn}
-                                    variant="contained"
-                                    color="success"
-                                    size="small"
-                                    sx={themeTrello.trello.btnPrimary}
-                                >
-                                    Add columns
-                                </Button>
-                                <Button
+                    {isAdmin && (
+                        <Box>
+                            {!openFormAddColumn ? (
+                                <Box
                                     onClick={toggleFormAddColumn}
-                                    variant="contained"
-                                    color="warning"
-                                    size="small"
-                                    sx={themeTrello.trello.btnPrimaryCancel}
+                                    sx={{
+                                        minWidth: { xs: "100%", md: "250px" },
+                                        maxWidth: { xs: "100%", md: "250px" },
+                                        ml: { xs: 0.5, md: 2 },
+                                        height: "fit-content",
+                                        borderRadius: "6px",
+                                    }}
                                 >
-                                    Cancel
-                                </Button>
-                            </Box>
+                                    <Box
+                                        sx={{
+                                            p: 1,
+                                            pl: 2,
+                                            gap: 1,
+                                            width: "100%",
+                                            justifyContent: "flex-start",
+                                            borderRadius: "4px",
+                                            display: "flex",
+                                            alignItems: "center",
+                                            bgcolor: theme.trello.colorErrorOtherStrong,
+                                            color: theme.trello.colorSlateBlue,
+                                        }}
+                                    >
+                                        <LibraryAddIcon fontSize="small" />
+                                        <Typography variant="span" sx={{ display: "block", fontSize: "14px" }}>
+                                            Add new column
+                                        </Typography>
+                                    </Box>
+                                </Box>
+                            ) : (
+                                <Box
+                                    sx={{
+                                        minWidth: { xs: "100%", md: "250px" },
+                                        maxWidth: { xs: "100%", md: "250px" },
+                                        ml: { xs: 0.5, md: 2 },
+                                        mx: 2,
+                                        p: 1,
+                                        height: "fit-content",
+                                        borderRadius: "6px",
+                                        bgcolor: theme.trello.colorSnowGray,
+                                        display: "flex",
+                                        flexDirection: "column",
+                                        gap: 1,
+                                        border: `1px solid ${theme.trello.colorFrostGray}`,
+                                        boxShadow: theme.trello.boxShadowPrimary,
+                                    }}
+                                >
+                                    <TextField
+                                        label="Enter column title"
+                                        type="text"
+                                        size="small"
+                                        variant="outlined"
+                                        autoComplete="off"
+                                        autoFocus
+                                        value={newNameColumn}
+                                        onChange={(e) => setNewNameColumn(e.target.value)}
+                                        sx={{
+                                            "& label": {
+                                                color: theme.trello.colorSlateBlue,
+                                            },
+                                            "& input": {
+                                                color: theme.trello.colorSlateBlue,
+                                            },
+                                            "& label.Mui-focused": {
+                                                color: theme.trello.colorSlateBlue,
+                                            },
+                                            "& .MuiOutlinedInput-root": {
+                                                "& fieldset": {
+                                                    borderColor: theme.trello.colorSlateBlue,
+                                                },
+                                                "&:hover fieldset": {
+                                                    borderColor: theme.trello.colorSlateBlue,
+                                                },
+                                                "&.Mui-focused fieldset": {
+                                                    borderColor: theme.trello.colorSlateBlue,
+                                                },
+                                            },
+                                        }}
+                                    />
+                                    <Box
+                                        sx={{
+                                            display: "flex",
+                                            alignItems: "center",
+                                            gap: 2,
+                                        }}
+                                    >
+                                        <Button
+                                            className="interceptor-loading"
+                                            onClick={addNewColumn}
+                                            variant="contained"
+                                            color="success"
+                                            size="small"
+                                            sx={theme.trello.btnPrimary}
+                                        >
+                                            Add columns
+                                        </Button>
+                                        <Button
+                                            onClick={toggleFormAddColumn}
+                                            variant="contained"
+                                            color="warning"
+                                            size="small"
+                                            sx={theme.trello.btnPrimaryCancel}
+                                        >
+                                            Cancel
+                                        </Button>
+                                    </Box>
+                                </Box>
+                            )}
                         </Box>
                     )}
                 </Box>

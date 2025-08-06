@@ -20,33 +20,33 @@ const DeleteBoard = () => {
     const handleDeleteCol = async () => {
         // eslint-disable-next-line no-unused-vars
         const { confirmed, reason } = await confirmDeleteCol({
-            title: "Delete this board?",
-            description: "Are you sure you want to delete this BOARD?",
-            confirmationText: "Confirm",
+            title: "Xóa khu này?",
+            description: ` Khu đã xóa sẽ không thể khôi phục. Bạn thực sự muốn xóa khu "${board.title}"?`,
+            confirmationText: "Chấp nhận xóa",
             cancellationText: "Cancel",
             buttonOrder: ["confirm", "cancel"],
+            // title
+            titleProps: {
+                sx: theme.trello.modalTextHeader,
+            },
+            // Confirm
             confirmationButtonProps: {
                 variant: "contained",
-                sx: {
-                    color: theme.trello.colorDustyCloud,
-                    backgroundColor: theme.trello.colorSlateBlue,
-
-                    boxShadow: theme.trello.boxShadowBtn,
-                    transition: "all 0.25s ease-in-out",
-
-                    "&:hover": {
-                        borderColor: "white",
-                        boxShadow: theme.trello.boxShadowBtnHover,
-                        backgroundColor: theme.trello.colorSlateBlue,
-                    },
+                sx: theme.trello.modalConfirmBtn,
+            },
+            // ✅ Style toàn bộ modal (nền, border, màu chữ...)
+            dialogProps: {
+                PaperProps: {
+                    sx: theme.trello.modalDialog,
                 },
             },
+            //
         });
 
         if (confirmed) {
             deleteBoardDetailsAPI(board._id).then(() => {
                 // xoa xong thi quay vef trang chu
-                toast.success("Bạn đã xóa BOARD thành công");
+                toast.success(`Bạn đã xóa khu "${board.title}" thành công`);
                 navigate(`/boards`);
             });
         }
@@ -61,12 +61,15 @@ const DeleteBoard = () => {
             <Box
                 onClick={handleDeleteCol}
                 sx={{
+                    gap: 0.8,
                     display: "flex",
                     alignItems: "center",
-                    gap: 0.8,
+                    justifyContent: "center",
                     p: "6px 16px",
                     borderRadius: "8px",
                     color: "white",
+                    cursor: "pointer",
+                    userSelect: "none",
                     backgroundColor: theme.trello.colorRedClay,
                     boxShadow: theme.trello.boxShadowBtn,
                     transition: "all 0.25s ease-in-out",

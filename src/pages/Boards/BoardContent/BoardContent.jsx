@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 // ---------------------- IMPORT LIB ----------------------
 import React, { useState, useEffect } from "react";
 import Box from "@mui/material/Box";
@@ -281,7 +282,7 @@ const BoardContent = ({ board, moveColumns, moveCardInTheSameColumn, moveCardToD
                     <Grid container sx={{ width: "100%" }}>
                         <Grid
                             sx={{
-                                display: "flex",
+                                display: { xs: "none", md: "flex" },
                                 flexDirection: "column",
                                 width: "350px",
                                 p: "10px 0",
@@ -296,8 +297,9 @@ const BoardContent = ({ board, moveColumns, moveCardInTheSameColumn, moveCardToD
                             sx={{
                                 width: "100%",
                                 flex: 1,
-                                p: "10px 0",
-                                mr: 1,
+                                p: { xs: "6px 0", md: "10px 0" },
+                                pl: { xs: 0.5, md: 0 },
+                                mr: { xs: 0.5, md: 0 },
                                 height: (theme) => theme.trello.boardContentHeight,
                             }}
                         >

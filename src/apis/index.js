@@ -18,7 +18,6 @@ import { toast } from "react-toastify";
 //     return response.data;
 // };
 export const fetchBoardsAPI = async (searchPath) => {
-    // console.log(searchPath);
     const response = await authorizedAxiosInstance.get(`${API_ROOT}/v1/boards${searchPath}`);
     return response.data;
 };
@@ -120,5 +119,16 @@ export const inviteUserToBoardAPI = async (data) => {
 export const inviteUserToCardAPI = async (data) => {
     const response = await authorizedAxiosInstance.post(`${API_ROOT}/v1/invitations/card`, data);
     toast.success("User invited to room successfully!");
+    return response.data;
+};
+
+export const saveSubscriptionAPI = async (subscription) => {
+    const response = await authorizedAxiosInstance.post(`${API_ROOT}/v1/notifications/subscribe`, subscription);
+    // toast.success("Đăng ký nhận thông báo!");
+    return response.data;
+};
+export const sendNotificationAPI = async (data) => {
+    const response = await authorizedAxiosInstance.post(`${API_ROOT}/v1/notifications/send`, data);
+    // toast.success("🔔 Đã gửi thông báo thành công!");
     return response.data;
 };
