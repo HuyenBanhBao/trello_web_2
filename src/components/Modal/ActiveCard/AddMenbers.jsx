@@ -1,13 +1,9 @@
-/* eslint-disable no-unused-vars */
-import { useState } from "react";
 import { useTheme } from "@mui/material/styles";
 import { Box, Typography } from "@mui/material";
-import { toast } from "react-toastify";
 import { useForm } from "react-hook-form";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
-import { singleFileValidator } from "~/utils/validators";
 import { EMAIL_RULE, FIELD_REQUIRED_MESSAGE, EMAIL_RULE_MESSAGE } from "~/utils/validators";
 import FieldErrorAlert from "~/components/Form/FieldErrorAlert";
 import { inviteUserToCardAPI } from "~/apis";
@@ -17,9 +13,6 @@ import { socketIoInstance } from "~/socketClient"; // real-time
 import { selectCurrentActiveBoard } from "~/redux/activeBoard/activeBoardSlice";
 import ContactEmergencyRoundedIcon from "@mui/icons-material/ContactEmergencyRounded";
 import { alpha } from "@mui/material";
-import EditableInput from "~/components/Form/EditableInput";
-import VisuallyHiddenInput from "~/components/Form/VisuallyHiddenInput";
-import { selectCurrentUser } from "~/redux/user/userSlice";
 import AddInfoUserInCard from "../Other/AddInfoUserInCard";
 // ================================================================================================
 
@@ -214,7 +207,7 @@ const AddMenbers = ({ isAdmin, callAPIUpdateUserInfo }) => {
                                     variant="span"
                                     sx={{ fontWeight: "600", fontSize: { xs: "14px", md: "16px" }, userSelect: "none" }}
                                 >
-                                    {capitalizeFirstLetter(userCard?.displayName)}
+                                    {capitalizeFirstLetter(userCard?.email)}
                                 </Typography>
                                 <Avatar
                                     sx={{ width: 36, height: 36, cursor: "pointer" }}
@@ -222,10 +215,10 @@ const AddMenbers = ({ isAdmin, callAPIUpdateUserInfo }) => {
                                     src={userCard?.avatar}
                                 />
                             </Box>
+                            <AddInfoUserInCard callAPIUpdateUserInfo={callAPIUpdateUserInfo} />
                         </>
                     )}
                     {/* ----------------------------------------------------- */}
-                    <AddInfoUserInCard callAPIUpdateUserInfo={callAPIUpdateUserInfo} />
                 </>
             ) : (
                 <Box>

@@ -361,7 +361,7 @@ const NotifiError = ({ callAPIUpdateReportCard }) => {
                                                         objectFit: "cover",
                                                         borderRadius: "8px",
                                                     }}
-                                                    src={previewImage || "/assets/id_card.webp"}
+                                                    src={previewImage || "/assets/add-image.jpg"}
                                                     alt="image-error"
                                                 />
                                             </Box>

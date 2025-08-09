@@ -65,6 +65,7 @@ const AddInfoUserInCard = ({ callAPIUpdateUserInfo }) => {
     const [formValues, setFormValues] = useState(initialFormValues);
     const [frontImage, setFrontImage] = useState(userCard?.frontImg);
     const [backImage, setBackImage] = useState(userCard?.backImg);
+
     const [fileImages, setFileImages] = useState({
         frontImg: userCard?.frontImg,
         backImg: userCard?.backImg,
@@ -133,8 +134,8 @@ const AddInfoUserInCard = ({ callAPIUpdateUserInfo }) => {
                 setFrontImage((prev) => (fileImages.frontImg instanceof File ? null : prev));
                 setBackImage((prev) => (fileImages.backImg instanceof File ? null : prev));
                 setFileImages({
-                    frontImg: fileImages.frontImg instanceof File ? null : fileImages.frontImg,
-                    backImg: fileImages.backImg instanceof File ? null : fileImages.backImg,
+                    frontImg: fileImages.frontImg,
+                    backImg: fileImages.backImg,
                 });
             }),
             {

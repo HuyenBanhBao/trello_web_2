@@ -11,7 +11,7 @@ import { useTheme } from "@mui/material/styles";
 import AddCardIcon from "@mui/icons-material/AddCard";
 import DragHandleIcon from "@mui/icons-material/DragHandle";
 import CloseIcon from "@mui/icons-material/Close";
-import { createNewCardAPI } from "~/apis";
+import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
 // --------------------- REDUX ---------------------
 import {
     updateCurrentActiveBoard,
@@ -20,6 +20,7 @@ import {
 } from "~/redux/activeBoard/activeBoardSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { updateCurrentActiveColumn } from "~/redux/aciveColumn/activeColumnSlice";
+import { createNewCardAPI } from "~/apis";
 // import { selectCurrentUser } from "~/redux/user/userSlice";
 // --------------------- MAIN COMPONENTS ---------------------
 
@@ -111,7 +112,7 @@ const FooterCard = ({ column }) => {
                         Add new card
                     </Button>
                     <Tooltip title="Drag to move">
-                        <DragHandleIcon onClick={handleClick} sx={{ cursor: "pointer" }} />
+                        <SettingsOutlinedIcon onClick={handleClick} sx={{ cursor: "pointer" }} />
                     </Tooltip>
                 </Box>
             ) : (

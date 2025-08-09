@@ -15,7 +15,7 @@ import { alpha } from "@mui/material/styles";
 import { disableRealtimeUpdate } from "~/redux/notifications/notificationsSlice";
 import { selectCurrentActiveCard } from "~/redux/activeCard/activeCardSlice";
 // ===========================================================================================
-function CardActivitySection({ cardComments = [], onAddCardComment, onDeleteCardComment, isAdmin }) {
+function CardActivitySection({ cardComments = [], onAddCardComment, onDeleteCardComment, callAPIUpdateCard, isAdmin }) {
     const theme = useTheme();
     const dispatch = useDispatch();
     const currentUser = useSelector(selectCurrentUser);
@@ -84,6 +84,40 @@ function CardActivitySection({ cardComments = [], onAddCardComment, onDeleteCard
         if (confirmed) {
             onDeleteCardComment(commentDelete).then(() => {
                 toast.success("Comment deleted!");
+            });
+        }
+    };
+    // -------------------------------------- Delete all Comment --------------------------------------
+    const confirmDeleteAllComment = useConfirm();
+    const handleDeleteAllComment = async () => {
+        // eslint-disable-next-line no-unused-vars
+        const { confirmed, reason } = await confirmDeleteAllComment({
+            title: "Xóa?",
+            description: "Bạn chắc chắn muốn xóa đoạn chat này?",
+            confirmationText: "Xóa",
+            cancellationText: "Cancel",
+            buttonOrder: ["confirm", "cancel"],
+            // title
+            titleProps: {
+                sx: theme.trello.modalTextHeader,
+            },
+            // Confirm
+            confirmationButtonProps: {
+                variant: "contained",
+                sx: theme.trello.modalConfirmBtn,
+            },
+            // ✅ Style toàn bộ modal (nền, border, màu chữ...)
+            dialogProps: {
+                PaperProps: {
+                    sx: theme.trello.modalDialog,
+                },
+            },
+            //
+        });
+
+        if (confirmed) {
+            callAPIUpdateCard({ comments: [] }, "del-all-comment").then(() => {
+                toast.success("Deleted all comment!");
             });
         }
     };
@@ -169,6 +203,31 @@ function CardActivitySection({ cardComments = [], onAddCardComment, onDeleteCard
                         multiline
                         onKeyDown={handleAddCardComment}
                     />
+                    {isAdmin && cardComments.length > 0 && (
+                        <Box
+                            onClick={handleDeleteAllComment}
+                            sx={{
+                                p: 1,
+                                display: "flex",
+                                borderRadius: "8px",
+                                whiteSpace: "nowrap",
+                                color: theme.trello.colorMidnightBlue,
+                                bgcolor: theme.trello.colorErrorOtherStrong,
+                                border: `1px solid ${alpha(theme.trello.colorErrorOtherStrong, 0.4)}`,
+                                cursor: "pointer",
+                                userSelect: "none",
+                                transition: "all ease 0.3s",
+                                "&:hover": {
+                                    opacity: 0.8,
+                                },
+                            }}
+                        >
+                            <DeleteOutlinedIcon sx={{ fontSize: "16px" }} />
+                            <Typography variant="span" sx={{ display: "block", fontSize: "13px", fontWeight: "500" }}>
+                                Xóa tất cả
+                            </Typography>
+                        </Box>
+                    )}
                 </Box>
 
                 <Box

@@ -3,11 +3,13 @@ import Typography from "@mui/material/Typography";
 import { useTheme } from "@mui/material/styles";
 import { alpha } from "@mui/material";
 import ListManaUser from "./ManagerController/ListManaUser";
-
+import ChartMana from "./ChartManager/ChartMana";
+import { useSelector } from "react-redux";
+import { selectOriginalBoard } from "~/redux/activeBoard/activeBoardSlice";
 // ==============================================================================================
 const ContentManagerUser = ({ isShowListUser, isShowListUserPrice }) => {
     const theme = useTheme();
-
+    const activeBoard = useSelector(selectOriginalBoard);
     // ==============================================================================================
     return (
         <Box sx={{ height: "100%" }}>
@@ -28,7 +30,9 @@ const ContentManagerUser = ({ isShowListUser, isShowListUserPrice }) => {
                         //
                     }}
                 >
-                    {isShowListUser ? "Danh sách khách thuê trọ" : "Khac"}
+                    {isShowListUser
+                        ? "Danh sách khách thuê trọ"
+                        : `BIỂU ĐỒ "CHI PHÍ - DOANH THU" KHU ${activeBoard.title.toUpperCase()} `}
                 </Typography>
             </Box>
             {/* -------------------------------------------------------------------------------- */}
@@ -44,7 +48,7 @@ const ContentManagerUser = ({ isShowListUser, isShowListUserPrice }) => {
                 }}
             >
                 {isShowListUser && <ListManaUser />}
-                {isShowListUserPrice && <Box>123</Box>}
+                {isShowListUserPrice && <ChartMana />}
             </Box>
         </Box>
     );

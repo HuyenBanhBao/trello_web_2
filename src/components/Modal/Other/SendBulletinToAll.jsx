@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useSelector } from "react-redux";
 import { useTheme } from "@mui/material/styles";
+import { alpha } from "@mui/material/styles";
 // ------------------- MUI -------------------
 import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
@@ -44,7 +45,6 @@ function SendBulletinToAll({ onAddBulletinToAllCard, activeColumn }) {
             const bulletinToAdd = {
                 bulletin: event.target.value.trim(),
             };
-            console.log(bulletinToAdd);
             // Gọi api thêm comment lên component cha
             onAddBulletinToAllCard(bulletinToAdd).then(() => {
                 event.target.value = "";
@@ -73,13 +73,12 @@ function SendBulletinToAll({ onAddBulletinToAllCard, activeColumn }) {
                         left: "50%",
                         transform: "translate(-50%, -50%)",
                         width: 600,
-                        bgcolor: "white",
                         boxShadow: 24,
                         borderRadius: "8px",
-                        border: "none",
+                        border: `1px solid ${alpha(theme.trello.colorErrorOtherStrong, 0.4)}`,
                         outline: 0,
                         padding: "20px 30px",
-                        backgroundColor: (theme) => theme.trello.colorFogWhiteBlue,
+                        bgcolor: theme.trello.colorMidnightBlue,
                     }}
                 >
                     <Box
@@ -93,8 +92,9 @@ function SendBulletinToAll({ onAddBulletinToAllCard, activeColumn }) {
                         <CancelIcon
                             color="standard"
                             sx={{
-                                color: (theme) => theme.trello.colorSlateBlue,
-                                "&:hover": { color: (theme) => theme.trello.colorDeepNavy },
+                                color: theme.trello.colorSlateBlue,
+                                transition: "all ease 0.3s",
+                                "&:hover": { color: theme.trello.colorAshGray },
                             }}
                             onClick={handleCloseModal}
                         />
@@ -107,7 +107,7 @@ function SendBulletinToAll({ onAddBulletinToAllCard, activeColumn }) {
                                 alignItems: "center",
                                 gap: 1,
                                 mb: 3,
-                                color: (theme) => theme.trello.colorSlateBlue,
+                                color: theme.trello.colorSlateBlue,
                             }}
                         >
                             <NewspaperIcon />
@@ -124,12 +124,12 @@ function SendBulletinToAll({ onAddBulletinToAllCard, activeColumn }) {
                                     alignItems: "center",
                                     gap: 1,
                                     mb: 3,
-                                    color: (theme) => theme.trello.colorSlateBlue,
+                                    color: theme.trello.colorErrorOtherStrong,
                                 }}
                             >
                                 <NewspaperIcon />
                                 <Typography variant="h6" component="h2" sx={{ fontStyle: "italic", fontWeight: "600" }}>
-                                    Dán thông báo
+                                    {`Gửi thông báo đến toàn dãy "${activeColumn.title}"`}
                                 </Typography>
                             </Box>
                             <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 2 }}>
@@ -148,28 +148,28 @@ function SendBulletinToAll({ onAddBulletinToAllCard, activeColumn }) {
                                             border: "0.5px solid rgba(48, 48, 48, 0.3)",
                                             boxShadow: "0 0 1px rgba(46, 46, 46, 0.3)",
                                             "& fieldset": {
-                                                border: "none", // ẩn border mặc định
+                                                border: `1px solid ${alpha(theme.trello.colorErrorOtherStrong, 0.4)}`,
                                             },
                                             "&:hover fieldset": {
-                                                border: "1px solid rgba(49, 49, 49, 0.8)",
+                                                border: `1px solid ${alpha(theme.trello.colorErrorOtherStrong, 0.4)}`,
                                             },
                                             "&.Mui-focused fieldset": {
-                                                border: "1px solid rgba(49, 49, 49, 0.8)",
+                                                border: `1px solid ${alpha(theme.trello.colorErrorOtherStrong, 0.4)}`,
                                             },
                                         },
                                         "& .MuiOutlinedInput-input": {
                                             padding: 0, // padding đã có ở `.MuiOutlinedInput-root` rồi
                                             wordBreak: "break-word",
-                                            color: (theme) => theme.trello.colorSlateBlue,
-                                            caretColor: (theme) => theme.trello.colorSlateBlue,
+                                            color: theme.trello.colorSnowGray,
+                                            caretColor: theme.trello.colorSnowGray,
                                             "&::placeholder": {
-                                                color: (theme) => theme.trello.colorSlateBlue,
+                                                color: theme.trello.colorSnowGray,
                                                 opacity: 0.5,
                                             },
                                         },
                                     }}
                                     fullWidth
-                                    placeholder="Write a comment..."
+                                    placeholder="Nội dung..."
                                     type="text"
                                     variant="outlined"
                                     multiline
@@ -183,7 +183,7 @@ function SendBulletinToAll({ onAddBulletinToAllCard, activeColumn }) {
                                     justifyContent: "flex-end",
                                     fontSize: "12px",
                                     fontStyle: "italic",
-                                    color: (theme) => theme.trello.colorSlateBlue,
+                                    color: theme.trello.colorSnowGray,
                                 }}
                             >
                                 Nhấn ENTER để gửi !

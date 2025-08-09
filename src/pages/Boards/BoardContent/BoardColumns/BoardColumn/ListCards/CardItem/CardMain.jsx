@@ -3,11 +3,10 @@ import { Box } from "@mui/material";
 import Card from "@mui/material/Card";
 import CardActions from "@mui/material/CardActions";
 import CardContent from "@mui/material/CardContent";
-import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import { useTheme } from "@mui/material/styles";
-import { alpha } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
+import { alpha } from "@mui/material/styles";
 import Badge from "@mui/material/Badge";
 // -------------------------- ICONS --------------------------
 import NotificationsNoneOutlinedIcon from "@mui/icons-material/NotificationsNoneOutlined";
@@ -31,14 +30,12 @@ const CardMain = ({ card, column }) => {
     const dispatch = useDispatch();
     // -------------------------------------------------
     const isMobile = useMediaQuery(theme.breakpoints.down("md")); // Lấy kích trước của màn hình MD
+    const isMdUp = useMediaQuery(theme.breakpoints.up("md")); // Lấy kích trước của màn hình MD
     const activeBoard = useSelector(selectCurrentActiveBoard);
     const activeUser = useSelector(selectCurrentUser);
 
     // -------------------- NOTIFICATION -------------------------
     const isRealtimeUpdate = useSelector((state) => state.notifications.isRealtimeUpdateMap[card._id]); // check real time
-    const handleClickOpenMess = () => {
-        dispatch(disableRealtimeUpdate({ cardId: card?._id, type: "comment" }));
-    };
     // -----------------------------------------------------------
     const isMember = card?.memberIds?.some((member) => member.userId.toString() === activeUser._id.toString());
     const isAdmin = activeBoard?.ownerIds.includes(activeUser._id);
@@ -79,6 +76,10 @@ const CardMain = ({ card, column }) => {
         dispatch(updateCurrentActiveColumn(column));
         dispatch(updateCurrentActiveCard(card));
         dispatch(showModalActiveCard()); // Hiện modal active card lên
+        if (isMdUp) {
+            dispatch(disableRealtimeUpdate({ cardId: card?._id, type: "comment" }));
+            dispatch(disableRealtimeUpdate({ cardId: card?._id, type: "bulletin" }));
+        }
     };
     // -------------------------- RETURN --------------------------
     if (!isMember && !isAdmin) {
@@ -321,7 +322,6 @@ const CardMain = ({ card, column }) => {
                                 aria-expanded={open ? "true" : undefined}
                             >
                                 <MarkunreadOutlinedIcon
-                                    onClick={handleClickOpenMess}
                                     sx={{
                                         fontSize: "18px",
                                         color: isRealtimeUpdate?.comment
