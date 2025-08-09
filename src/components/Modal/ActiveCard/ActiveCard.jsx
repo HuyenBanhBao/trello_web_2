@@ -112,7 +112,13 @@ function ActiveCard() {
 
     // Function goi API dùng chung cho các trường hợp update card title, desc, cover, comment =====================================================
     const callAPIUpdateCard = async (updateData, type) => {
-        const titleNotifi = type === "comment" ? "TIN NHẮN" : "THÔNG BÁO";
+        let titleNotifi = "";
+        if (type === "bulletin") {
+            titleNotifi = `NEWS: ${updateData.bulletinToAdd.bulletin}`;
+        } else if (type === "comment") {
+            titleNotifi = updateData.commentToAdd.content;
+        }
+        // -------------------------------------------------------------
         const updatedCard = await updateCardDetailsAPI(activeCard._id, updateData);
         // console.log(updatedCard);
         // B1: Cập nhật lại cái card đang active trong modal hiện tại
@@ -127,7 +133,7 @@ function ActiveCard() {
             await callAPISendNotification(
                 {
                     title: "Smart Bamboo",
-                    body: `Phòng "${updatedCard.title}": ${titleNotifi}`,
+                    body: `${isAdmin ? "Chủ trọ" : `Phòng "${updatedCard.title}"`}: ${titleNotifi}`,
                     icon: "/logo192.png",
                 },
                 isAdmin ? targetUserId : targetAdminId
@@ -540,6 +546,7 @@ function ActiveCard() {
                                     cardComments={activeCard?.comments}
                                     onAddCardComment={onAddCardComment}
                                     onDeleteCardComment={onDeleteCardComment}
+                                    callAPIUpdateCard={callAPIUpdateCard}
                                     isAdmin={isAdmin}
                                 />
                             </Box>

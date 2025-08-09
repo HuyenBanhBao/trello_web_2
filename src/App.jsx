@@ -10,6 +10,7 @@ import Settings from "~/pages/Settings/Settings";
 import { selectCurrentUser } from "~/redux/user/userSlice";
 import AccountVerification from "~/pages/Auth/AccountVerification";
 import { usePushNotification } from "./customHook/notification/usePushNotification";
+import NotificationPrompt from "./components/Notification/NotificationPrompt";
 // ============================================ MAIN COMPONENT ============================================\
 /**
  * Giải pháp Clean Code trong việc xác định các route nào cần đăng nhập tài khoản xong thì mới cho truy cập
@@ -31,37 +32,41 @@ function App() {
     usePushNotification(); // Gọi lấy thông tin đăng ký cấp quyền nhận thông báo
 
     return (
-        <Routes>
-            {/* Redirect route */}
+        <>
+            <NotificationPrompt />
 
-            <Route
-                path="/"
-                element={
-                    // Ở đây cần replace giá trị true để nó thay thế route /, có thể hiểu là route / sẽ không còn nằm trong history của Browser
-                    // Thực hành để hiểu hơn bằng cách nhấn Go Home từ trang 404 xong thử quay lại bằng nút back của trình duyệt giữa 2 trường hợp có replace hoặc không có.
-                    <Navigate to="/boards" replace={true} />
-                }
-            />
+            <Routes>
+                {/* Redirect route */}
 
-            {/* ProtectedRoute - Hiểu đơn giản trong dự án này là những route chỉ cho truy cập sau khi đã Login */}
-            <Route element={<ProtectedRoute user={currentUser} />}>
-                {/* <Outlet /> của react-router-dom sẽ chạy vào các child route trong này */}
-                {/* Board route */}
-                <Route path="/boards/:boardId" element={<Board />} />
-                <Route path="/boards" element={<Boards />} />
-                {/* User setting */}
-                <Route path="/settings/account" element={<Settings />} />
-                <Route path="/settings/security" element={<Settings />} /> //settings/security
-            </Route>
+                <Route
+                    path="/"
+                    element={
+                        // Ở đây cần replace giá trị true để nó thay thế route /, có thể hiểu là route / sẽ không còn nằm trong history của Browser
+                        // Thực hành để hiểu hơn bằng cách nhấn Go Home từ trang 404 xong thử quay lại bằng nút back của trình duyệt giữa 2 trường hợp có replace hoặc không có.
+                        <Navigate to="/boards" replace={true} />
+                    }
+                />
 
-            {/* Authentication */}
-            <Route path="/login" element={<Auth />} />
-            <Route path="/register" element={<Auth />} />
-            <Route path="/account/verification" element={<AccountVerification />} />
+                {/* ProtectedRoute - Hiểu đơn giản trong dự án này là những route chỉ cho truy cập sau khi đã Login */}
+                <Route element={<ProtectedRoute user={currentUser} />}>
+                    {/* <Outlet /> của react-router-dom sẽ chạy vào các child route trong này */}
+                    {/* Board route */}
+                    <Route path="/boards/:boardId" element={<Board />} />
+                    <Route path="/boards" element={<Boards />} />
+                    {/* User setting */}
+                    <Route path="/settings/account" element={<Settings />} />
+                    <Route path="/settings/security" element={<Settings />} /> //settings/security
+                </Route>
 
-            {/* Route 404 not found page */}
-            <Route path="*" element={<NotFound />} />
-        </Routes>
+                {/* Authentication */}
+                <Route path="/login" element={<Auth />} />
+                <Route path="/register" element={<Auth />} />
+                <Route path="/account/verification" element={<AccountVerification />} />
+
+                {/* Route 404 not found page */}
+                <Route path="*" element={<NotFound />} />
+            </Routes>
+        </>
     );
 }
 //  =================================== EXPORT ===================================

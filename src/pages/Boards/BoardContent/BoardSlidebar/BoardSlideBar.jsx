@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import Typography from "@mui/material/Typography";
 import Collapse from "@mui/material/Collapse";
 import { alpha } from "@mui/material/styles";
-
+import { socketIoInstance } from "~/socketClient"; // real-time
 // --------------------- COMPONENTS ---------------------------
 import BSBPriceService from "./BSBPriceService";
 import BSBDeleteCol from "./BSBDeleteCol";
@@ -17,13 +17,14 @@ import SendMessToAll from "~/components/Modal/Other/SendMessToAll";
 import { selectCurrentActiveColumn } from "~/redux/aciveColumn/activeColumnSlice";
 import { updateCurrentActiveColumn } from "~/redux/aciveColumn/activeColumnSlice";
 import { updateColumnInBoard } from "~/redux/activeBoard/activeBoardSlice";
-import { updateColumnDetailsAPI } from "~/apis";
+import { updateColumnDetailsAPI, sendNotificationAPI } from "~/apis";
 import ManageAccountsOutlinedIcon from "@mui/icons-material/ManageAccountsOutlined";
 import { updateCardInBoard } from "~/redux/activeBoard/activeBoardSlice";
 import { toast } from "react-toastify";
 import { selectCurrentActiveBoard } from "~/redux/activeBoard/activeBoardSlice";
 import { selectCurrentUser } from "~/redux/user/userSlice";
 import KeyboardArrowRightOutlinedIcon from "@mui/icons-material/KeyboardArrowRightOutlined";
+
 // ========================================================================================
 const BoardSlideBar = () => {
     const theme = useTheme();
@@ -48,23 +49,52 @@ const BoardSlideBar = () => {
     const onHandleupdateSercolumn = (updatePriceServiceColumn) => {
         callAPIUpdateColumn(updatePriceServiceColumn);
     };
-
+    // ===============================================================================
+    const callAPISendNotification = async (payload, targetUserId) => {
+        const res = await sendNotificationAPI({ ...payload, targetUserId });
+        return res;
+    };
     // ======================== FUNC TỔNG XỬ LÝ HÀNH ĐỘNG ĐẾN ALL CARD ========================
-    const callAPIUpdateCardInColumn = async (updateData) => {
+    const callAPIUpdateCardInColumn = async (updateData, type) => {
         const updatedCardsInColumn = await updateColumnDetailsAPI(activeColumn._id, updateData);
         dispatch(updateCurrentActiveColumn({ ...activeColumn, cards: updatedCardsInColumn }));
-        updatedCardsInColumn.forEach((card) => {
+        for (const card of updatedCardsInColumn) {
             dispatch(updateCardInBoard(card));
-        });
+
+            // Emit realtime
+            socketIoInstance.emit("FE_CARD_RELOADED", {
+                cardId: card._id,
+                updatedCard: card,
+                type,
+            });
+
+            const targetUserId = card?.memberIds?.[0]?.userId;
+            const targetAdminId = activeBoard?.ownerIds?.[0];
+            const titleNotifi = type.includes("bulletin")
+                ? `NEWS: ${updateData.bulletinToAdd?.bulletin}`
+                : updateData.commentToAdd?.content || "";
+
+            if (targetUserId && (type === "comment" || type === "bulletin")) {
+                await callAPISendNotification(
+                    {
+                        title: "Smart Bamboo",
+                        body: `${isAdmin ? "Chủ trọ" : `Phòng "${card.title}"`}: ${titleNotifi}`,
+                        icon: "/logo192.png",
+                    },
+                    isAdmin ? targetUserId : targetAdminId
+                );
+            }
+        }
+
         return updatedCardsInColumn;
     };
     // ------------------------------- SEND MESS TO ALL CARD IN ONE COLUMN -------------------------------
     const onAddComentToAllCard = async (commentToAdd) => {
-        await callAPIUpdateCardInColumn({ commentToAdd });
+        await callAPIUpdateCardInColumn({ commentToAdd }, "comment");
     };
     // ------------------------------- SEND BULLETIN TO ALL CARD IN ONE COLUMN -------------------------------
     const onAddBulletinToAllCard = async (bulletinToAdd) => {
-        await callAPIUpdateCardInColumn({ bulletinToAdd });
+        await callAPIUpdateCardInColumn({ bulletinToAdd }, "bulletin");
     };
 
     // ---------------- OPEN CLOSE ITEMS OF SLIDEBAR -------------------------

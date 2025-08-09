@@ -116,7 +116,7 @@ function CardBulletinBoard({ cardBulletin = [], onAddCardBulletin, onDeleteCardB
             </Box>
 
             {/* Xử lý bảng tin của Card */}
-            <Box>
+            <Box sx={{ height: { xs: "calc(100% - 65px)", md: "calc(100% - 90px)" } }}>
                 {/* Xử lý thêm comment vào Card */}
                 {isAdmin && (
                     <Box sx={{ display: "flex", alignItems: "center", gap: 1, m: { xs: "0 15px", md: "0 60px" } }}>
@@ -168,80 +168,101 @@ function CardBulletinBoard({ cardBulletin = [], onAddCardBulletin, onDeleteCardB
                 )}
 
                 {/* Hiển thị danh sách các comments */}
-                <Box
-                    sx={{
-                        mt: "10px",
-                        p: { xs: "0 20px", md: "0 50px" },
-                        display: "grid",
-                        gridTemplateColumns: {
-                            xs: "1fr",
-                            md: "1fr 1fr",
-                        },
-                        gap: { xs: 0.5, md: 1 },
-                        width: "100%",
-                        height: { xs: "95px", md: "200px" },
-                        overflowY: "auto",
-                    }}
-                >
-                    {cardBulletin.map((bulletin, index) => (
-                        <Box
-                            sx={{
-                                gap: 1,
-                                width: "100%",
-                                color: theme.trello.colorMidnightBlue,
-                            }}
-                            key={index}
-                        >
-                            <Box sx={{ display: "flex", alignItems: "center", gap: { xs: 0.5, md: 1 }, width: "100%" }}>
-                                {/* -------------- DATE -------------- */}
+                <Box sx={{ mt: "10px", display: "flex", gap: 2, height: "75%", p: { xs: "0 20px", md: "0 50px" } }}>
+                    {/* Notificaton */}
+                    <Box
+                        sx={{
+                            flex: 2,
+                            display: "flex",
+                            flexWrap: "wrap",
+                            gap: { xs: 0.5, md: 1 },
+                            height: "100%",
+                            width: "100%",
+                            overflowY: "auto",
+                        }}
+                    >
+                        {cardBulletin.map((bulletin, index) => (
+                            <Box
+                                sx={{
+                                    gap: 1,
+                                    width: "49%",
+                                    color: theme.trello.colorMidnightBlue,
+                                }}
+                                key={index}
+                            >
+                                <Box
+                                    sx={{
+                                        display: "flex",
+                                        alignItems: "center",
+                                        gap: { xs: 0.5, md: 1 },
+                                        width: "100%",
+                                    }}
+                                >
+                                    {/* -------------- DATE -------------- */}
 
-                                <Box sx={{ flex: 1, display: "flex", justifyContent: "center" }}>
-                                    {/* -------------- INFO -------------- */}
-                                    <Box sx={{ width: "100%" }}>
-                                        <Box
-                                            sx={{
-                                                flex: 1,
-                                                mr: 1,
-                                                display: "flex",
-                                                alignItems: "center",
-                                                gap: { xs: 0.5, md: 1 },
-                                                p: { xs: "5px 10px", md: "8px 16px" },
-                                                userSelect: "none",
-                                                width: "100%",
-                                                borderRadius: "50px",
-                                                wordBreak: "break-word",
-                                                bgcolor: theme.trello.colorErrorOtherWarmer,
-                                            }}
-                                        >
-                                            <NotificationsActiveOutlinedIcon
-                                                sx={{ fontSize: { xs: "14px", md: "18px" } }}
-                                            />
+                                    <Box sx={{ flex: 1, display: "flex", justifyContent: "center" }}>
+                                        {/* -------------- INFO -------------- */}
+                                        <Box sx={{ width: "100%" }}>
                                             <Box
                                                 sx={{
                                                     flex: 1,
+                                                    mr: 1,
                                                     display: "flex",
-                                                    fontWeight: "500",
-                                                    flexDirection: "column",
-                                                    fontSize: { xs: "12px", md: "14px" },
+                                                    alignItems: "center",
+                                                    gap: { xs: 0.5, md: 1 },
+                                                    p: { xs: "5px 10px", md: "8px 16px" },
+                                                    userSelect: "none",
+                                                    width: "100%",
+                                                    borderRadius: "50px",
+                                                    wordBreak: "break-word",
+                                                    bgcolor: theme.trello.colorErrorOtherWarmer,
                                                 }}
                                             >
-                                                {bulletin.bulletin}
+                                                <NotificationsActiveOutlinedIcon
+                                                    sx={{ fontSize: { xs: "14px", md: "18px" } }}
+                                                />
+                                                <Box
+                                                    sx={{
+                                                        flex: 1,
+                                                        display: "flex",
+                                                        fontWeight: "500",
+                                                        flexDirection: "column",
+                                                        fontSize: { xs: "12px", md: "14px" },
+                                                    }}
+                                                >
+                                                    {bulletin.bulletin}
+                                                </Box>
                                             </Box>
                                         </Box>
                                     </Box>
+                                    {/* -------------- BTN DELETE -------------- */}
+                                    <Typography variant="span" sx={{ userSelect: "none" }}>
+                                        {isAdmin && (
+                                            <DeleteOutlinedIcon
+                                                onClick={() => handleDeleteCardComment(bulletin)}
+                                                sx={{ display: "flex", fontSize: { xs: "14px", md: "18px" } }}
+                                            />
+                                        )}
+                                    </Typography>
                                 </Box>
-                                {/* -------------- BTN DELETE -------------- */}
-                                <Typography variant="span" sx={{ userSelect: "none" }}>
-                                    {isAdmin && (
-                                        <DeleteOutlinedIcon
-                                            onClick={() => handleDeleteCardComment(bulletin)}
-                                            sx={{ display: "flex", fontSize: { xs: "14px", md: "18px" } }}
-                                        />
-                                    )}
-                                </Typography>
                             </Box>
-                        </Box>
-                    ))}
+                        ))}
+                    </Box>
+
+                    {/* Noi quy */}
+                    {/* <Box
+                        sx={{
+                            flex: 1,
+                            bgcolor: theme.trello.colorFogWhiteBlue,
+                            borderRadius: "16px",
+                            p: 1,
+                            color: theme.trello.colorMidnightBlue,
+                        }}
+                    >
+                        <Typography variant="span" sx={{ fontSize: "14px", fontWeight: "500" }}>
+                            Nội quy:
+                        </Typography>
+                    </Box> */}
                 </Box>
             </Box>
         </Box>

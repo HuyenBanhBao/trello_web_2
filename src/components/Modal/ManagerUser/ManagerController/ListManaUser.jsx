@@ -112,9 +112,32 @@ const ListManaUser = () => {
             <Box>
                 {/* ---------------------------------------- filter ---------------------------------------- */}
                 <Box sx={{ display: "flex", gap: 3 }}>
-                    <Box sx={{ width: "100%", display: "flex", justifyContent: "flex-end" }}>
+                    <Box sx={{ m: 1, width: "100%", display: "flex", justifyContent: "flex-end" }}>
                         {/* ------------------------------------ */}
-                        <FormControl sx={{ m: 1, minWidth: { xs: 150, md: 250 } }}>
+                        {/* <Box
+                            onClick={handleSendNotifiAll}
+                            sx={{
+                                mt: "auto",
+                                p: "6px 12px",
+                                display: "block",
+                                borderRadius: "8px",
+                                height: "fit-content",
+                                color: theme.trello.colorErrorOtherStrong,
+                                fontWeight: "600",
+                                cursor: "pointer",
+                                userSelect: "none",
+                                border: `1px solid ${alpha(theme.trello.colorErrorOtherStrong, 0.4)}`,
+                                transition: "all ease 0.3s",
+                                "&:hover": {
+                                    bgcolor: alpha(theme.trello.colorErrorOtherStrong, 0.1),
+                                },
+                                //
+                            }}
+                        >
+                            Thông báo đóng tiền
+                        </Box> */}
+                        {/* ------------------------------------ */}
+                        <FormControl sx={{ minWidth: { xs: 150, md: 250 } }}>
                             <FormLabel
                                 id="demo-simple-select-label"
                                 sx={{
@@ -159,7 +182,6 @@ const ListManaUser = () => {
                                 ))}
                             </Select>
                         </FormControl>
-
                         {/* ------------------------------------ */}
                     </Box>
                 </Box>
@@ -168,7 +190,7 @@ const ListManaUser = () => {
                     <TableContainer
                         component={Paper}
                         sx={{
-                            maxHeight: { xs: "80vh", md: "calc(90vh - 190px)" },
+                            maxHeight: { xs: "75vh", md: "calc(90vh - 190px)" },
                             overflowY: "auto",
                             "&::-webkit-scrollbar": {
                                 display: "none",

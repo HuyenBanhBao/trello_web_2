@@ -10,6 +10,7 @@ import ContactEmergencyOutlinedIcon from "@mui/icons-material/ContactEmergencyOu
 // ---------------------- COMPONENTS ----------------------
 import SidebarManagerUser from "./SidebarManagerUser";
 import ContentManagerUser from "./ContentManagerUser";
+
 // =============================================================================
 const ActiveManagerUser = () => {
     const theme = useTheme();
@@ -23,6 +24,8 @@ const ActiveManagerUser = () => {
     };
     const handleCloseModal = () => {
         setIsOpenManager(false);
+        setIsShowListUser(true);
+        setIsShowListUserPrice(false);
         // Reset lại toàn bộ form khi đóng Modal
     };
     // ======================= tính độ cao của trang hiện ===========================
@@ -95,8 +98,6 @@ const ActiveManagerUser = () => {
                             border: `1px solid ${theme.trello.colorIronBlue}`,
                         }}
                     >
-                        {/* <Header />
-            <Sidebar /> */}
                         <CancelIcon
                             color="standard"
                             sx={{
@@ -122,20 +123,18 @@ const ActiveManagerUser = () => {
                                 bgcolor: theme.trello.colorMidnightBlue,
                             }}
                         >
-                            <Grid container spacing={1}>
-                                <Grid item sx={{ display: { xs: "none", md: "block" }, width: "250px" }}>
-                                    <SidebarManagerUser
-                                        setIsShowListUser={setIsShowListUser}
-                                        setIsShowListUserPrice={setIsShowListUserPrice}
-                                    />
-                                </Grid>
-                                <Grid item sx={{ flex: 1, width: "100%" }}>
-                                    <ContentManagerUser
-                                        isShowListUser={isShowListUser}
-                                        isShowListUserPrice={isShowListUserPrice}
-                                    />
-                                </Grid>
-                            </Grid>
+                            <Box sx={{ display: { xs: "none", md: "block" }, width: "250px", flexShrink: 0 }}>
+                                <SidebarManagerUser
+                                    setIsShowListUser={setIsShowListUser}
+                                    setIsShowListUserPrice={setIsShowListUserPrice}
+                                />
+                            </Box>
+                            <Box sx={{ flex: 1, width: "calc(100% - 260px)" }}>
+                                <ContentManagerUser
+                                    isShowListUser={isShowListUser}
+                                    isShowListUserPrice={isShowListUserPrice}
+                                />
+                            </Box>
                         </Box>
                     </Box>
                 </Box>

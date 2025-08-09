@@ -1,11 +1,7 @@
 /* eslint-disable no-unused-vars */
 import { useState } from "react";
-import Avatar from "@mui/material/Avatar";
-import { Box, Button, Grid } from "@mui/material";
+import { Box } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
-import Divider from "@mui/material/Divider";
-import List from "@mui/material/List";
-import ListItem from "@mui/material/ListItem";
 import Typography from "@mui/material/Typography";
 import Trello from "@mui/icons-material/ViewKanban";
 // ---------------------------------------------------------------------------------

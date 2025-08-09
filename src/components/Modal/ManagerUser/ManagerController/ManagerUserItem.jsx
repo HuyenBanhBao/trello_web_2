@@ -52,44 +52,39 @@ const ManagerUserItem = ({ member, currentCard, matchedColumn, matchedTitle, mat
     const dispatch = useDispatch();
     const [isOpen, setIsOpen] = useState(false);
     const [openColl, setOpenColl] = useState(false);
+
     const toggleManage = () => {
         setOpenColl((prev) => !prev);
         setIsOpen((prev) => !prev);
     };
 
-    const oldNum = Number(currentCard?.numElec);
-    const newNum = Number(currentCard?.numElecNew);
-    const priceRoom = Number(currentCard?.priceRoom);
-    const priceWater = Number(matchedColumn?.priceWater);
-    const priceElec = Number(matchedColumn?.priceElec);
-    const priceWash = Number(matchedColumn?.priceWash);
-    const priceTrash = Number(matchedColumn?.priceTrash);
-    const priceWifi = Number(matchedColumn?.priceWifi);
-    const numUser = Number(currentCard?.userRoom);
-    const expireDate = currentCard?.expireDate;
-    // -------------------------------------
-    let elecDiff = "Chưa ghi số điện"; // Giá trị mặc định khi không hợp lệ
-    if (!isNaN(newNum) && !isNaN(oldNum) && newNum >= oldNum) {
-        elecDiff = newNum - oldNum;
-    }
-    // -------------------------------------
-    let sumPriceOther = "Thiếu dữ liệu"; // Giá trị mặc định khi không hợp lệ
-    if (!isNaN(priceWater) && !isNaN(priceWash) && !isNaN(priceTrash) && !isNaN(priceWifi) && !isNaN(numUser)) {
-        sumPriceOther = numUser * (priceTrash + priceWash + priceWater) + priceWifi;
-    }
-    // -------------------------------------
-    let sumTotal = "..."; // Giá trị mặc định khi không hợp lệ
-    if (!isNaN(sumPriceOther) && !isNaN(elecDiff) && !isNaN(priceElec) && !isNaN(priceRoom)) {
-        sumTotal = sumPriceOther + elecDiff * priceElec + priceRoom;
-    }
+    // ===== CHUYỂN ĐỔI GIÁ TRỊ SỐ =====
+    const toNum = (value) => Number(value) || 0;
 
-    // ------------------- OPEN ACTIVE CARD -------------------
+    const oldNum = toNum(currentCard?.numElec);
+    const newNum = toNum(currentCard?.numElecNew);
+    const priceRoom = toNum(currentCard?.priceRoom);
+    const numUser = toNum(currentCard?.userRoom);
+    const priceWater = toNum(matchedColumn?.priceWater);
+    const priceElec = toNum(matchedColumn?.priceElec);
+    const priceWash = toNum(matchedColumn?.priceWash);
+    const priceTrash = toNum(matchedColumn?.priceTrash);
+    const priceWifi = toNum(matchedColumn?.priceWifi);
+    const expireDate = currentCard?.expireDate;
+
+    // ===== TÍNH TOÁN CHI PHÍ =====
+    const elecDiff = newNum >= oldNum ? newNum - oldNum : 0;
+    const sumPriceOther = numUser * (priceTrash + priceWash + priceWater) + priceWifi;
+    const sumTotal = sumPriceOther + elecDiff * priceElec + priceRoom;
+
+    // ===== ĐẶT ACTIVE CARD =====
     const setActiveCard = () => {
         dispatch(updateCurrentActiveColumn(matchedColumn));
         dispatch(updateCurrentActiveCard(currentCard));
-        dispatch(showModalActiveCard()); // Hiện modal active card lên
+        dispatch(showModalActiveCard());
     };
-    // ------------------- Thêm hàm xử lý khi nhấp vào nút Gửi qua Zalo -------------------
+
+    // ===== GỬI QUA ZALO =====
     const handleSendZalo = () => {
         const phoneNumber = member.phoneNumber;
 
@@ -98,40 +93,42 @@ const ManagerUserItem = ({ member, currentCard, matchedColumn, matchedTitle, mat
             return;
         }
 
-        // Tạo nội dung tin nhắn
+        const formatCurrency = (value) => `${toNum(value).toLocaleString("vi-VN")}.000 đồng`;
+
         let message = `Xin chào ${member.fullName || member.username},\n`;
         message += `Thông tin hóa đơn phòng ${matchedTitle} tháng ${
             new Date().getMonth() + 1
         }: (Gồm ${numUser} người)\n`;
         message += `Địa chỉ: ${matchedColumnTitles}\n`;
         message += `<______________>\n`;
-        message += `Số công tơ điện tháng trước: ${oldNum} KWh (Số)\n`;
-        message += `Số công tơ điện tháng này: ${newNum} KWh (Số)\n`;
+        message += `Số công tơ điện tháng trước: ${oldNum} KWh\n`;
+        message += `Số công tơ điện tháng này: ${newNum} KWh\n`;
         message += `<______________>\n`;
-        message += `- Tiền phòng: ${!isNaN(priceRoom) ? priceRoom.toLocaleString("vi-VN") : 0}.000 đồng\n`;
-        message += `- Tiền điện: ${!isNaN(elecDiff) && !isNaN(priceElec) ? elecDiff * priceElec : 0}.000 đồng (${
-            !isNaN(elecDiff) ? elecDiff.toLocaleString("vi-VN") : 0
-        } KWh)\n`;
-        message += `- Tiền nước: ${(priceWater * numUser).toLocaleString("vi-VN")}.000 đồng (${numUser} người)\n`;
-        message += `- Tiền mạng: ${priceWifi.toLocaleString("vi-VN")}.000 đồng (1 phòng)\n`;
-        message += `- Tiền giặt: ${(priceWash * numUser).toLocaleString("vi-VN")}.000 đồng (${numUser} người)\n`;
-        message += `- Tiền rác: ${(priceTrash * numUser).toLocaleString("vi-VN")}.000 đồng (${numUser} người)\n`;
+        message += `- Tiền phòng: ${formatCurrency(priceRoom)}\n`;
+        message += `- Tiền điện: ${formatCurrency(elecDiff * priceElec)} (${elecDiff.toLocaleString("vi-VN")} KWh)\n`;
+        message += `- Tiền nước: ${formatCurrency(priceWater * numUser)} (${numUser} người)\n`;
+        message += `- Tiền mạng: ${formatCurrency(priceWifi)} (1 phòng)\n`;
+        message += `- Tiền giặt: ${formatCurrency(priceWash * numUser)} (${numUser} người)\n`;
+        message += `- Tiền rác: ${formatCurrency(priceTrash * numUser)} (${numUser} người)\n`;
         message += `<==============>\n`;
-        message += `- Tổng chi phí: ${!isNaN(sumTotal) ? sumTotal.toLocaleString("vi-VN") : 0}.000 đồng\n`;
+        message += `- Tổng chi phí: ${formatCurrency(sumTotal)}\n`;
 
-        // Sao chép tin nhắn vào clipboard
         navigator.clipboard
             .writeText(message)
             .then(() => {
                 alert("Đã sao chép nội dung tin nhắn!");
-                // Mở Zalo với số điện thoại
                 window.open(`https://zalo.me/${phoneNumber}`, "_blank");
             })
             .catch((err) => {
                 alert("Không thể sao chép tin nhắn: " + err);
-                // Vẫn mở Zalo với số điện thoại
                 window.open(`https://zalo.me/${phoneNumber}`, "_blank");
             });
+    };
+
+    // ------------------------- MESS BY ZALO ----------------------------
+    const openMessageByZalo = () => {
+        const phoneNumber = member.phoneNumber;
+        window.open(`https://zalo.me/${phoneNumber}`, "_blank");
     };
 
     // ------------------------- CSS -------------------------
@@ -238,6 +235,23 @@ const ManagerUserItem = ({ member, currentCard, matchedColumn, matchedTitle, mat
                                 >
                                     Thông tin chi tiết:
                                 </Typography>
+                                <Box>
+                                    <Box
+                                        //
+                                        onClick={openMessageByZalo}
+                                        component="img"
+                                        sx={{
+                                            display: "flex",
+                                            height: 38,
+                                            width: 38,
+                                            objectFit: "cover",
+                                            mr: 1,
+                                            borderRadius: 2,
+                                        }}
+                                        src="/zalo.svg"
+                                        alt="image-error"
+                                    />
+                                </Box>
                             </Box>
                             {/* ------------------------------------------------------ */}
                             <Box

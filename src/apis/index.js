@@ -132,3 +132,25 @@ export const sendNotificationAPI = async (data) => {
     // toast.success("🔔 Đã gửi thông báo thành công!");
     return response.data;
 };
+
+// ==================================================== API Chart ====================================================
+export const createNewDataBarChartAPI = async (newChartData) => {
+    const response = await authorizedAxiosInstance.post(`${API_ROOT}/v1/chart`, newChartData);
+    return response.data;
+};
+export const getChartDataByMonthAPI = async (monthKey) => {
+    const response = await authorizedAxiosInstance.get(`${API_ROOT}/v1/chart/month`, {
+        params: { month: monthKey }, // => /v1/chart/month?month=2025-08
+    });
+    return response.data;
+};
+export const getChartListAPI = async (boardIdKey) => {
+    const response = await authorizedAxiosInstance.get(`${API_ROOT}/v1/chart/list`, {
+        params: { boardId: boardIdKey },
+    });
+    return response.data;
+};
+export const updateChartDataAPI = async (chartId, updateData) => {
+    const response = await authorizedAxiosInstance.put(`${API_ROOT}/v1/chart/${chartId}`, updateData);
+    return response.data;
+};
